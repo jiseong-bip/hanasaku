@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "1056608488794",
+    "project_id": "hanasaku-abc",
+    "storage_bucket": "hanasaku-abc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1056608488794:android:5b379eee1f86590c147763",
+        "android_client_info": {
+          "package_name": "com.example.hanasaku"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1056608488794-9lu7pgj6apjbfikdb16q31lpecaighfn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.hanasaku",
+            "certificate_hash": "160931b0922e17d1d1456c3f55a4654587106278"
+          }
+        },
+        {
+          "client_id": "1056608488794-r96gj8smpnl125d9c0pcslab9t9l8rmh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrZZOLFJLch1_LurW2apOnbS7RcG8palo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1056608488794-5bfsfinc2p0gnq8qtjil6bfh8eesn9vg.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1056608488794-9bf7ivlv2qpimmrpis6670iud2uqaufo.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.hanasaku"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
