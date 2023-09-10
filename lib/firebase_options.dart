@@ -63,6 +63,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1056608488794',
     projectId: 'hanasaku-abc',
     storageBucket: 'hanasaku-abc.appspot.com',
+    androidClientId: '1056608488794-9lu7pgj6apjbfikdb16q31lpecaighfn.apps.googleusercontent.com',
     iosClientId: '1056608488794-9bf7ivlv2qpimmrpis6670iud2uqaufo.apps.googleusercontent.com',
     iosBundleId: 'com.example.hanasaku',
   );

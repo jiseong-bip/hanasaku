@@ -1,8 +1,12 @@
+// ignore_for_file: avoid_print, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/auth/form_button.dart';
+import 'package:hanasaku/auth/repos/authentication_repository.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/nav/main_nav.dart';
+import 'package:hanasaku/query&mutation/mutatuin.dart';
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
 import 'package:provider/provider.dart';
 
@@ -21,6 +25,21 @@ class _SetProfileState extends State<SetProfile> {
   bool isFemaleSelected = false;
   String errorText = '';
   bool isTokenCome = false;
+  String? _uid;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUid();
+  }
+
+  _fetchUid() async {
+    final authRepo = AuthenticationRepository();
+    final uid = await authRepo.getUserUid();
+    setState(() {
+      _uid = uid;
+    });
+  }
 
   bool isFormValid() {
     return name.isNotEmpty &&
@@ -35,21 +54,14 @@ class _SetProfileState extends State<SetProfile> {
   // GraphQL을 사용하여 서버에 요청 보내는 함수
   Future<void> sendProfileInfoToServer(BuildContext context) async {
     final GraphQLClient client = GraphQLProvider.of(context).value;
-
+    print(_uid.runtimeType);
     final MutationOptions options = MutationOptions(
-      document: gql('''
-        mutation SignUp(\$userName: String!, \$age: Int!, \$sex: String!) {
-          signUp(userName: \$userName, age: \$age, sex: \$sex) {
-            ok
-            token
-            error
-          }
-        }
-      '''),
+      document: signUp,
       variables: <String, dynamic>{
         'userName': name,
         'age': int.parse(selectedAge),
         'sex': selectedGender,
+        "fbId": _uid
       },
     );
 
@@ -67,9 +79,9 @@ class _SetProfileState extends State<SetProfile> {
 
           if (token != null) {
             // Store the token
-            await Provider.of<TokenManager>(context, listen: false)
+            await Provider.of<UserInfoProvider>(context, listen: false)
                 .setToken(token);
-            await Provider.of<TokenManager>(context, listen: false)
+            await Provider.of<UserInfoProvider>(context, listen: false)
                 .setNickName(name);
             setState(() {
               isTokenCome = true;

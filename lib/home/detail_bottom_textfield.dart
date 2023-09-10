@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -167,8 +169,8 @@ class _BottomTextBarState extends State<BottomTextBar> {
   }
 
   Future initName() async {
-    nickName =
-        await Provider.of<TokenManager>(context, listen: false).getNickName();
+    nickName = await Provider.of<UserInfoProvider>(context, listen: false)
+        .getNickName();
     setState(() {});
   }
 

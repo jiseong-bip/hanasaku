@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,13 +12,15 @@ import 'package:hanasaku/auth/sign_up_screen.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/firebase_options.dart';
 import 'package:hanasaku/nav/main_nav.dart';
+import 'package:hanasaku/setup/navigator.dart';
 import 'package:hanasaku/setup/provider_model.dart';
 import 'package:hanasaku/setup/set_profile.dart';
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
-  final tokenManager = TokenManager();
+  final tokenManager = UserInfoProvider();
+
   await initHiveForFlutter();
 
   await Firebase.initializeApp(
@@ -37,24 +41,29 @@ void main() async {
         ChangeNotifierProvider(
           create: (context) => ListResultModel(),
         ),
-        ChangeNotifierProvider<TokenManager>(
-          create: (context) => TokenManager(),
+        ChangeNotifierProvider<UserInfoProvider>(
+          create: (context) => UserInfoProvider(),
         )
       ],
-      child: MyApp(tokenManager: tokenManager),
+      child: MyApp(
+        tokenManager: tokenManager,
+      ),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  final TokenManager tokenManager;
+  final UserInfoProvider tokenManager;
 
-  const MyApp({Key? key, required this.tokenManager}) : super(key: key);
+  const MyApp({
+    Key? key,
+    required this.tokenManager,
+  }) : super(key: key);
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    final tokenManager = Provider.of<TokenManager>(context, listen: false);
+    final tokenManager = Provider.of<UserInfoProvider>(context, listen: false);
     final token = tokenManager.getToken();
     final HttpLink httpLink =
         HttpLink('http://localhost:4000/graphql', defaultHeaders: {
@@ -93,6 +102,7 @@ class MyApp extends StatelessWidget {
     return GraphQLProvider(
       client: client,
       child: MaterialApp(
+        navigatorKey: navigatorKey,
         title: 'social_community',
         theme: ThemeData(
           scaffoldBackgroundColor: Colors.white,
@@ -115,17 +125,16 @@ class MyApp extends StatelessWidget {
             if (snapshot.connectionState == ConnectionState.active) {
               final user = snapshot.data;
               return FutureBuilder<String?>(
-                future: Provider.of<TokenManager>(context, listen: false)
+                future: Provider.of<UserInfoProvider>(context, listen: false)
                     .getToken(),
                 builder: (context, tokenSnapshot) {
                   if (tokenSnapshot.connectionState == ConnectionState.done) {
                     final token = tokenSnapshot.data;
                     if (user != null && (token != null && token.isNotEmpty)) {
+                      //category가 비워져있지 않을때
                       return const MainNav();
-                    } else if (user == null) {
-                      return const SignUpScreen();
                     } else {
-                      return const SetProfile();
+                      return const SignUpScreen();
                     }
                   }
                   return const CircularProgressIndicator();

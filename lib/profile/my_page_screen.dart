@@ -79,8 +79,8 @@ class _MyPageScreenState extends State<MyPageScreen> {
   }
 
   Future initName() async {
-    nickName =
-        await Provider.of<TokenManager>(context, listen: false).getNickName();
+    nickName = await Provider.of<UserInfoProvider>(context, listen: false)
+        .getNickName();
     setState(() {});
   }
 

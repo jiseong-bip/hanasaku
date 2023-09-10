@@ -14,12 +14,12 @@ class _TokenDisplayWidgetState extends State<TokenDisplayWidget> {
   @override
   void initState() {
     super.initState();
-    _fetchToken();
+    _fetchUid();
   }
 
-  _fetchToken() async {
+  _fetchUid() async {
     final authRepo = AuthenticationRepository();
-    final token = await authRepo.getUserToken();
+    final token = await authRepo.getUserUid();
     setState(() {
       _token = token;
     });

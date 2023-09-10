@@ -182,3 +182,16 @@ final myCommentQuery = gql("""
   }
 }
     """);
+
+final myInfoQuery = gql("""
+      query Query {
+  me {
+    id
+    categories {
+      type
+      id
+    }
+    userName
+  }
+}
+    """);

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -10,7 +12,7 @@ import 'package:hanasaku/home/comment_listview.dart';
 import 'package:hanasaku/home/edit_post_screen.dart';
 import 'package:hanasaku/nav/main_nav.dart';
 
-import 'package:hanasaku/query/query.dart';
+import 'package:hanasaku/query&mutation/query.dart';
 import 'package:hanasaku/setup/cached_image.dart';
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
 import 'package:provider/provider.dart';
@@ -60,8 +62,8 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   Future initName() async {
-    nickName =
-        await Provider.of<TokenManager>(context, listen: false).getNickName();
+    nickName = await Provider.of<UserInfoProvider>(context, listen: false)
+        .getNickName();
     setState(() {});
   }
 

@@ -1,12 +1,14 @@
 import 'package:flutter/widgets.dart';
 import 'package:hive/hive.dart';
 
-class TokenManager with ChangeNotifier {
+class UserInfoProvider with ChangeNotifier {
   String? _token;
   String? _name;
+  List<Map<String, dynamic>>? _category;
   static const String _tokenBoxName = 'tokenBox';
   static const String _tokenKey = 'token';
   static const String _nickNameKey = 'nickName';
+  static const String _categoryKey = 'category';
 
   Future<void> setToken(String token) async {
     final box = await Hive.openBox<String>(_tokenBoxName);
@@ -40,6 +42,21 @@ class TokenManager with ChangeNotifier {
     return _name;
   }
 
+  Future<void> setCategory(List<Map<String, dynamic>> category) async {
+    final box = await Hive.openBox<List<Map<String, dynamic>>>(_tokenBoxName);
+    await box.put(_categoryKey, category);
+    _category = category;
+    notifyListeners();
+  }
+
+  Future<List<Map<String, dynamic>>?> getCategoryName() async {
+    if (_category == null) {
+      final box = await Hive.openBox<List<Map<String, dynamic>>>(_tokenBoxName);
+      _category = box.get(_categoryKey);
+    }
+    return _category;
+  }
+
   Future<void> clearToken() async {
     final box = await Hive.openBox<String>(_tokenBoxName);
     await box.delete(_tokenKey);
@@ -52,5 +69,12 @@ class TokenManager with ChangeNotifier {
     await box.delete(_nickNameKey);
     _name = null;
     notifyListeners(); // Notify listeners when the nickname is cleared
+  }
+
+  Future<void> clearCategory() async {
+    final box = await Hive.openBox<List<Map<String, dynamic>>>(_tokenBoxName);
+    await box.delete(_categoryKey);
+    _category = null;
+    notifyListeners(); // Notify listeners when the category is cleared
   }
 }

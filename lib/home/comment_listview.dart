@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -5,7 +7,7 @@ import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/home/detail_bottom_textfield.dart';
 import 'package:hanasaku/home/recomment_widget.dart';
-import 'package:hanasaku/query/query.dart';
+import 'package:hanasaku/query&mutation/query.dart';
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
 import 'package:provider/provider.dart';
 
@@ -45,8 +47,8 @@ class _CommentsQueryState extends State<CommentsQuery> {
   }
 
   Future initName() async {
-    nickName =
-        await Provider.of<TokenManager>(context, listen: false).getNickName();
+    nickName = await Provider.of<UserInfoProvider>(context, listen: false)
+        .getNickName();
 
     setState(() {});
   }

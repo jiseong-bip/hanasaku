@@ -1,7 +1,9 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/home/post_widget.dart';
-import 'package:hanasaku/query/query.dart';
+import 'package:hanasaku/query&mutation/query.dart';
 
 class PostsQuery extends StatefulWidget {
   final int categoryId;

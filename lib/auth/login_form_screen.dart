@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:hanasaku/auth/form_button.dart';
 import 'package:hanasaku/auth/repos/authentication_repository.dart';
