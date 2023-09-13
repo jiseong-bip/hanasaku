@@ -112,7 +112,8 @@ class _BottomTextBarState extends State<BottomTextBar> {
   }
 
   Future initName() async {
-    nickName = await Provider.of<UserInfoProvider>(context).getNickName();
+    nickName = await Provider.of<UserInfoProvider>(context, listen: false)
+        .getNickName();
     setState(() {});
   }
 
