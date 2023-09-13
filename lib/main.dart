@@ -47,6 +47,7 @@ void main() async {
       ],
       child: MyApp(
         tokenManager: tokenManager,
+        navigatorKey: navigatorKey,
       ),
     ),
   );
@@ -54,10 +55,12 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   final UserInfoProvider tokenManager;
+  final GlobalKey<NavigatorState> navigatorKey;
 
   const MyApp({
     Key? key,
     required this.tokenManager,
+    required this.navigatorKey,
   }) : super(key: key);
 
   // This widget is the root of your application.
@@ -85,6 +88,7 @@ class MyApp extends StatelessWidget {
         autoReconnect: true,
         initialPayload: () async {
           final token = await tokenManager.getToken();
+          print(token);
           var headers = <String, String>{};
           headers.putIfAbsent(HttpHeaders.authorizationHeader, () => '$token');
           return headers;
@@ -97,7 +101,7 @@ class MyApp extends StatelessWidget {
     ValueNotifier<GraphQLClient> client = ValueNotifier(
       GraphQLClient(
         link: link,
-        cache: GraphQLCache(store: HiveStore()),
+        cache: GraphQLCache(store: InMemoryStore()),
       ),
     );
     return GraphQLProvider(

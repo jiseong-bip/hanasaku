@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
+import 'package:hanasaku/home/provider/comment_provider.dart';
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
 import 'package:provider/provider.dart';
 
@@ -12,14 +13,14 @@ class BottomTextBar extends StatefulWidget {
   final TextEditingController commentController;
   final bool recommentMode;
   final int commentId;
-  final Function(bool isSendPost) onCommentChanged;
+  //final Function(bool isSendPost) onCommentChanged;
 
   final int postId;
   const BottomTextBar({
     super.key,
     required this.commentController,
     required this.postId,
-    required this.onCommentChanged,
+    //required this.onCommentChanged,
     required this.recommentMode,
     required this.commentId,
   });
@@ -31,7 +32,7 @@ class BottomTextBar extends StatefulWidget {
 class _BottomTextBarState extends State<BottomTextBar> {
   String? nickName;
   bool _isWriting = false;
-  bool _isSend = false;
+  //final bool _isSend = false;
 
   Future<void> toggleCommentSend(
       BuildContext context, int postId, String comment) async {
@@ -49,7 +50,6 @@ class _BottomTextBarState extends State<BottomTextBar> {
         'postId': postId,
         'comment': comment,
       },
-      update: (cache, result) => result,
     );
     try {
       final QueryResult result = await client.mutate(options);
@@ -65,11 +65,10 @@ class _BottomTextBarState extends State<BottomTextBar> {
           final bool isLikeSuccessful = resultData['createComment']['ok'];
           if (isLikeSuccessful) {
             widget.commentController.clear();
-            setState(() {
-              _isSend = !_isSend;
-            });
-            widget.onCommentChanged(_isSend);
-            _isSend = !_isSend;
+            final commentsModel =
+                Provider.of<CommentsModel>(context, listen: false);
+            commentsModel.fetchMoreComments(GraphQLProvider.of(context).value,
+                postId, FetchPolicy.networkOnly);
             // Call the callback to notify PostWidget of the change in isLiked
             print('succes to send comment');
           } else {
@@ -124,11 +123,10 @@ class _BottomTextBarState extends State<BottomTextBar> {
           final bool isLikeSuccessful = resultData['createRecomment']['ok'];
           if (isLikeSuccessful) {
             widget.commentController.clear();
-            setState(() {
-              _isSend = !_isSend;
-            });
-            widget.onCommentChanged(_isSend);
-            _isSend = !_isSend;
+            final commentsModel =
+                Provider.of<CommentsModel>(context, listen: false);
+            commentsModel.fetchMoreComments(GraphQLProvider.of(context).value,
+                widget.postId, FetchPolicy.networkOnly);
             // Call the callback to notify PostWidget of the change in isLiked
             print('succes to send comment');
           } else {

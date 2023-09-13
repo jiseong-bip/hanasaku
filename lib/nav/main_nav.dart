@@ -61,6 +61,7 @@ class _MainNavState extends State<MainNav> {
 
   @override
   Widget build(BuildContext context) {
+    print(context);
     final GraphQLClient client = GraphQLProvider.of(context).value;
     logLikeStream = client.subscribe(SubscriptionOptions(
       document: likeSubscription,
@@ -80,97 +81,86 @@ class _MainNavState extends State<MainNav> {
           Provider.of<ListResultModel>(context, listen: false);
       listResultModel.updateList(null, event.data);
     });
-    return MultiProvider(
-      providers: [
-        // ChangeNotifierProvider(
-        //   create: (context) => CategoryIdChange(),
-        // ),
-        ChangeNotifierProvider(
-          create: (context) => ListResultModel(),
-        ),
-      ],
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: Stack(
-          children: [
-            Consumer<CategoryIdChange>(
-              builder: (context, categoryIdChange, child) {
-                return Offstage(
-                  offstage: _selectedIndex != 0,
-                  child: categoryIdChange.getCategoryId() == 0
-                      ? const CategoryPage()
-                      : PostsScreen(
-                          categoryId: categoryIdChange.getCategoryId()),
-                );
-              },
-            ),
-            Offstage(
-              offstage: _selectedIndex != 1,
-              child: const TokenDisplayWidget(),
-            ),
-            Offstage(
-              offstage: _selectedIndex != 3,
-              child: ChatRoomScreen(
-                key: GlobalKey(),
-              ),
-            ),
-            Offstage(
-              offstage: _selectedIndex != 4,
-              child: const MyPageScreen(),
-            )
-          ],
-        ),
-        bottomNavigationBar: BottomAppBar(
-          elevation: 1,
-          color: Colors.white,
-          child: Padding(
-            padding: const EdgeInsets.all(Sizes.size12),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                NavTab(
-                  text: "Home",
-                  isSelected: _selectedIndex == 0,
-                  icon: FontAwesomeIcons.house,
-                  selectedIcon: FontAwesomeIcons.house,
-                  onTap: () => _onTap(0),
-                ),
-                NavTab(
-                  text: "Contents",
-                  isSelected: _selectedIndex == 1,
-                  icon: FontAwesomeIcons.compass,
-                  selectedIcon: FontAwesomeIcons.solidCompass,
-                  onTap: () => _onTap(1),
-                ),
-                NavTab(
-                  text: "Create",
-                  isSelected: _selectedIndex == 2,
-                  icon: FontAwesomeIcons.squarePlus,
-                  selectedIcon: FontAwesomeIcons.squarePlus,
-                  onTap: () => {
-                    onTapCreate(),
-                  },
-                ),
-                NavTab(
-                  text: "Chats",
-                  isSelected: _selectedIndex == 3,
-                  icon: FontAwesomeIcons.message,
-                  selectedIcon: FontAwesomeIcons.solidMessage,
-                  onTap: () => _onTap(3),
-                ),
-                NavTab(
-                  text: "Profile",
-                  isSelected: _selectedIndex == 4,
-                  icon: FontAwesomeIcons.user,
-                  selectedIcon: FontAwesomeIcons.solidUser,
-                  onTap: () => _onTap(4),
-                ),
-              ],
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: Stack(
+        children: [
+          Consumer<CategoryIdChange>(
+            builder: (context, categoryIdChange, child) {
+              return Offstage(
+                offstage: _selectedIndex != 0,
+                child: categoryIdChange.getCategoryId() == 0
+                    ? const CategoryPage()
+                    : PostsScreen(categoryId: categoryIdChange.getCategoryId()),
+              );
+            },
+          ),
+          Offstage(
+            offstage: _selectedIndex != 1,
+            child: const TokenDisplayWidget(),
+          ),
+          Offstage(
+            offstage: _selectedIndex != 3,
+            child: ChatRoomScreen(
+              key: GlobalKey(),
             ),
           ),
-        ),
-        //bottomNavigationBar: ,
+          Offstage(
+            offstage: _selectedIndex != 4,
+            child: const MyPageScreen(),
+          )
+        ],
       ),
+      bottomNavigationBar: BottomAppBar(
+        elevation: 1,
+        color: Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.all(Sizes.size12),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              NavTab(
+                text: "Home",
+                isSelected: _selectedIndex == 0,
+                icon: FontAwesomeIcons.house,
+                selectedIcon: FontAwesomeIcons.house,
+                onTap: () => _onTap(0),
+              ),
+              NavTab(
+                text: "Contents",
+                isSelected: _selectedIndex == 1,
+                icon: FontAwesomeIcons.compass,
+                selectedIcon: FontAwesomeIcons.solidCompass,
+                onTap: () => _onTap(1),
+              ),
+              NavTab(
+                text: "Create",
+                isSelected: _selectedIndex == 2,
+                icon: FontAwesomeIcons.squarePlus,
+                selectedIcon: FontAwesomeIcons.squarePlus,
+                onTap: () => {
+                  onTapCreate(),
+                },
+              ),
+              NavTab(
+                text: "Chats",
+                isSelected: _selectedIndex == 3,
+                icon: FontAwesomeIcons.message,
+                selectedIcon: FontAwesomeIcons.solidMessage,
+                onTap: () => _onTap(3),
+              ),
+              NavTab(
+                text: "Profile",
+                isSelected: _selectedIndex == 4,
+                icon: FontAwesomeIcons.user,
+                selectedIcon: FontAwesomeIcons.solidUser,
+                onTap: () => _onTap(4),
+              ),
+            ],
+          ),
+        ),
+      ),
+      //bottomNavigationBar: ,
     );
   }
 }

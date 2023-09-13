@@ -76,7 +76,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         _chatList.addAll(result.data!['viewChatRooms']);
         _isSelected = List<bool>.filled(_chatList.length, false);
       });
-      print(_chatList);
     } else {
       print(result.exception);
     }

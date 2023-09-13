@@ -77,6 +77,18 @@ class UserInfoProvider with ChangeNotifier {
     _category = null;
     notifyListeners(); // Notify listeners when the category is cleared
   }
+
+  Future<void> clearUserInfo() async {
+    final box = await Hive.openBox<String>(_tokenBoxName);
+    await box.delete(_tokenKey);
+    await box.delete(_nickNameKey);
+    await box.delete(_categoryKey);
+    _token = null;
+    _name = null;
+    _category = null;
+
+    notifyListeners();
+  }
 }
 
 class CategoryIdChange extends ChangeNotifier {
@@ -90,7 +102,7 @@ class CategoryIdChange extends ChangeNotifier {
 
   void removeSelectedCategoryIds(int categoryId) {
     _selectedCategoryIds.remove(categoryId);
-    notifyListeners();
+    //notifyListeners();
   }
 
   List<int> getSelectedCategoryIds() {

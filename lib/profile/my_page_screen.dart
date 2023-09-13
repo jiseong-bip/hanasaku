@@ -1,12 +1,15 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:hanasaku/auth/logout_screen.dart';
 import 'package:hanasaku/constants/font.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/profile/comment_post.dart';
 import 'package:hanasaku/profile/liked_post.dart';
 import 'package:hanasaku/profile/my_post.dart';
+import 'package:hanasaku/setup/navigator.dart';
+import 'package:hanasaku/setup/provider_model.dart';
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -14,7 +17,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 class MyPageScreen extends StatefulWidget {
-  const MyPageScreen({super.key});
+  const MyPageScreen({
+    super.key,
+  });
 
   @override
   State<MyPageScreen> createState() => _MyPageScreenState();
@@ -274,6 +279,37 @@ class _MyPageScreenState extends State<MyPageScreen> {
                             child: FaIcon(FontAwesomeIcons.comment)),
                         Text(
                           'コメント欄の掲示物',
+                          style: TextStyle(
+                              fontSize: Sizes.size24,
+                              fontFamily: MyFontFamily.lineSeedJP),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Column(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    navigatorKey.currentState!.push(MaterialPageRoute(
+                        builder: (rootContext) => const LogOutScreen()));
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        border: Border(
+                            bottom: BorderSide(
+                                width: 6, color: Colors.grey.shade300))),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: Sizes.size16,
+                      horizontal: Sizes.size36,
+                    ),
+                    child: const Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Text(
+                          'LogOut',
                           style: TextStyle(
                               fontSize: Sizes.size24,
                               fontFamily: MyFontFamily.lineSeedJP),

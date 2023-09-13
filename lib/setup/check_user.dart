@@ -19,10 +19,10 @@ class GetUserInfo {
 
     try {
       final QueryResult result = await client.mutate(options);
-      print(3);
+
       if (result.hasException) {
         // Handle errors
-        print(4);
+
         print("Error occurred: ${result.exception.toString()}");
       } else {
         final dynamic resultData = result.data;

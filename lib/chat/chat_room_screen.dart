@@ -450,7 +450,6 @@ class _ChatRoomState extends State<ChatRoom> {
               onMessageChanged: (isSendPost, roomId) {
                 setState(() {
                   _roomId = roomId;
-                  print("_roomId : $_roomId");
                   _fetchChatList(FetchPolicy.networkOnly, _roomId);
                 });
               },

@@ -167,6 +167,7 @@ final myCommentQuery = gql("""
       createDate
       post {
         id
+        categoryId
         title
         likes {
           userId

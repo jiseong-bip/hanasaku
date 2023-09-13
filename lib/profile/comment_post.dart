@@ -24,26 +24,35 @@ class _CommentPostScreenState extends State<CommentPostScreen> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () {
-      _fetchMyPosts();
+      _fetchMyPosts(FetchPolicy.cacheAndNetwork);
     });
   }
 
-  Future<void> _fetchMyPosts() async {
+  Future<void> _fetchMyPosts(FetchPolicy fetchPolicy) async {
     final GraphQLClient client = GraphQLProvider.of(context).value;
 
-    final QueryOptions options = QueryOptions(
-        document: myCommentQuery, fetchPolicy: FetchPolicy.cacheAndNetwork);
+    final QueryOptions options =
+        QueryOptions(document: myCommentQuery, fetchPolicy: fetchPolicy);
+    try {
+      final QueryResult result = await client.query(options);
 
-    final QueryResult result = await client.query(options);
-
-    if (!result.hasException) {
-      setState(() {
-        if (result.data!['me']['postComments'] != null) {
-          _posts.addAll(result.data!['me']['postComments']);
-        }
-      });
-    } else {
-      print(result.exception);
+      if (!result.hasException) {
+        setState(() {
+          if (result.data!['me']['postComments'] != null) {
+            _posts.addAll(result.data!['me']['postComments']);
+          }
+        });
+        print(_posts);
+      } else {
+        print(result.exception);
+      }
+    } catch (e) {
+      if (e is CacheMissException) {
+        // 캐시 미스 예외 처리, 예: 데이터 다시 가져오기
+        await _fetchMyPosts(FetchPolicy.networkOnly);
+      } else {
+        print("Error occurred: $e");
+      }
     }
   }
 

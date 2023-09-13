@@ -6,6 +6,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/home/detail_bottom_textfield.dart';
+import 'package:hanasaku/home/provider/comment_provider.dart';
 import 'package:hanasaku/home/recomment_widget.dart';
 import 'package:hanasaku/query&mutation/query.dart';
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
@@ -28,7 +29,7 @@ class CommentsQuery extends StatefulWidget {
 
 class _CommentsQueryState extends State<CommentsQuery> {
   String? nickName;
-  final List _posts = [];
+
   final List _commentsLikesCount = [];
   final List<bool> _isRecommentShowed = [];
 
@@ -41,62 +42,69 @@ class _CommentsQueryState extends State<CommentsQuery> {
   void initState() {
     super.initState();
     initName();
-    Future.delayed(Duration.zero, () {
-      _fetchMoreComments(FetchPolicy.networkOnly);
-    });
+    final commentsModel = Provider.of<CommentsModel>(context, listen: false);
+    commentsModel.fetchMoreComments(GraphQLProvider.of(context).value,
+        widget.postId, FetchPolicy.networkOnly);
   }
 
   Future initName() async {
     nickName = await Provider.of<UserInfoProvider>(context, listen: false)
         .getNickName();
-
     setState(() {});
   }
 
   @override
   void dispose() {
+    _commentController;
     super.dispose();
   }
 
-  Future<void> _refreshPosts() async {
-    setState(() {
-      _posts.clear();
-    });
-    await _fetchMoreComments(FetchPolicy.networkOnly);
-  }
+  // Future<void> _refreshPosts() async {
+  //   setState(() {
+  //     _posts.clear();
+  //   });
+  //   await _fetchMoreComments(FetchPolicy.networkOnly);
+  // }
 
-  Future<void> _fetchMoreComments(FetchPolicy fetchPolicy) async {
-    final GraphQLClient client = GraphQLProvider.of(context).value;
+  // Future<void> _fetchMoreComments(FetchPolicy fetchPolicy) async {
+  //   final GraphQLClient client = GraphQLProvider.of(context).value;
 
-    final QueryOptions options = QueryOptions(
-      document: commentPostQuery,
-      variables: {
-        'viewPostPostId2': widget.postId,
-      },
-      fetchPolicy: fetchPolicy,
-    );
+  //   final QueryOptions options = QueryOptions(
+  //     document: commentPostQuery,
+  //     variables: {
+  //       'viewPostPostId2': widget.postId,
+  //     },
+  //     fetchPolicy: fetchPolicy,
+  //   );
 
-    final QueryResult result = await client.query(options);
+  //   try {
+  //     final QueryResult result = await client.query(options);
 
-    if (!result.hasException) {
-      setState(() {
-        final comments = result.data!['viewPost']['comments'];
+  //     if (!result.hasException) {
+  //       setState(() {
+  //         final comments = result.data!['viewPost']['comments'];
 
-        _posts.addAll(comments);
-        widget.onCommentsCountChanged(_posts.length);
-        for (var post in _posts) {
-          _commentsLikesCount.add(post['likes'].length);
-          if (post['recomments'].length > 3) {
-            _isRecommentShowed.add(false);
-          } else {
-            _isRecommentShowed.add(true);
-          }
-        }
-      });
-    } else {
-      print(result.exception);
-    }
-  }
+  //         _posts.addAll(comments);
+  //         widget.onCommentsCountChanged(_posts.length);
+  //         for (var post in _posts) {
+  //           _commentsLikesCount.add(post['likes'].length);
+  //           if (post['recomments'].length > 3) {
+  //             _isRecommentShowed.add(false);
+  //           } else {
+  //             _isRecommentShowed.add(true);
+  //           }
+  //         }
+  //       });
+  //     }
+  //   } catch (e) {
+  //     if (e is CacheMissException) {
+  //       // 캐시 미스 예외 처리, 예: 데이터 다시 가져오기
+  //       await _fetchMoreComments(FetchPolicy.networkOnly);
+  //     } else {
+  //       print("Error occurred: $e");
+  //     }
+  //   }
+  // }
 
   Future<void> _toggleLikeComment(BuildContext context, int commentId) async {
     final GraphQLClient client = GraphQLProvider.of(context).value;
@@ -159,16 +167,21 @@ class _CommentsQueryState extends State<CommentsQuery> {
 
   @override
   Widget build(BuildContext context) {
+    final commentsModel = Provider.of<CommentsModel>(context);
     return RefreshIndicator(
-      onRefresh: _refreshPosts,
+      onRefresh: () => commentsModel.fetchMoreComments(
+          GraphQLProvider.of(context).value,
+          widget.postId,
+          FetchPolicy.networkOnly),
       child: Column(
         children: [
           Expanded(
             child: ListView.separated(
-                shrinkWrap: true,
                 separatorBuilder: (context, index) => Gaps.v16,
                 controller: widget.scrollController,
-                itemCount: _posts.length,
+                physics: const AlwaysScrollableScrollPhysics(),
+                itemCount:
+                    commentsModel.getCommentsByPostId(widget.postId).length,
                 itemBuilder: (context, index1) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(
@@ -182,7 +195,9 @@ class _CommentsQueryState extends State<CommentsQuery> {
                             CircleAvatar(
                               radius: 16,
                               child: Text(
-                                _posts[index1]['user']['userName'],
+                                commentsModel.getCommentsByPostId(
+                                        widget.postId)[index1]['user']
+                                    ['userName'], //error
                                 style: TextStyle(
                                   fontSize: Sizes.size10,
                                   color: Colors.grey.shade500,
@@ -202,7 +217,9 @@ class _CommentsQueryState extends State<CommentsQuery> {
                                     Row(
                                       children: [
                                         Text(
-                                          _posts[index1]['user']['userName'],
+                                          commentsModel.getCommentsByPostId(
+                                                  widget.postId)[index1]['user']
+                                              ['userName'],
                                           style: const TextStyle(
                                             fontSize: Sizes.size14,
                                             fontWeight: FontWeight.w600,
@@ -210,7 +227,10 @@ class _CommentsQueryState extends State<CommentsQuery> {
                                         ),
                                         Gaps.h5,
                                         Text(
-                                          getTime(_posts[index1]['createDate']),
+                                          getTime(
+                                              commentsModel.getCommentsByPostId(
+                                                      widget.postId)[index1]
+                                                  ['createDate']),
                                           style: TextStyle(
                                             fontSize: Sizes.size10,
                                             color: Colors.grey.shade500,
@@ -219,7 +239,11 @@ class _CommentsQueryState extends State<CommentsQuery> {
                                         Gaps.h10,
                                         GestureDetector(
                                           onTap: () {
-                                            dotMethod(context, _posts[index1],
+                                            dotMethod(
+                                                context,
+                                                commentsModel
+                                                    .getCommentsByPostId(
+                                                        widget.postId)[index1],
                                                 nickName);
                                           },
                                           child: const FaIcon(
@@ -231,7 +255,8 @@ class _CommentsQueryState extends State<CommentsQuery> {
                                     ),
                                     Gaps.v3,
                                     Text(
-                                      _posts[index1]['comment'],
+                                      commentsModel.getCommentsByPostId(
+                                          widget.postId)[index1]['comment'],
                                       style: const TextStyle(
                                           fontSize: Sizes.size16),
                                     ),
@@ -240,7 +265,9 @@ class _CommentsQueryState extends State<CommentsQuery> {
                                       onTap: () {
                                         setState(() {
                                           recommentMode = !recommentMode;
-                                          commentId = _posts[index1]['id'];
+                                          commentId =
+                                              commentsModel.getCommentsByPostId(
+                                                  widget.postId)[index1]['id'];
                                           _isRecommentShowed[index1] =
                                               !_isRecommentShowed[index1];
                                         });
@@ -286,16 +313,21 @@ class _CommentsQueryState extends State<CommentsQuery> {
                                 GestureDetector(
                                   onTap: () {
                                     _toggleLikeComment(
-                                        context, _posts[index1]['id']);
-                                    if (_posts[index1]['isLiked']) {
+                                        context,
+                                        commentsModel.getCommentsByPostId(
+                                            widget.postId)[index1]['id']);
+                                    if (commentsModel.getCommentsByPostId(
+                                        widget.postId)[index1]['isLiked']) {
                                       // If previously liked (true), then decrement the count
                                       _commentsLikesCount[index1] -= 1;
                                     } else {
                                       // If previously not liked (false), then increment the count
                                       _commentsLikesCount[index1] += 1;
                                     }
-                                    _posts[index1]['isLiked'] =
-                                        !_posts[index1]['isLiked'];
+                                    commentsModel.getCommentsByPostId(
+                                            widget.postId)[index1]['isLiked'] =
+                                        !commentsModel.getCommentsByPostId(
+                                            widget.postId)[index1]['isLiked'];
                                     setState(() {});
                                   },
                                   child: Column(
@@ -303,9 +335,12 @@ class _CommentsQueryState extends State<CommentsQuery> {
                                       FaIcon(
                                         FontAwesomeIcons.heart,
                                         size: Sizes.size20,
-                                        color: _posts[index1]['isLiked']
-                                            ? Colors.red
-                                            : Colors.grey.shade500,
+                                        color:
+                                            commentsModel.getCommentsByPostId(
+                                                        widget.postId)[index1]
+                                                    ['isLiked']
+                                                ? Colors.red
+                                                : Colors.grey.shade500,
                                       ),
                                       Gaps.v2,
                                       Text(
@@ -322,7 +357,9 @@ class _CommentsQueryState extends State<CommentsQuery> {
                           ],
                         ),
                         if (_isRecommentShowed[index1])
-                          RecommentWidget(posts: _posts[index1]['recomments'])
+                          RecommentWidget(
+                              posts: commentsModel.getCommentsByPostId(
+                                  widget.postId)[index1]['recomments'])
                       ],
                     ),
                   );
@@ -333,13 +370,15 @@ class _CommentsQueryState extends State<CommentsQuery> {
             recommentMode: recommentMode,
             commentController: _commentController,
             postId: widget.postId,
-            onCommentChanged: (isSendPost) {
-              if (isSendPost) {
-                print(isSendPost);
-                _posts.clear();
-                _fetchMoreComments(FetchPolicy.networkOnly);
-              }
-            },
+            // onCommentChanged: (isSendPost) async {
+            //   if (isSendPost) {
+            //     setState(() {
+            //       print(isSendPost);
+            //       _posts.clear();
+            //     });
+            //     await _fetchMoreComments(FetchPolicy.networkOnly);
+            //   }
+            // },
           ),
         ],
       ),

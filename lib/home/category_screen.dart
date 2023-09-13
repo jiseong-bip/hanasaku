@@ -168,7 +168,7 @@ class CategoryWidget extends StatelessWidget {
                 if (!disableJoin || isJoined) {
                   onJoin(id);
                 }
-                if (isJoined) {
+                if (isJoined && !gearIconClicked) {
                   categoryIdModel.setCategoryId(id);
                 }
               },
