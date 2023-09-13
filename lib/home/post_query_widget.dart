@@ -88,6 +88,7 @@ class _PostsQueryState extends State<PostsQuery> {
       onRefresh: _refreshPosts,
       child: ListView.builder(
           controller: widget.scrollController,
+          physics: const AlwaysScrollableScrollPhysics(),
           itemCount: _posts.length,
           itemBuilder: (context, index) {
             return Post(

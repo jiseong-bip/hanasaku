@@ -5,13 +5,15 @@ import 'package:hanasaku/chat/chat_list_screen.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/create/create_post.dart';
 import 'package:hanasaku/home/category_screen.dart';
-import 'package:hanasaku/home/notify_screen.dart';
+
 import 'package:hanasaku/home/posts_screen.dart';
 import 'package:hanasaku/home/subscription.dart';
 import 'package:hanasaku/nav/nav_button.dart';
 import 'package:hanasaku/print_token.dart';
 import 'package:hanasaku/profile/my_page_screen.dart';
+
 import 'package:hanasaku/setup/provider_model.dart';
+import 'package:hanasaku/setup/userinfo_provider_model.dart';
 import 'package:provider/provider.dart';
 
 class MainNav extends StatefulWidget {
@@ -23,12 +25,9 @@ class MainNav extends StatefulWidget {
 
 class _MainNavState extends State<MainNav> {
   int _selectedIndex = 0;
-  int categoryId = 0;
+
   late Stream<dynamic> logLikeStream;
   late Stream<dynamic> logCommentStream;
-
-  Map<String, dynamic>? likeResults = {};
-  Map<String, dynamic>? commentResults = {};
 
   void _onTap(int index) {
     setState(() {
@@ -42,15 +41,14 @@ class _MainNavState extends State<MainNav> {
     _selectedIndex = 0;
     // Capture the context when initializing the state
   }
-
-  Future<void> _onCategoryTab(BuildContext context) async {
-    final result = await Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const CategoryPage())) ??
-        categoryId;
-    setState(() {
-      categoryId = result;
-    });
-  }
+  // Future<void> _onCategoryTab(BuildContext context) async {
+  //   final result = await Navigator.push(context,
+  //           MaterialPageRoute(builder: (context) => const CategoryPage())) ??
+  //       categoryId;
+  //   setState(() {
+  //     categoryId = result;
+  //   });
+  // }
 
   void onTapCreate() {
     showModalBottomSheet(
@@ -82,56 +80,29 @@ class _MainNavState extends State<MainNav> {
           Provider.of<ListResultModel>(context, listen: false);
       listResultModel.updateList(null, event.data);
     });
-
-    return ChangeNotifierProvider(
-      create: (context) => ListResultModel(),
+    return MultiProvider(
+      providers: [
+        // ChangeNotifierProvider(
+        //   create: (context) => CategoryIdChange(),
+        // ),
+        ChangeNotifierProvider(
+          create: (context) => ListResultModel(),
+        ),
+      ],
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: (_selectedIndex != 3 && _selectedIndex != 4)
-            ? AppBar(
-                leading: GestureDetector(
-                  onTap: () {
-                    _onCategoryTab(context);
-                  },
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: Sizes.size16, vertical: Sizes.size14),
-                    child: FaIcon(FontAwesomeIcons.bars),
-                  ),
-                ),
-                title: const Text('Home'),
-                actions: [
-                  Row(
-                    children: [
-                      IconButton(
-                        alignment: Alignment.bottomRight,
-                        onPressed: () {},
-                        icon: const FaIcon(
-                          FontAwesomeIcons.magnifyingGlass,
-                        ),
-                      ),
-                      IconButton(
-                        alignment: Alignment.bottomCenter,
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const NotifyScreen()));
-                        },
-                        icon: const FaIcon(FontAwesomeIcons.bell),
-                      ),
-                    ],
-                  ),
-                ],
-              )
-            : null,
-
         body: Stack(
           children: [
-            Offstage(
-              offstage: _selectedIndex != 0,
-              child: PostsScreen(
-                key: GlobalKey(),
-                categoryId: categoryId,
-              ),
+            Consumer<CategoryIdChange>(
+              builder: (context, categoryIdChange, child) {
+                return Offstage(
+                  offstage: _selectedIndex != 0,
+                  child: categoryIdChange.getCategoryId() == 0
+                      ? const CategoryPage()
+                      : PostsScreen(
+                          categoryId: categoryIdChange.getCategoryId()),
+                );
+              },
             ),
             Offstage(
               offstage: _selectedIndex != 1,

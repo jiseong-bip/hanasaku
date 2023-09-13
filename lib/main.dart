@@ -1,7 +1,4 @@
-// ignore_for_file: avoid_print
-
 import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -9,12 +6,12 @@ import 'package:flutter_line_sdk/flutter_line_sdk.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/auth/repos/authentication_repository.dart';
 import 'package:hanasaku/auth/sign_up_screen.dart';
+import 'package:hanasaku/constants/font.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/firebase_options.dart';
 import 'package:hanasaku/nav/main_nav.dart';
 import 'package:hanasaku/setup/navigator.dart';
 import 'package:hanasaku/setup/provider_model.dart';
-import 'package:hanasaku/setup/set_profile.dart';
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
 import 'package:provider/provider.dart';
 
@@ -41,6 +38,9 @@ void main() async {
         ChangeNotifierProvider(
           create: (context) => ListResultModel(),
         ),
+        ChangeNotifierProvider(
+          create: (context) => CategoryIdChange(),
+        ),
         ChangeNotifierProvider<UserInfoProvider>(
           create: (context) => UserInfoProvider(),
         )
@@ -64,9 +64,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokenManager = Provider.of<UserInfoProvider>(context, listen: false);
-    final token = tokenManager.getToken();
+
     final HttpLink httpLink =
-        HttpLink('http://localhost:4000/graphql', defaultHeaders: {
+        HttpLink('https://hanasaku.xyz/graphql', defaultHeaders: {
       'apollo-require-preflight': 'true',
     });
 
@@ -79,11 +79,12 @@ class MyApp extends StatelessWidget {
     Link link = authLink.concat(httpLink);
 
     final WebSocketLink webSocketLink = WebSocketLink(
-      'ws://localhost:4000/graphql',
+      'wss://hanasaku.xyz/graphql',
       subProtocol: GraphQLProtocol.graphqlTransportWs,
       config: SocketClientConfig(
         autoReconnect: true,
-        initialPayload: () {
+        initialPayload: () async {
+          final token = await tokenManager.getToken();
           var headers = <String, String>{};
           headers.putIfAbsent(HttpHeaders.authorizationHeader, () => '$token');
           return headers;
@@ -105,20 +106,20 @@ class MyApp extends StatelessWidget {
         navigatorKey: navigatorKey,
         title: 'social_community',
         theme: ThemeData(
-          scaffoldBackgroundColor: Colors.white,
-          primaryColor: const Color(0xFFF9C7C7),
-          appBarTheme: const AppBarTheme(
-            toolbarHeight: Sizes.size56,
-            foregroundColor: Colors.black,
-            backgroundColor: Colors.white,
-            elevation: 1,
-            titleTextStyle: TextStyle(
-              color: Colors.black,
-              fontSize: Sizes.size16 + Sizes.size2,
-              fontWeight: FontWeight.w600,
+            scaffoldBackgroundColor: Colors.white,
+            primaryColor: const Color(0xFFF9C7C7),
+            appBarTheme: const AppBarTheme(
+              toolbarHeight: Sizes.size56,
+              foregroundColor: Colors.black,
+              backgroundColor: Colors.white,
+              elevation: 1,
+              titleTextStyle: TextStyle(
+                color: Colors.black,
+                fontSize: Sizes.size16 + Sizes.size2,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ),
-        ),
+            fontFamily: MyFontFamily.lineSeedJP),
         home: StreamBuilder<User?>(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {

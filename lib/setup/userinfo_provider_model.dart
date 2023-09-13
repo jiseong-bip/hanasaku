@@ -78,3 +78,34 @@ class UserInfoProvider with ChangeNotifier {
     notifyListeners(); // Notify listeners when the category is cleared
   }
 }
+
+class CategoryIdChange extends ChangeNotifier {
+  int? _categoryId;
+  final List<int> _selectedCategoryIds = [];
+
+  void setSelectedCategoryIds(int categoryId) {
+    _selectedCategoryIds.add(categoryId);
+    notifyListeners();
+  }
+
+  void removeSelectedCategoryIds(int categoryId) {
+    _selectedCategoryIds.remove(categoryId);
+    notifyListeners();
+  }
+
+  List<int> getSelectedCategoryIds() {
+    return _selectedCategoryIds;
+  }
+
+  void setCategoryId(int categoryId) {
+    _categoryId = categoryId;
+    notifyListeners();
+  }
+
+  int getCategoryId() {
+    if (_categoryId != null) {
+      return _categoryId!;
+    }
+    return 0;
+  }
+}

@@ -24,9 +24,12 @@ class AuthButton extends StatelessWidget {
   });
 
   Future<void> _onAuthButtonTap(BuildContext context) async {
+    final userInfoProvider =
+        Provider.of<UserInfoProvider>(context, listen: false);
     if (type == 'signUp' && loginType == "google") {
       try {
-        await AuthenticationRepository().signInWithGoogle();
+        await AuthenticationRepository()
+            .signInWithGoogle(context, userInfoProvider);
       } catch (e) {
         // Handle any login errors here.
         print(e);
@@ -34,7 +37,8 @@ class AuthButton extends StatelessWidget {
       }
     } else if (type == 'signUp' && loginType == "line") {
       try {
-        await AuthenticationRepository().loginWithLine();
+        await AuthenticationRepository()
+            .loginWithLine(context, userInfoProvider);
       } catch (e) {
         // Handle any login errors here.
         print(e);
@@ -42,8 +46,6 @@ class AuthButton extends StatelessWidget {
       }
     } else if (type == 'signUp' && loginType == "twitter") {
       try {
-        final userInfoProvider =
-            Provider.of<UserInfoProvider>(context, listen: false);
         await AuthenticationRepository()
             .signInWithTwitter(context, userInfoProvider);
       } catch (e) {

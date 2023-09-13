@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_print
-
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -141,24 +139,25 @@ class _PostState extends State<Post> {
     final content = widget.post['content'];
     final userName = widget.post['user']['userName'];
     final createDate = widget.post['createDate'];
-    final millisecondsSinceEpoch = int.parse(createDate);
-    final dateTime =
-        DateTime.fromMillisecondsSinceEpoch(millisecondsSinceEpoch);
 
-    String getTime() {
+    String getTime(String createDate) {
       final now = DateTime.now();
-      final difference = now.difference(dateTime);
+      final int millisecondsSinceEpoch = int.parse(createDate);
+      final DateTime commentDateTime =
+          DateTime.fromMillisecondsSinceEpoch(millisecondsSinceEpoch);
+      final difference = now.difference(commentDateTime);
       final hoursDifference = difference.inHours;
       final dayDifference = difference.inDays;
+      final minDifference = difference.inMinutes;
 
       if (dayDifference != 0) {
         return "$dayDifference d ago";
-      } else {
+      } else if (hoursDifference != 0) {
         return "$hoursDifference h ago";
+      } else {
+        return "$minDifference m ago";
       }
     }
-
-    final time = getTime();
 
     return Center(
       child: Container(
@@ -211,7 +210,7 @@ class _PostState extends State<Post> {
                     Transform.translate(
                       offset: const Offset(0, 3),
                       child: Text(
-                        time,
+                        getTime(createDate),
                         style: const TextStyle(
                           fontFamily: MyFontFamily.lineSeedJP,
                           fontSize: Sizes.size10,

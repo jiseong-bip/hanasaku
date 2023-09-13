@@ -69,7 +69,7 @@ void showMyBottomSheet(BuildContext context, int userId) {
                       vertical: Sizes.size12,
                     ),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         const CircleAvatar(
                           radius: 40,
@@ -104,13 +104,6 @@ void showMyBottomSheet(BuildContext context, int userId) {
                             ),
                           ],
                         ),
-                        Gaps.h14,
-                        Container(
-                          decoration:
-                              BoxDecoration(color: Colors.grey.shade400),
-                          width: 100,
-                          height: 100,
-                        )
                       ],
                     ),
                   ),

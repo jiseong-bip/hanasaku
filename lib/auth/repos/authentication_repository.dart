@@ -71,7 +71,9 @@ class AuthenticationRepository {
     return null;
   }
 
-  Future<void> signInWithGoogle() async {
+  Future<void> signInWithGoogle(
+      BuildContext context, UserInfoProvider userInfoProvider) async {
+    final GraphQLClient client = GraphQLProvider.of(context).value;
     final GoogleSignIn googleSignIn = GoogleSignIn();
     try {
       final GoogleSignInAccount? googleSignInAccount =
@@ -91,6 +93,10 @@ class AuthenticationRepository {
       );
 
       await _firebaseAuth.signInWithCredential(credential);
+      final uid = await getUserUid();
+      print(uid);
+
+      await GetUserInfo().checkingUser(client, userInfoProvider, uid!);
     } catch (e) {
       print("Error during Google sign-in: $e");
       rethrow;
@@ -156,7 +162,9 @@ class AuthenticationRepository {
     }
   }
 
-  Future<void> loginWithLine() async {
+  Future<void> loginWithLine(
+      BuildContext context, UserInfoProvider userInfoProvider) async {
+    final GraphQLClient client = GraphQLProvider.of(context).value;
     try {
       final result =
           await LineSDK.instance.login(scopes: ["profile", "openid"]);
@@ -169,9 +177,14 @@ class AuthenticationRepository {
       if (firebaseToken != null) {
         await FirebaseAuth.instance.signInWithCustomToken(firebaseToken);
         // 로그인 성공, 원하는 화면으로 이동
+        final uid = await getUserUid();
+        print(uid);
+
+        await GetUserInfo().checkingUser(client, userInfoProvider, uid!);
       } else {
         // Firebase 커스텀 토큰 가져오기 실패
         print('fail');
+        return;
       }
     } catch (e) {
       print('Failed to login with LINE: $e');

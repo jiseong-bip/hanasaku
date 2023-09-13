@@ -38,6 +38,7 @@ class ListResultModel extends ChangeNotifier {
 
   void addResult(Map<String, dynamic> data) {
     listResult.add(data);
+    print(listResult);
     notifyListeners();
   }
 
