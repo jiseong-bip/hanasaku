@@ -85,7 +85,7 @@ class _DetailPageState extends State<DetailPage> {
         final resultPost = result.data!['viewPost'];
 
         post = resultPost;
-        print(post);
+
         isLiked = post!['isLiked'];
         postLikeCounts = post!['likes'].length;
         commentsCount = post!['comments'].length;

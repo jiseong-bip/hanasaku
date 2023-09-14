@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';

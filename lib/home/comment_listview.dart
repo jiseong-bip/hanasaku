@@ -6,7 +6,6 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/home/detail_bottom_textfield.dart';
-import 'package:hanasaku/home/provider/comment_provider.dart';
 import 'package:hanasaku/home/recomment_widget.dart';
 import 'package:hanasaku/query&mutation/query.dart';
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
@@ -43,7 +42,7 @@ class _CommentsQueryState extends State<CommentsQuery> {
     super.initState();
     initName();
     Future.delayed(Duration.zero, () {
-      _fetchMoreComments(FetchPolicy.networkOnly);
+      _fetchMoreComments(FetchPolicy.noCache);
     });
   }
 
@@ -55,7 +54,7 @@ class _CommentsQueryState extends State<CommentsQuery> {
 
   @override
   void dispose() {
-    _commentController;
+    _commentController.dispose();
     super.dispose();
   }
 
@@ -63,7 +62,9 @@ class _CommentsQueryState extends State<CommentsQuery> {
     setState(() {
       _posts.clear();
     });
-    await _fetchMoreComments(FetchPolicy.networkOnly);
+    print(1);
+    await _fetchMoreComments(FetchPolicy.noCache);
+    print(2);
   }
 
   Future<void> _fetchMoreComments(FetchPolicy fetchPolicy) async {
@@ -77,38 +78,31 @@ class _CommentsQueryState extends State<CommentsQuery> {
       fetchPolicy: fetchPolicy,
     );
 
-    try {
-      final QueryResult result = await client.query(options);
+    final QueryResult result = await client.query(options);
 
-      if (!result.hasException) {
-        setState(() {
-          final comments = result.data!['viewPost']['comments'];
+    if (!result.hasException) {
+      setState(() {
+        final comments = result.data!['viewPost']['comments'];
 
-          _posts.addAll(comments);
-          widget.onCommentsCountChanged(_posts.length);
-          for (var post in _posts) {
-            _commentsLikesCount.add(post['likes'].length);
-            if (post['recomments'].length > 3) {
-              _isRecommentShowed.add(false);
-            } else {
-              _isRecommentShowed.add(true);
-            }
+        _posts.addAll(comments);
+        widget.onCommentsCountChanged(_posts.length);
+        for (var post in _posts) {
+          _commentsLikesCount.add(post['likes'].length);
+          if (post['recomments'].length > 3) {
+            _isRecommentShowed.add(false);
+          } else {
+            _isRecommentShowed.add(true);
           }
-        });
-      }
-    } catch (e) {
-      if (e is CacheMissException) {
-        // 캐시 미스 예외 처리, 예: 데이터 다시 가져오기
-        await _fetchMoreComments(FetchPolicy.networkOnly);
-      } else {
-        print("Error occurred: $e");
-      }
+        }
+      });
+    } else {
+      print(result.exception);
     }
   }
 
   Future<void> _toggleLikeComment(BuildContext context, int commentId) async {
     final GraphQLClient client = GraphQLProvider.of(context).value;
-    print(commentId);
+
     final MutationOptions options = MutationOptions(
       document: gql('''
         mutation Mutation(\$commentId: Int!) {
@@ -173,6 +167,7 @@ class _CommentsQueryState extends State<CommentsQuery> {
         children: [
           Expanded(
             child: ListView.separated(
+                physics: const AlwaysScrollableScrollPhysics(),
                 shrinkWrap: true,
                 separatorBuilder: (context, index) => Gaps.v16,
                 controller: widget.scrollController,
@@ -275,13 +270,6 @@ class _CommentsQueryState extends State<CommentsQuery> {
                                             ),
                                           ),
                                           Gaps.h5,
-                                          // Text(
-                                          //   '${_posts[index1]['recomments'].length}',
-                                          //   style: TextStyle(
-                                          //     fontSize: Sizes.size12,
-                                          //     color: Colors.grey.shade500,
-                                          //   ),
-                                          // ),
                                         ],
                                       ),
                                     )
@@ -341,13 +329,10 @@ class _CommentsQueryState extends State<CommentsQuery> {
             recommentMode: recommentMode,
             commentController: _commentController,
             postId: widget.postId,
-            onCommentChanged: (isSendPost) {
+            onCommentChanged: (isSendPost) async {
               if (isSendPost) {
-                setState(() {
-                  print(isSendPost);
-                  _posts.clear();
-                });
-                _fetchMoreComments(FetchPolicy.networkOnly);
+                _posts.clear();
+                _fetchMoreComments(FetchPolicy.noCache);
               }
             },
           ),
