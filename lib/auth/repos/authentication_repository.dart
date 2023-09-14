@@ -55,7 +55,6 @@ class AuthenticationRepository {
 
   Future<bool> isEmailVerified() async {
     final user = _firebaseAuth.currentUser;
-    print(user);
     if (user != null) {
       await user.reload();
       return user.emailVerified;

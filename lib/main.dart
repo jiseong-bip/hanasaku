@@ -9,6 +9,7 @@ import 'package:hanasaku/auth/sign_up_screen.dart';
 import 'package:hanasaku/constants/font.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/firebase_options.dart';
+import 'package:hanasaku/home/provider/comment_provider.dart';
 import 'package:hanasaku/nav/main_nav.dart';
 import 'package:hanasaku/setup/navigator.dart';
 import 'package:hanasaku/setup/provider_model.dart';
@@ -40,6 +41,9 @@ void main() async {
         ),
         ChangeNotifierProvider(
           create: (context) => CategoryIdChange(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => CommentsModel(),
         ),
         ChangeNotifierProvider<UserInfoProvider>(
           create: (context) => UserInfoProvider(),

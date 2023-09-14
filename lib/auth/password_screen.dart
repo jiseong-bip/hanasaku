@@ -2,11 +2,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/auth/form_button.dart';
 import 'package:hanasaku/auth/repos/authentication_repository.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
+import 'package:hanasaku/setup/check_user.dart';
 import 'package:hanasaku/setup/set_profile.dart';
+import 'package:hanasaku/setup/userinfo_provider_model.dart';
 import 'package:provider/provider.dart';
 
 class PasswordScreen extends StatefulWidget {
@@ -56,7 +59,9 @@ class _PasswordScreenState extends State<PasswordScreen> {
 
   void _onSubmit() async {
     final authRepo = context.read<AuthenticationRepository>();
-
+    final GraphQLClient client = GraphQLProvider.of(context).value;
+    final userInfoProvider =
+        Provider.of<UserInfoProvider>(context, listen: false);
     if (!_hasSubmittedOnce) {
       try {
         // On first press, sign up the user and send verification email
@@ -72,11 +77,10 @@ class _PasswordScreenState extends State<PasswordScreen> {
     // Check if the email is verified
     if (await authRepo.isEmailVerified()) {
       // If verified, navigate to SetProfile
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const SetProfile(),
-          ));
+      final uid = await authRepo.getUserUid();
+      print(uid);
+
+      await GetUserInfo().checkingUser(client, userInfoProvider, uid!);
     } else {
       // If not verified, show the dialog to verify email
       showDialog(

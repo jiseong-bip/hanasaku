@@ -9,7 +9,6 @@ import 'package:hanasaku/profile/comment_post.dart';
 import 'package:hanasaku/profile/liked_post.dart';
 import 'package:hanasaku/profile/my_post.dart';
 import 'package:hanasaku/setup/navigator.dart';
-import 'package:hanasaku/setup/provider_model.dart';
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';

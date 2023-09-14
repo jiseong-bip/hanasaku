@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hanasaku/auth/repos/authentication_repository.dart';
 import 'package:hanasaku/auth/sign_up_screen.dart';
-import 'package:hanasaku/setup/navigator.dart';
-import 'package:hanasaku/setup/provider_model.dart';
+
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
 import 'package:provider/provider.dart';
 

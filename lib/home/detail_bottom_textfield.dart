@@ -13,14 +13,14 @@ class BottomTextBar extends StatefulWidget {
   final TextEditingController commentController;
   final bool recommentMode;
   final int commentId;
-  //final Function(bool isSendPost) onCommentChanged;
+  final Function(bool isSendPost) onCommentChanged;
 
   final int postId;
   const BottomTextBar({
     super.key,
     required this.commentController,
     required this.postId,
-    //required this.onCommentChanged,
+    required this.onCommentChanged,
     required this.recommentMode,
     required this.commentId,
   });
@@ -32,7 +32,7 @@ class BottomTextBar extends StatefulWidget {
 class _BottomTextBarState extends State<BottomTextBar> {
   String? nickName;
   bool _isWriting = false;
-  //final bool _isSend = false;
+  bool _isSend = false;
 
   Future<void> toggleCommentSend(
       BuildContext context, int postId, String comment) async {
@@ -50,6 +50,7 @@ class _BottomTextBarState extends State<BottomTextBar> {
         'postId': postId,
         'comment': comment,
       },
+      update: (cache, result) => result,
     );
     try {
       final QueryResult result = await client.mutate(options);
@@ -65,10 +66,11 @@ class _BottomTextBarState extends State<BottomTextBar> {
           final bool isLikeSuccessful = resultData['createComment']['ok'];
           if (isLikeSuccessful) {
             widget.commentController.clear();
-            final commentsModel =
-                Provider.of<CommentsModel>(context, listen: false);
-            commentsModel.fetchMoreComments(GraphQLProvider.of(context).value,
-                postId, FetchPolicy.networkOnly);
+            setState(() {
+              _isSend = !_isSend;
+            });
+            widget.onCommentChanged(_isSend);
+            _isSend = !_isSend;
             // Call the callback to notify PostWidget of the change in isLiked
             print('succes to send comment');
           } else {
@@ -123,10 +125,11 @@ class _BottomTextBarState extends State<BottomTextBar> {
           final bool isLikeSuccessful = resultData['createRecomment']['ok'];
           if (isLikeSuccessful) {
             widget.commentController.clear();
-            final commentsModel =
-                Provider.of<CommentsModel>(context, listen: false);
-            commentsModel.fetchMoreComments(GraphQLProvider.of(context).value,
-                widget.postId, FetchPolicy.networkOnly);
+            setState(() {
+              _isSend = !_isSend;
+            });
+            widget.onCommentChanged(_isSend);
+            _isSend = !_isSend;
             // Call the callback to notify PostWidget of the change in isLiked
             print('succes to send comment');
           } else {

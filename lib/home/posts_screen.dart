@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
+
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/home/notify_screen.dart';
 import 'package:hanasaku/home/post_query_widget.dart';
-import 'package:hanasaku/home/subscription.dart';
+
 import 'package:hanasaku/setup/navigator.dart';
-import 'package:hanasaku/setup/provider_model.dart';
+
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
 import 'package:provider/provider.dart';
 
