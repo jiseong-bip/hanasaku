@@ -196,3 +196,17 @@ final myInfoQuery = gql("""
   }
 }
     """);
+
+final getCategoryQuery = gql("""
+      query ViewCategories {
+        viewCategories {
+          id
+          isSelected
+          name
+          topColor
+          bottomColor
+          postCount
+          userCount
+        }
+      }
+    """);

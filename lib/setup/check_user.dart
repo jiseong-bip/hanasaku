@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/nav/main_nav.dart';
 import 'package:hanasaku/query&mutation/mutatuin.dart';
-import 'package:hanasaku/query&mutation/query.dart';
+import 'package:hanasaku/query&mutation/querys.dart';
 import 'package:hanasaku/setup/navigator.dart';
 import 'package:hanasaku/setup/set_profile.dart';
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
@@ -71,8 +71,6 @@ class GetUserInfo {
       } else {
         var userName = result.data!['me']['userName'];
         await userInfoProvider.setNickName(userName);
-        List<Map<String, dynamic>> category = result.data!['me']['category'];
-        await userInfoProvider.setCategory(category);
       }
     } catch (e) {
       print(e);

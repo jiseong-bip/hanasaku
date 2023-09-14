@@ -42,19 +42,35 @@ class UserInfoProvider with ChangeNotifier {
     return _name;
   }
 
-  Future<void> setCategory(List<Map<String, dynamic>> category) async {
-    final box = await Hive.openBox<List<Map<String, dynamic>>>(_tokenBoxName);
-    await box.put(_categoryKey, category);
+  void setCategory(List<Map<String, dynamic>> category) {
     _category = category;
     notifyListeners();
   }
 
-  Future<List<Map<String, dynamic>>?> getCategoryName() async {
-    if (_category == null) {
-      final box = await Hive.openBox<List<Map<String, dynamic>>>(_tokenBoxName);
-      _category = box.get(_categoryKey);
+  void setSelectedCategory(int targetId) {
+    for (var item in _category!) {
+      if (item["id"] == targetId) {
+        item["isSelected"] = !(item["isSelected"] as bool);
+        notifyListeners();
+        break; // 해당 id를 찾았으므로 루프를 종료합니다.
+      }
     }
-    return _category;
+  }
+
+  bool? getIsSelectedById(int targetId) {
+    for (var item in _category!) {
+      if (item["id"] == targetId) {
+        return item["isSelected"] as bool?;
+      }
+    }
+    return null; // 해당 id를 가진 항목이 없을 경우 null 반환
+  }
+
+  List<Map<String, dynamic>> getCategoryName() {
+    if (_category != null) {
+      return _category!;
+    }
+    return [];
   }
 
   Future<void> clearToken() async {

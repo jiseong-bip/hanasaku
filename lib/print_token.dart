@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/auth/repos/authentication_repository.dart';
 import 'package:hanasaku/home/subscription.dart';
-import 'package:hanasaku/setup/provider_model.dart';
-import 'package:provider/provider.dart';
 
 class TokenDisplayWidget extends StatefulWidget {
   const TokenDisplayWidget({super.key});
@@ -45,7 +43,6 @@ class _TokenDisplayWidgetState extends State<TokenDisplayWidget> {
                 }
 
                 if (result.isLoading) {
-                  print(result);
                   return const Center(
                     child: CircularProgressIndicator(),
                   );

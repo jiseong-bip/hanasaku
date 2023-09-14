@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/constants/gaps.dart';
+import 'package:hanasaku/constants/idol_data.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/home/detail_page.dart';
-import 'package:hanasaku/query&mutation/query.dart';
+import 'package:hanasaku/query&mutation/querys.dart';
 
 class LikedPostScreen extends StatefulWidget {
   const LikedPostScreen({super.key});
@@ -102,7 +103,8 @@ class _LikedPostScreenState extends State<LikedPostScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("Category ID: $categoryId"),
+                        Text(
+                            "${idolData.singleWhere((idol) => idol["id"] == categoryId)["type"]}"),
                         Gaps.h14,
                         _expandedCategoryId == categoryId
                             ? const FaIcon(FontAwesomeIcons.angleUp)

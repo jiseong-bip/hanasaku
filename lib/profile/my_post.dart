@@ -8,7 +8,7 @@ import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/idol_data.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/home/detail_page.dart';
-import 'package:hanasaku/query&mutation/query.dart';
+import 'package:hanasaku/query&mutation/querys.dart';
 
 class MyPostScreen extends StatefulWidget {
   const MyPostScreen({super.key});

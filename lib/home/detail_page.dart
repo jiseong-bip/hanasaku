@@ -12,7 +12,7 @@ import 'package:hanasaku/home/comment_listview.dart';
 import 'package:hanasaku/home/edit_post_screen.dart';
 import 'package:hanasaku/nav/main_nav.dart';
 
-import 'package:hanasaku/query&mutation/query.dart';
+import 'package:hanasaku/query&mutation/querys.dart';
 import 'package:hanasaku/setup/cached_image.dart';
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
 import 'package:provider/provider.dart';

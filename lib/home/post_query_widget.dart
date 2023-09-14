@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/home/post_widget.dart';
-import 'package:hanasaku/query&mutation/query.dart';
+import 'package:hanasaku/query&mutation/querys.dart';
 
 class PostsQuery extends StatefulWidget {
   final int categoryId;

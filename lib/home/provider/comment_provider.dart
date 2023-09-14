@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:hanasaku/query&mutation/query.dart';
+import 'package:hanasaku/query&mutation/querys.dart';
 // GraphQL 쿼리가 있는 곳을 가정합니다.
 
 class CommentsModel extends ChangeNotifier {

@@ -10,6 +10,7 @@ import 'package:hanasaku/setup/userinfo_provider_model.dart';
 import 'package:provider/provider.dart';
 
 class BottomTextBar extends StatefulWidget {
+  final String comment;
   final TextEditingController commentController;
   final bool recommentMode;
   final int commentId;
@@ -23,6 +24,7 @@ class BottomTextBar extends StatefulWidget {
     required this.onCommentChanged,
     required this.recommentMode,
     required this.commentId,
+    required this.comment,
   });
 
   @override
@@ -205,7 +207,7 @@ class _BottomTextBarState extends State<BottomTextBar> {
                 cursorColor: Theme.of(context).primaryColor,
                 decoration: InputDecoration(
                     hintText: widget.recommentMode
-                        ? "Add recomment"
+                        ? "Add ${widget.comment} recomment"
                         : "Add comment...",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(
