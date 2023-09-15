@@ -4,6 +4,7 @@ import 'package:hive/hive.dart';
 class UserInfoProvider with ChangeNotifier {
   String? _token;
   String? _name;
+  int? _currentCategoryId;
   List<Map<String, dynamic>>? _category;
   static const String _tokenBoxName = 'tokenBox';
   static const String _tokenKey = 'token';
@@ -45,6 +46,18 @@ class UserInfoProvider with ChangeNotifier {
   void setCategory(List<Map<String, dynamic>> category) {
     _category = category;
     notifyListeners();
+  }
+
+  void setCurrentCategory(int id) {
+    _currentCategoryId = id;
+    notifyListeners();
+  }
+
+  int getCurrentCategory() {
+    if (_currentCategoryId != null) {
+      return _currentCategoryId!;
+    }
+    return 0;
   }
 
   void setSelectedCategory(int targetId) {

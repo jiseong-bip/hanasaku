@@ -85,13 +85,13 @@ class _MainNavState extends State<MainNav> {
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
-          Consumer<CategoryIdChange>(
-            builder: (context, categoryIdChange, child) {
+          Consumer<UserInfoProvider>(
+            builder: (context, userInfo, child) {
               return Offstage(
                 offstage: _selectedIndex != 0,
-                child: categoryIdChange.getCategoryId() == 0
+                child: userInfo.getCurrentCategory() == 0
                     ? const CategoryPage()
-                    : PostsScreen(categoryId: categoryIdChange.getCategoryId()),
+                    : PostsScreen(categoryId: userInfo.getCurrentCategory()),
               );
             },
           ),

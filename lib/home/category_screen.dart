@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hanasaku/constants/gaps.dart';
@@ -33,10 +34,6 @@ class _CategoryPageState extends State<CategoryPage> {
 
   @override
   Widget build(BuildContext context) {
-    // final seletedCategory = Provider.of<CategoryIdChange>(context);
-    // var providerCategoryIds = seletedCategory.getSelectedCategoryIds();
-    // bool disableJoin = seletedCategory.getSelectedCategoryIds().length >= 3;
-
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
@@ -48,7 +45,10 @@ class _CategoryPageState extends State<CategoryPage> {
                   gearIconClicked = !gearIconClicked;
                 });
               },
-              icon: const FaIcon(FontAwesomeIcons.gear))
+              icon: FaIcon(
+                FontAwesomeIcons.gear,
+                color: gearIconClicked ? Theme.of(context).primaryColor : null,
+              ))
         ],
       ),
       body: Consumer<UserInfoProvider>(
@@ -77,6 +77,7 @@ class _CategoryPageState extends State<CategoryPage> {
                     setCategoryId(context, id);
                   } else if (gearIconClicked) {
                     userInFoProvider.setSelectedCategory(id);
+                    deleteCategoryId(context, id);
                   }
                 },
                 idolName: data['name'],
@@ -85,6 +86,7 @@ class _CategoryPageState extends State<CategoryPage> {
                   Color(int.parse(data['bottomColor']))
                 ],
                 isJoined: userInFoProvider.getIsSelectedById(data['id'])!,
+                userInfo: userInFoProvider,
               ),
             );
           }).toList(),
@@ -102,6 +104,7 @@ class CategoryWidget extends StatelessWidget {
   final bool isJoined;
   final bool disableJoin;
   final bool gearIconClicked;
+  final UserInfoProvider userInfo;
   final Function(int) onJoin;
 
   const CategoryWidget({
@@ -114,6 +117,7 @@ class CategoryWidget extends StatelessWidget {
     required this.gearIconClicked,
     required this.isJoined,
     required this.data,
+    required this.userInfo,
   });
 
   @override
@@ -208,7 +212,9 @@ class CategoryWidget extends StatelessWidget {
                     if (!disableJoin || isJoined) {
                       onJoin(id);
                     }
-                    if (isJoined && !gearIconClicked) {}
+                    if (isJoined && !gearIconClicked) {
+                      userInfo.setCurrentCategory(id);
+                    }
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(
