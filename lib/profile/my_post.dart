@@ -33,9 +33,8 @@ class _MyPostScreenState extends State<MyPostScreen> {
   Future<void> _fetchMyPosts() async {
     final GraphQLClient client = GraphQLProvider.of(context).value;
 
-    final QueryOptions options = QueryOptions(
-      document: myPostQuery,
-    );
+    final QueryOptions options =
+        QueryOptions(document: myPostQuery, fetchPolicy: FetchPolicy.noCache);
 
     final QueryResult result = await client.query(options);
 

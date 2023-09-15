@@ -149,23 +149,19 @@ class CategoryWidget extends StatelessWidget {
           ),
           child: Align(
             alignment: Alignment.topCenter,
-            child: Column(
-              children: [
-                Text(
-                  idolName,
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: Sizes.size32),
-                ),
-                const Text(
-                  'ROOM',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: Sizes.size32),
-                ),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: Sizes.size24),
+              child: Column(
+                children: [
+                  Text(
+                    '$idolName ROOM',
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: Sizes.size24),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -225,7 +221,7 @@ class CategoryWidget extends StatelessWidget {
                     child: Text(
                       buttonText,
                       style: TextStyle(
-                        fontSize: Sizes.size24,
+                        fontSize: Sizes.size16,
                         fontWeight: FontWeight.w600,
                         color: disableJoin && !isJoined
                             ? Colors.grey
