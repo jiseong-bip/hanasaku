@@ -70,6 +70,20 @@ class UserInfoProvider with ChangeNotifier {
     }
   }
 
+  List<Map<String, dynamic>> getSelectedCategory() {
+    List<Map<String, dynamic>> selectedCategory = [];
+    if (_category != null) {
+      for (var item in _category!) {
+        if (item['isSelected'] == true) {
+          selectedCategory.add(item);
+        }
+      }
+      return selectedCategory;
+    } else {
+      return selectedCategory;
+    }
+  }
+
   bool? getIsSelectedById(int targetId) {
     for (var item in _category!) {
       if (item["id"] == targetId) {
@@ -117,36 +131,5 @@ class UserInfoProvider with ChangeNotifier {
     _category = null;
 
     notifyListeners();
-  }
-}
-
-class CategoryIdChange extends ChangeNotifier {
-  int? _categoryId;
-  final List<int> _selectedCategoryIds = [];
-
-  void setSelectedCategoryIds(int categoryId) {
-    _selectedCategoryIds.add(categoryId);
-    notifyListeners();
-  }
-
-  void removeSelectedCategoryIds(int categoryId) {
-    _selectedCategoryIds.remove(categoryId);
-    //notifyListeners();
-  }
-
-  List<int> getSelectedCategoryIds() {
-    return _selectedCategoryIds;
-  }
-
-  void setCategoryId(int categoryId) {
-    _categoryId = categoryId;
-    notifyListeners();
-  }
-
-  int getCategoryId() {
-    if (_categoryId != null) {
-      return _categoryId!;
-    }
-    return 0;
   }
 }

@@ -40,9 +40,6 @@ void main() async {
           create: (context) => ListResultModel(),
         ),
         ChangeNotifierProvider(
-          create: (context) => CategoryIdChange(),
-        ),
-        ChangeNotifierProvider(
           create: (context) => CommentsModel(),
         ),
         ChangeNotifierProvider<UserInfoProvider>(
@@ -111,6 +108,12 @@ class MyApp extends StatelessWidget {
     return GraphQLProvider(
       client: client,
       child: MaterialApp(
+        builder: (context, child) {
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+            child: child!,
+          );
+        },
         navigatorKey: navigatorKey,
         title: 'social_community',
         theme: ThemeData(

@@ -8,7 +8,6 @@ import 'package:hanasaku/auth/repos/authentication_repository.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/setup/check_user.dart';
-import 'package:hanasaku/setup/set_profile.dart';
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
 import 'package:provider/provider.dart';
 

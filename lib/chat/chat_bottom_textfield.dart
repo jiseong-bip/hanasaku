@@ -28,10 +28,12 @@ class BottomTextBar extends StatefulWidget {
 
 class _BottomTextBarState extends State<BottomTextBar> {
   String? nickName;
+  int? roomId;
   bool _isWriting = false;
   bool _isSend = false;
 
-  Future<void> toggleChatSend(BuildContext context, String chat) async {
+  Future<void> toggleChatSend(
+      BuildContext context, String chat, int? roomId) async {
     final GraphQLClient client = GraphQLProvider.of(context).value;
 
     final MutationOptions options = MutationOptions(
@@ -47,7 +49,7 @@ class _BottomTextBarState extends State<BottomTextBar> {
       variables: <String, dynamic>{
         "userId": widget.userId,
         "message": chat,
-        "roomId": widget.roomId,
+        "roomId": roomId,
       },
       update: (cache, result) => result,
     );
@@ -109,6 +111,7 @@ class _BottomTextBarState extends State<BottomTextBar> {
   void initState() {
     super.initState();
     initName();
+    roomId = widget.roomId;
   }
 
   Future initName() async {
@@ -167,9 +170,10 @@ class _BottomTextBarState extends State<BottomTextBar> {
                           if (_isWriting)
                             GestureDetector(
                               onTap: () {
+                                print('roomId : ${widget.userId}');
                                 _stopWriting();
-                                toggleChatSend(
-                                    context, widget.commentController.text);
+                                toggleChatSend(context,
+                                    widget.commentController.text, roomId);
                               },
                               child: FaIcon(
                                 FontAwesomeIcons.circleArrowUp,

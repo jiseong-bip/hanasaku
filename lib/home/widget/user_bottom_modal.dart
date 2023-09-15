@@ -23,7 +23,9 @@ void showMyBottomSheet(BuildContext context, int userId) {
 
       return Query(
         options: QueryOptions(
-            document: gql(readRepositories), variables: {"userId": userId}),
+            document: gql(readRepositories),
+            variables: {"userId": userId},
+            fetchPolicy: FetchPolicy.noCache),
         builder: (
           QueryResult result, {
           Refetch? refetch,
@@ -138,6 +140,7 @@ void showMyBottomSheet(BuildContext context, int userId) {
               ),
               child: GestureDetector(
                 onTap: () {
+                  print(user['isChat']);
                   user['isChat'] == null
                       ? Navigator.push(
                           context,
@@ -152,6 +155,7 @@ void showMyBottomSheet(BuildContext context, int userId) {
                           MaterialPageRoute(
                               builder: (context) => ChatRoom(
                                     roomId: user['isChat'],
+                                    userId: user['id'],
                                   )));
                 },
                 child: Container(

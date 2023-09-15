@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hanasaku/constants/gaps.dart';
@@ -61,7 +60,7 @@ class _CategoryPageState extends State<CategoryPage> {
 
         return ListWheelScrollView(
           diameterRatio: 6,
-          itemExtent: screenHeight * 0.3, // Adjust based on your needs
+          itemExtent: screenHeight * 0.2, // Adjust based on your needs
           children: userInFoProvider.getCategoryName().map((data) {
             return Padding(
               padding: const EdgeInsets.symmetric(
@@ -148,10 +147,15 @@ class CategoryWidget extends StatelessWidget {
             ],
           ),
           child: Align(
-            alignment: Alignment.topCenter,
+            alignment: Alignment.topLeft,
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: Sizes.size24),
-              child: Column(
+              padding: const EdgeInsets.symmetric(
+                vertical: Sizes.size10,
+                horizontal: Sizes.size10,
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.ideographic,
                 children: [
                   Text(
                     '$idolName ROOM',
@@ -160,78 +164,126 @@ class CategoryWidget extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                         fontSize: Sizes.size24),
                   ),
+                  Gaps.h5,
+                  const FaIcon(
+                    FontAwesomeIcons.solidUser,
+                    size: Sizes.size12,
+                    color: Colors.white,
+                  ),
+                  Gaps.h3,
+                  Text(
+                    '${data['userCount']}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: Sizes.size12,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
         ),
         Align(
-          alignment: Alignment.bottomCenter,
+          alignment: Alignment.bottomRight,
           child: Padding(
             padding: const EdgeInsets.symmetric(
-                vertical: Sizes.size16, horizontal: Sizes.size16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: Sizes.size10, horizontal: Sizes.size14),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.white.withOpacity(0.6)),
-                  child: Row(
-                    children: [
-                      const FaIcon(FontAwesomeIcons.user),
-                      Gaps.h12,
-                      Text(
-                        '${data['userCount']}',
-                        style: const TextStyle(
-                          fontSize: Sizes.size16,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      Gaps.h24,
-                      const FaIcon(FontAwesomeIcons.comment),
-                      Gaps.h12,
-                      Text(
-                        '${data['postCount']}',
-                        style: const TextStyle(
-                          fontSize: Sizes.size16,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ],
+                vertical: Sizes.size10, horizontal: Sizes.size10),
+            child: GestureDetector(
+              onTap: () {
+                if (!disableJoin || isJoined) {
+                  onJoin(id);
+                }
+                if (isJoined && !gearIconClicked) {
+                  userInfo.setCurrentCategory(id);
+                }
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                    vertical: Sizes.size10, horizontal: Sizes.size14),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white.withOpacity(0.8)),
+                child: Text(
+                  buttonText,
+                  style: TextStyle(
+                    fontSize: Sizes.size16,
+                    fontWeight: FontWeight.w600,
+                    color: disableJoin && !isJoined
+                        ? Colors.grey
+                        : Color(int.parse(data['topColor'])),
                   ),
                 ),
-                GestureDetector(
-                  onTap: () {
-                    if (!disableJoin || isJoined) {
-                      onJoin(id);
-                    }
-                    if (isJoined && !gearIconClicked) {
-                      userInfo.setCurrentCategory(id);
-                    }
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: Sizes.size10, horizontal: Sizes.size14),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.white.withOpacity(0.6)),
-                    child: Text(
-                      buttonText,
-                      style: TextStyle(
-                        fontSize: Sizes.size16,
-                        fontWeight: FontWeight.w600,
-                        color: disableJoin && !isJoined
-                            ? Colors.grey
-                            : Colors.black,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   children: [
+            //     Container(
+            //       padding: const EdgeInsets.symmetric(
+            //           vertical: Sizes.size10, horizontal: Sizes.size14),
+            //       decoration: BoxDecoration(
+            //           borderRadius: BorderRadius.circular(10),
+            //           color: Colors.white.withOpacity(0.6)),
+            //       child: Row(
+            //         children: [
+            //           const FaIcon(
+            //             FontAwesomeIcons.user,
+            //             size: Sizes.size12,
+            //           ),
+            //           Gaps.h12,
+            //           Text(
+            //             '${data['userCount']}',
+            //             style: const TextStyle(
+            //               fontSize: Sizes.size16,
+            //               fontWeight: FontWeight.w400,
+            //             ),
+            //           ),
+            //           Gaps.h24,
+            //           const FaIcon(
+            //             FontAwesomeIcons.comment,
+            //             size: Sizes.size12,
+            //           ),
+            //           Gaps.h12,
+            //           Text(
+            //             '${data['postCount']}',
+            //             style: const TextStyle(
+            //               fontSize: Sizes.size16,
+            //               fontWeight: FontWeight.w400,
+            //             ),
+            //           ),
+            //         ],
+            //       ),
+            //     ),
+            //     GestureDetector(
+            //       onTap: () {
+            //         if (!disableJoin || isJoined) {
+            //           onJoin(id);
+            //         }
+            //         if (isJoined && !gearIconClicked) {
+            //           userInfo.setCurrentCategory(id);
+            //         }
+            //       },
+            //       child: Container(
+            //         padding: const EdgeInsets.symmetric(
+            //             vertical: Sizes.size10, horizontal: Sizes.size14),
+            //         decoration: BoxDecoration(
+            //             borderRadius: BorderRadius.circular(10),
+            //             color: Colors.white.withOpacity(0.6)),
+            //         child: Text(
+            //           buttonText,
+            //           style: TextStyle(
+            //             fontSize: Sizes.size16,
+            //             fontWeight: FontWeight.w600,
+            //             color: disableJoin && !isJoined
+            //                 ? Colors.grey
+            //                 : Colors.black,
+            //           ),
+            //         ),
+            //       ),
+            //     ),
+            //   ],
+            // ),
           ),
         ),
       ],

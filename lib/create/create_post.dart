@@ -2,14 +2,17 @@
 
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
+import 'package:hanasaku/setup/userinfo_provider_model.dart';
 import 'package:http/http.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 class CreateScreen extends StatefulWidget {
   const CreateScreen({super.key});
@@ -19,12 +22,31 @@ class CreateScreen extends StatefulWidget {
 }
 
 class _CreateScreenState extends State<CreateScreen> {
-  int categoryId = 1;
+  int? categoryId;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   Map<String, dynamic> formData = {};
   final ImagePicker picker = ImagePicker();
   final List<XFile> _images = [];
+  void _showDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Error'),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Future getImages(ImageSource imageSource) async {
     //pickedFile에 ImagePicker로 가져온 이미지가 담긴다.
@@ -116,28 +138,51 @@ class _CreateScreenState extends State<CreateScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final userInfoProvider =
+        Provider.of<UserInfoProvider>(context, listen: false);
+    final selectedCategory = userInfoProvider.getSelectedCategory();
+    final deviceHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
-          title: SizedBox(
-            width: 150,
+          title: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                  color: Colors.grey, style: BorderStyle.solid, width: 0.80),
+            ),
             child: DropdownButtonFormField(
-              hint: const Text('category select'),
+              focusColor: Colors.white,
+              isExpanded: true,
               decoration: const InputDecoration(
-                  enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white))),
-              items: <int>[
-                1,
-                2,
-                3,
-              ].map((int value) {
-                return DropdownMenuItem<int>(
-                  value: value,
-                  child: Text('$value'),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.transparent),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.transparent),
+                ),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.transparent),
+                ),
+              ),
+              hint: const Center(
+                child: Text(
+                  'category',
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              items: selectedCategory.map((value) {
+                return DropdownMenuItem(
+                  value: value['id'],
+                  child: Center(
+                    child: Text(
+                      value['name'],
+                    ),
+                  ),
                 );
               }).toList(),
               onChanged: (value) {
                 setState(() {
-                  categoryId = value!;
+                  categoryId = value as int;
                 });
               },
               onSaved: (newValue) {
@@ -153,10 +198,16 @@ class _CreateScreenState extends State<CreateScreen> {
                 onTap: () {
                   //_toggleSubmit(context);
                   if (_formKey.currentState != null) {
-                    if (_formKey.currentState!.validate()) {
+                    if (_formKey.currentState!.validate() &&
+                        categoryId != null) {
                       _formKey.currentState!.save();
                       _toggleSubmit(context);
                       Navigator.pop(context);
+                    } else {
+                      // If the category is not selected, show an AlertDialog
+                      if (categoryId == null) {
+                        _showDialog(context, "카테고리를 선택해주세요");
+                      }
                     }
                   }
                 },
@@ -242,35 +293,35 @@ class _CreateScreenState extends State<CreateScreen> {
                       },
                     ),
                     SizedBox(
-                      height: 210.0, // Adjusted for slightly larger container
-                      width: 310.0, // Adjusted for slightly larger container
+                      height: deviceHeight / 4, // 디바이스 높이의 1/4
                       child: _images.isEmpty
                           ? const Center(child: Text('No images selected'))
-                          : ListView.builder(
-                              scrollDirection: Axis.horizontal,
+                          : CarouselSlider.builder(
                               itemCount: _images.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return SizedBox(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Stack(
-                                      children: [
-                                        Align(
-                                          alignment: Alignment.center,
-                                          child: Image.file(
-                                              File(_images[index].path)),
-                                        ),
-                                        const Positioned(
-                                          top: 0,
-                                          right: 0,
-                                          child: Icon(Icons.cancel_rounded,
-                                              color: Color(0xFFF9C7C7)),
-                                        ),
-                                      ],
+                              itemBuilder: (BuildContext context, int index,
+                                  int pageViewIndex) {
+                                return Column(
+                                  children: [
+                                    Flexible(
+                                        child: Image.file(
+                                            File(_images[index].path))),
+                                    IconButton(
+                                      icon: const Icon(Icons.delete,
+                                          color: Colors.black),
+                                      onPressed: () {
+                                        setState(() {
+                                          _images.removeAt(index);
+                                        });
+                                      },
                                     ),
-                                  ),
+                                  ],
                                 );
                               },
+                              options: CarouselOptions(
+                                height: deviceHeight / 4,
+                                enlargeCenterPage: true,
+                                autoPlay: false,
+                              ),
                             ),
                     )
                   ],

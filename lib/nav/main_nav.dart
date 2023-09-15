@@ -120,21 +120,21 @@ class _MainNavState extends State<MainNav> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               NavTab(
-                text: "Home",
+                //text: "Home",
                 isSelected: _selectedIndex == 0,
                 icon: FontAwesomeIcons.house,
                 selectedIcon: FontAwesomeIcons.house,
                 onTap: () => _onTap(0),
               ),
               NavTab(
-                text: "Contents",
+                //text: "Contents",
                 isSelected: _selectedIndex == 1,
                 icon: FontAwesomeIcons.compass,
                 selectedIcon: FontAwesomeIcons.solidCompass,
                 onTap: () => _onTap(1),
               ),
               NavTab(
-                text: "Create",
+                //text: "Create",
                 isSelected: _selectedIndex == 2,
                 icon: FontAwesomeIcons.squarePlus,
                 selectedIcon: FontAwesomeIcons.squarePlus,
@@ -143,14 +143,14 @@ class _MainNavState extends State<MainNav> {
                 },
               ),
               NavTab(
-                text: "Chats",
+                //text: "Chats",
                 isSelected: _selectedIndex == 3,
                 icon: FontAwesomeIcons.message,
                 selectedIcon: FontAwesomeIcons.solidMessage,
                 onTap: () => _onTap(3),
               ),
               NavTab(
-                text: "Profile",
+                //text: "Profile",
                 isSelected: _selectedIndex == 4,
                 icon: FontAwesomeIcons.user,
                 selectedIcon: FontAwesomeIcons.solidUser,

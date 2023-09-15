@@ -199,6 +199,7 @@ class _ChatRoomState extends State<ChatRoom> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.roomId);
     return GestureDetector(
       onTap: _onScaffoldTap,
       child: Scaffold(
