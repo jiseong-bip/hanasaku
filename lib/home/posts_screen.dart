@@ -43,13 +43,13 @@ class _PostsScreenState extends State<PostsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final USerInfoModel = Provider.of<UserInfoProvider>(context);
+    final userInfoModel = Provider.of<UserInfoProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
         leading: GestureDetector(
           onTap: () {
-            USerInfoModel.setCurrentCategory(0);
+            userInfoModel.setCurrentCategory(0);
           },
           child: const Padding(
             padding: EdgeInsets.symmetric(

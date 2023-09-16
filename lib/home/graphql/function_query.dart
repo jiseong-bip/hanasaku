@@ -20,7 +20,6 @@ Future<void> getMyCategory(BuildContext context) async {
         .map((e) => e as Map<String, dynamic>)
         .toList();
     userInfoProvider.setCategory(idolData);
-    print(userInfoProvider.getCategoryName());
   } catch (e) {
     print('setCategory Error: $e');
   }

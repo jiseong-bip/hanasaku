@@ -28,6 +28,7 @@ class _CreateScreenState extends State<CreateScreen> {
   Map<String, dynamic> formData = {};
   final ImagePicker picker = ImagePicker();
   final List<XFile> _images = [];
+
   void _showDialog(BuildContext context, String message) {
     showDialog(
       context: context,

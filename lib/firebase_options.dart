@@ -59,12 +59,12 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDp0_wxNVKTGaC6wxE7wnySKGWRlBcALR0',
-    appId: '1:1056608488794:ios:c0d00c41cf35b721147763',
+    appId: '1:1056608488794:ios:69d650990c110cae147763',
     messagingSenderId: '1056608488794',
     projectId: 'hanasaku-abc',
     storageBucket: 'hanasaku-abc.appspot.com',
     androidClientId: '1056608488794-9lu7pgj6apjbfikdb16q31lpecaighfn.apps.googleusercontent.com',
-    iosClientId: '1056608488794-9bf7ivlv2qpimmrpis6670iud2uqaufo.apps.googleusercontent.com',
-    iosBundleId: 'com.example.hanasaku',
+    iosClientId: '1056608488794-jmllqnss0p7fvtqcc97r7ccchqo6nd9d.apps.googleusercontent.com',
+    iosBundleId: 'com.hana.hanasaku',
   );
 }

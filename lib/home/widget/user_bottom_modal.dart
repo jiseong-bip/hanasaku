@@ -25,7 +25,7 @@ void showMyBottomSheet(BuildContext context, int userId) {
         options: QueryOptions(
             document: gql(readRepositories),
             variables: {"userId": userId},
-            fetchPolicy: FetchPolicy.noCache),
+            fetchPolicy: FetchPolicy.cacheAndNetwork),
         builder: (
           QueryResult result, {
           Refetch? refetch,

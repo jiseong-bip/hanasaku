@@ -17,6 +17,8 @@ class CategoryPage extends StatefulWidget {
 
 class _CategoryPageState extends State<CategoryPage> {
   bool gearIconClicked = false;
+  final TextEditingController _searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -26,71 +28,144 @@ class _CategoryPageState extends State<CategoryPage> {
     });
   }
 
+  void _stopWriting() {
+    FocusScope.of(context).unfocus();
+  }
+
+  int? findIdolIndex(String idolName) {
+    List<Map<String, dynamic>> categories =
+        Provider.of<UserInfoProvider>(context, listen: false).getCategoryName();
+    for (int i = 0; i < categories.length; i++) {
+      if (categories[i]['name'].toLowerCase() == idolName.toLowerCase()) {
+        return i;
+      }
+    }
+    return null;
+  }
+
+  void scrollToIdol(String idolName) {
+    int? index = findIdolIndex(idolName);
+    if (index != null) {
+      double position = index *
+          MediaQuery.of(context).size.height *
+          0.2; // Since itemExtent is screenHeight * 0.2
+      _scrollController.animateTo(position,
+          duration: const Duration(seconds: 1), curve: Curves.easeInOut);
+    }
+  }
+
   @override
   void dispose() {
+    _scrollController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Category'),
-        actions: [
-          IconButton(
-              onPressed: () {
-                setState(() {
-                  gearIconClicked = !gearIconClicked;
-                });
-              },
-              icon: FaIcon(
-                FontAwesomeIcons.gear,
-                color: gearIconClicked ? Theme.of(context).primaryColor : null,
-              ))
-        ],
-      ),
-      body: Consumer<UserInfoProvider>(
-          builder: (context, userInFoProvider, child) {
-        bool disableJoin = userInFoProvider
-                .getCategoryName()
-                .where((item) => item["isSelected"] == true)
-                .length >=
-            3;
-
-        return ListWheelScrollView(
-          diameterRatio: 6,
-          itemExtent: screenHeight * 0.2, // Adjust based on your needs
-          children: userInFoProvider.getCategoryName().map((data) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(
-                  vertical: Sizes.size12, horizontal: Sizes.size16),
-              child: CategoryWidget(
-                id: data['id'],
-                data: data,
-                disableJoin: disableJoin,
-                gearIconClicked: gearIconClicked,
-                onJoin: (int id) {
-                  if (!userInFoProvider.getIsSelectedById(id)!) {
-                    userInFoProvider.setSelectedCategory(id);
-                    setCategoryId(context, id);
-                  } else if (gearIconClicked) {
-                    userInFoProvider.setSelectedCategory(id);
-                    deleteCategoryId(context, id);
-                  }
+    return GestureDetector(
+      onTap: () => _stopWriting(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Category'),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  setState(() {
+                    gearIconClicked = !gearIconClicked;
+                  });
                 },
-                idolName: data['name'],
-                idolColor: [
-                  Color(int.parse(data['topColor'])),
-                  Color(int.parse(data['bottomColor']))
-                ],
-                isJoined: userInFoProvider.getIsSelectedById(data['id'])!,
-                userInfo: userInFoProvider,
+                icon: FaIcon(
+                  FontAwesomeIcons.gear,
+                  color:
+                      gearIconClicked ? Theme.of(context).primaryColor : null,
+                ))
+          ],
+        ),
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                      color: Colors.grey,
+                      style: BorderStyle.solid,
+                      width: 0.80),
+                ),
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    focusedBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.transparent),
+                    ),
+                    enabledBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.transparent),
+                    ),
+                    border: const OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.transparent),
+                    ),
+                    labelText: "Search Idol",
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.search),
+                      onPressed: () {
+                        scrollToIdol(_searchController.text);
+                      },
+                    ),
+                  ),
+                ),
               ),
-            );
-          }).toList(),
-        );
-      }),
+            ),
+            Expanded(
+              child: Consumer<UserInfoProvider>(
+                  builder: (context, userInFoProvider, child) {
+                bool disableJoin = userInFoProvider
+                        .getCategoryName()
+                        .where((item) => item["isSelected"] == true)
+                        .length >=
+                    3;
+
+                return ListWheelScrollView(
+                  controller: _scrollController,
+                  diameterRatio: 6,
+                  itemExtent: screenHeight * 0.2, // Adjust based on your needs
+                  children: userInFoProvider.getCategoryName().map((data) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: Sizes.size12, horizontal: Sizes.size16),
+                      child: CategoryWidget(
+                        id: data['id'],
+                        data: data,
+                        disableJoin: disableJoin,
+                        gearIconClicked: gearIconClicked,
+                        onJoin: (int id) {
+                          if (!userInFoProvider.getIsSelectedById(id)!) {
+                            userInFoProvider.setSelectedCategory(id);
+                            setCategoryId(context, id);
+                          } else if (gearIconClicked) {
+                            userInFoProvider.setSelectedCategory(id);
+                            deleteCategoryId(context, id);
+                          }
+                        },
+                        idolName: data['name'],
+                        idolColor: [
+                          Color(int.parse(data['topColor'])),
+                          Color(int.parse(data['bottomColor']))
+                        ],
+                        isJoined:
+                            userInFoProvider.getIsSelectedById(data['id'])!,
+                        userInfo: userInFoProvider,
+                      ),
+                    );
+                  }).toList(),
+                );
+              }),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
