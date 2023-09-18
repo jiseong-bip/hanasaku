@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/chat/chat_list_screen.dart';
 import 'package:hanasaku/constants/sizes.dart';
+import 'package:hanasaku/contents/contents_list_screen.dart';
 import 'package:hanasaku/create/create_post.dart';
 import 'package:hanasaku/home/category_screen.dart';
 
@@ -97,7 +98,7 @@ class _MainNavState extends State<MainNav> {
           ),
           Offstage(
             offstage: _selectedIndex != 1,
-            child: const TokenDisplayWidget(),
+            child: const ContentsScreen(),
           ),
           Offstage(
             offstage: _selectedIndex != 3,

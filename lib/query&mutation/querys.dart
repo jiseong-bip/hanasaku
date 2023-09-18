@@ -237,3 +237,11 @@ query ViewContent(\$contentId: Int!) {
     key
   }
 }""");
+
+final viewContansQuery = gql("""query ViewContents {
+  viewContents {
+    title
+    key
+    id
+  }
+}""");

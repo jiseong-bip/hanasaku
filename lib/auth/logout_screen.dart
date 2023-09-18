@@ -37,7 +37,8 @@ class _LogOutScreenState extends State<LogOutScreen> {
     await userInfoProvider.clearUserInfo();
 
     // 로그인 화면 또는 홈 화면으로 이동 (또는 원하는 다른 화면으로)
-    Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const SignUpScreen()));
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => const SignUpScreen()),
+        (route) => false);
   }
 }

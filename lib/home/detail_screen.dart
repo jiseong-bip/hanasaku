@@ -221,58 +221,63 @@ class _DetailScreenState extends State<DetailScreen> {
     final content = post?['content'];
     final userName = post?['user']['userName'];
     final createDate = post?['createDate'];
-    return Scaffold(
-      appBar: AppBar(actions: [
-        IconButton(
-            onPressed: () {
-              dotMethod(
-                context,
-                post,
-                nickName,
-                imagekey,
-                widget.postId,
-                title,
-                content,
-              );
-            },
-            icon: const FaIcon(FontAwesomeIcons.ellipsis))
-      ]),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          await _fetchPost(FetchPolicy.networkOnly);
-        },
-        child: SingleChildScrollView(
-          controller: scrollController,
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              detailPost(screenWidth, videoHeight, userName, createDate, title,
-                  content, imagekey, context),
-              CommentsQuery(
-                postId: widget.postId,
-                onCommentsCountChanged: (commentCount) {
-                  setState(() {
-                    commentsCount = commentCount;
-                    if (widget.onCommentsCountChanged != null) {
-                      widget.onCommentsCountChanged!(commentCount);
-                    }
-                  });
-                },
-                isContents: widget.isContent,
-              ),
-            ],
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        appBar: AppBar(actions: [
+          IconButton(
+              onPressed: () {
+                dotMethod(
+                  context,
+                  post,
+                  nickName,
+                  imagekey,
+                  widget.postId,
+                  title,
+                  content,
+                );
+              },
+              icon: const FaIcon(FontAwesomeIcons.ellipsis))
+        ]),
+        body: RefreshIndicator(
+          onRefresh: () async {
+            await _fetchPost(FetchPolicy.networkOnly);
+          },
+          child: SingleChildScrollView(
+            controller: scrollController,
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                detailPost(screenWidth, videoHeight, userName, createDate,
+                    title, content, imagekey, context),
+                CommentsQuery(
+                  postId: widget.postId,
+                  onCommentsCountChanged: (commentCount) {
+                    setState(() {
+                      commentsCount = commentCount;
+                      if (widget.onCommentsCountChanged != null) {
+                        widget.onCommentsCountChanged!(commentCount);
+                      }
+                    });
+                  },
+                  isContents: widget.isContent,
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-      bottomSheet: BottomTextBar(
-        commentController: _commentController,
-        postId: widget.postId,
-        onCommentChanged: (isSendPost) async {
-          if (isSendPost) {
-            _fetchPost(FetchPolicy.networkOnly);
-          }
-        },
+        bottomSheet: BottomTextBar(
+          commentController: _commentController,
+          postId: widget.postId,
+          onCommentChanged: (isSendPost) async {
+            if (isSendPost) {
+              _fetchPost(FetchPolicy.networkOnly);
+            }
+          },
+        ),
       ),
     );
   }
