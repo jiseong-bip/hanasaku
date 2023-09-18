@@ -6,7 +6,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/idol_data.dart';
 import 'package:hanasaku/constants/sizes.dart';
-import 'package:hanasaku/home/detail_page.dart';
+import 'package:hanasaku/home/detail_screen.dart';
 import 'package:hanasaku/query&mutation/querys.dart';
 
 class LikedPostScreen extends StatefulWidget {
@@ -126,8 +126,9 @@ class _LikedPostScreenState extends State<LikedPostScreen> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => DetailPage(
+                                builder: (context) => DetailScreen(
                                       postId: post?['post']['id'],
+                                      isContent: false,
                                     )));
                       },
                       child: Card(
@@ -152,7 +153,7 @@ class _LikedPostScreenState extends State<LikedPostScreen> {
                                     size: Sizes.size16,
                                   ),
                                   Gaps.h5,
-                                  Text('${post?['post']['likes'].length}'),
+                                  Text('${post?['post']['likeCount']}'),
                                   Gaps.h10,
                                   const FaIcon(
                                     FontAwesomeIcons.comment,

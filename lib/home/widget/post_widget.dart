@@ -7,7 +7,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/constants/font.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
-import 'package:hanasaku/home/detail_page.dart';
+import 'package:hanasaku/home/detail_screen.dart';
 import 'package:hanasaku/home/widget/user_bottom_modal.dart';
 import 'package:hanasaku/setup/aws_s3.dart';
 import 'package:hanasaku/setup/cached_image.dart';
@@ -84,31 +84,33 @@ class _PostState extends State<Post> {
 
   void onTapPost() {
     Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => DetailPage(
-          postId: widget.post['id'],
-          onLikeChanged: (bool updatedIsLiked) {
-            setState(() {
-              isLiked = updatedIsLiked;
-            });
-          },
-          onLikeCountChanged: (int updatedCountLiked) {
-            setState(() {
-              counts = updatedCountLiked;
-            });
-          },
-          //comments: commentList,
-          onCommentsCountChanged: (int updateCountComment) {
-            setState(() {
-              commentCount = updateCountComment;
-            });
-          }),
+      builder: (context) => DetailScreen(
+        postId: widget.post['id'],
+        onLikeChanged: (bool updatedIsLiked) {
+          setState(() {
+            isLiked = updatedIsLiked;
+          });
+        },
+        onLikeCountChanged: (int updatedCountLiked) {
+          setState(() {
+            counts = updatedCountLiked;
+          });
+        },
+        //comments: commentList,
+        onCommentsCountChanged: (int updateCountComment) {
+          setState(() {
+            commentCount = updateCountComment;
+          });
+        },
+        isContent: false,
+      ),
     ));
   }
 
   @override
   void initState() {
     super.initState();
-    counts = widget.post['likes'].length;
+    counts = widget.post['likeCount'];
     Future.delayed(Duration.zero, () async {
       imagekey = widget.post['images'];
       isLiked = widget.post['isLiked'];
@@ -294,7 +296,6 @@ class _PostState extends State<Post> {
                             ),
                           ],
                         ),
-                      Gaps.v10,
                     ],
                   ),
                 ),
@@ -351,7 +352,6 @@ class _PostState extends State<Post> {
                   ),
                 ],
               ),
-              Gaps.v10,
             ],
           ),
         ),

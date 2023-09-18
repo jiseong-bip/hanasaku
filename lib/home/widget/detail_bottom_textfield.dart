@@ -5,15 +5,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
+import 'package:hanasaku/home/provider/postinfo_provider.dart';
 
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
 import 'package:provider/provider.dart';
 
 class BottomTextBar extends StatefulWidget {
-  final String comment;
   final TextEditingController commentController;
-  final bool recommentMode;
-  final int commentId;
+
   final Function(bool isSendPost) onCommentChanged;
 
   final int postId;
@@ -22,9 +21,6 @@ class BottomTextBar extends StatefulWidget {
     required this.commentController,
     required this.postId,
     required this.onCommentChanged,
-    required this.recommentMode,
-    required this.commentId,
-    required this.comment,
   });
 
   @override
@@ -179,6 +175,7 @@ class _BottomTextBarState extends State<BottomTextBar> {
 
   @override
   Widget build(BuildContext context) {
+    final postInfo = Provider.of<PostInfo>(context, listen: false);
     return BottomAppBar(
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -206,8 +203,8 @@ class _BottomTextBarState extends State<BottomTextBar> {
                 textInputAction: TextInputAction.newline,
                 cursorColor: Theme.of(context).primaryColor,
                 decoration: InputDecoration(
-                    hintText: widget.recommentMode
-                        ? "Add ${widget.comment} recomment"
+                    hintText: postInfo.getRecommentMode()
+                        ? "Add ${postInfo.getComment()} recomment"
                         : "Add comment...",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(
@@ -230,10 +227,10 @@ class _BottomTextBarState extends State<BottomTextBar> {
                             GestureDetector(
                               onTap: () {
                                 _stopWriting();
-                                widget.recommentMode
+                                postInfo.getRecommentMode()
                                     ? toggleRecommentSend(
                                         context,
-                                        widget.commentId,
+                                        postInfo.getCommentId(),
                                         widget.commentController.text)
                                     : toggleCommentSend(context, widget.postId,
                                         widget.commentController.text);

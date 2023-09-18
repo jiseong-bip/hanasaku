@@ -7,7 +7,8 @@ import 'package:hanasaku/constants/font.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/idol_data.dart';
 import 'package:hanasaku/constants/sizes.dart';
-import 'package:hanasaku/home/detail_page.dart';
+
+import 'package:hanasaku/home/detail_screen.dart';
 import 'package:hanasaku/query&mutation/querys.dart';
 
 class MyPostScreen extends StatefulWidget {
@@ -33,8 +34,8 @@ class _MyPostScreenState extends State<MyPostScreen> {
   Future<void> _fetchMyPosts() async {
     final GraphQLClient client = GraphQLProvider.of(context).value;
 
-    final QueryOptions options =
-        QueryOptions(document: myPostQuery, fetchPolicy: FetchPolicy.noCache);
+    final QueryOptions options = QueryOptions(
+        document: myPostQuery, fetchPolicy: FetchPolicy.cacheAndNetwork);
 
     final QueryResult result = await client.query(options);
 
@@ -69,7 +70,6 @@ class _MyPostScreenState extends State<MyPostScreen> {
         ),
       );
     }
-    // Step 1: Grouping posts by categoryId
     Map<int, List> groupedPosts = {};
     for (var post in _posts) {
       int categoryId = post['categoryId'];
@@ -137,8 +137,9 @@ class _MyPostScreenState extends State<MyPostScreen> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => DetailPage(
+                                builder: (context) => DetailScreen(
                                       postId: post?['id'],
+                                      isContent: false,
                                     )));
                       },
                       child: Card(
@@ -167,7 +168,7 @@ class _MyPostScreenState extends State<MyPostScreen> {
                                   ),
                                   Gaps.h5,
                                   Text(
-                                    '${post?['likes'].length}',
+                                    '${post?['likeCount']}',
                                     style: const TextStyle(
                                         fontFamily: MyFontFamily.lineSeedJP),
                                   ),

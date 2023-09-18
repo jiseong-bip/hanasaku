@@ -14,7 +14,7 @@ import 'package:image_picker/image_picker.dart';
 class EditPostScreen extends StatefulWidget {
   final int postId;
   final String title;
-  final String contents;
+  final String? contents;
   final List<XFile>? xImages;
 
   const EditPostScreen(

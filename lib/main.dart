@@ -9,6 +9,7 @@ import 'package:hanasaku/auth/sign_up_screen.dart';
 import 'package:hanasaku/constants/font.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/firebase_options.dart';
+import 'package:hanasaku/home/provider/postinfo_provider.dart';
 
 import 'package:hanasaku/nav/main_nav.dart';
 import 'package:hanasaku/setup/navigator.dart';
@@ -41,6 +42,9 @@ void main() async {
         ),
         ChangeNotifierProvider<UserInfoProvider>(
           create: (context) => UserInfoProvider(),
+        ),
+        ChangeNotifierProvider<PostInfo>(
+          create: (context) => PostInfo(),
         )
       ],
       child: MyApp(

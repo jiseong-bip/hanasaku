@@ -14,11 +14,7 @@ final viewPostsQuery = gql("""
             id
             userName
           }
-          likes {
-            user {
-              userName
-            }
-          }
+          likeCount
           isLiked
           comments {
             user {
@@ -33,24 +29,21 @@ final viewPostsQuery = gql("""
 final commentPostQuery = gql("""
       query ViewPost(\$viewPostPostId2: Int!) {
   viewPost(postId: \$viewPostPostId2) {
+
+  }
+}
+    """);
+
+final commentContentQuery = gql("""
+      query Query(\$contentId: Int!) {
+  viewContent(contentId: \$contentId) {
     comments {
-      isLiked
+      id
       comment
       createDate
-      id
-      likes {
-        userId
-      }
       user {
         id
         userName
-      }
-      recomments {
-        user {
-          userName
-        }
-        comment
-        createDate
       }
     }
   }
@@ -64,8 +57,27 @@ final postQuery = gql("""
       id
       userName
     }
-    comments{
+    comments {
+      isLiked
+      comment
+      createDate
       id
+      likes{
+        user{
+          id
+        }
+      }
+      user {
+        id
+        userName
+      }
+      recomments {
+        user {
+          userName
+        }
+        comment
+        createDate
+      }
     }
     images {
       url
@@ -73,11 +85,7 @@ final postQuery = gql("""
     createDate
     content
     isLiked
-    likes {
-      user {
-        userName
-      }
-    }
+    likeCount
     title
     id
   }
@@ -127,9 +135,7 @@ final myPostQuery = gql("""
           posts {
             id
             title
-          likes {
-            id
-          }
+          likeCount
           comments {
             id
           }
@@ -146,9 +152,7 @@ final likedPostQuery = gql("""
             post {
               title
               id
-              likes {
-                userId
-              }
+              likeCount
             categoryId
             comments {
               id
@@ -169,9 +173,7 @@ final myCommentQuery = gql("""
         id
         categoryId
         title
-        likes {
-          userId
-        }
+        likeCount
         comments {
           userId
         }
@@ -210,3 +212,28 @@ final getCategoryQuery = gql("""
         }
       }
     """);
+
+final contentQuery = gql("""
+query ViewContent(\$contentId: Int!) {
+  viewContent(contentId: \$contentId) {
+    comments {
+      comment
+      createDate
+      user {
+        userName
+        id
+      }
+      id
+    }
+    createDate
+    isLiked
+    likeCount
+    title
+    user {
+      id
+      userName
+    }
+    viewCount
+    key
+  }
+}""");

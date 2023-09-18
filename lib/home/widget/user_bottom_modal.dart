@@ -38,8 +38,6 @@ void showMyBottomSheet(BuildContext context, int userId) {
           if (result.isLoading) {
             return const CircularProgressIndicator();
           }
-
-          // 쿼리 응답으로부터 데이터 추출
           Map<String, dynamic> user = result.data?['viewUser'];
 
           return Scaffold(
