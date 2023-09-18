@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:hanasaku/constants/idol_data.dart';
 
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/home/notify_screen.dart';
@@ -52,29 +53,37 @@ class _PostsScreenState extends State<PostsScreen> {
             userInfoModel.setCurrentCategory(0);
           },
           child: const Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: Sizes.size16, vertical: Sizes.size14),
-            child: FaIcon(FontAwesomeIcons.bars),
+            padding: EdgeInsets.only(
+                left: Sizes.size16, top: Sizes.size20, bottom: Sizes.size20),
+            child: FaIcon(
+              FontAwesomeIcons.listUl,
+              size: Sizes.size20,
+            ),
           ),
         ),
-        title: const Text('Home'),
+        centerTitle: true,
+        title: Text(
+            '${idolData.singleWhere((idol) => idol["id"] == widget.categoryId)["type"]} Room'),
         actions: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               IconButton(
-                alignment: Alignment.bottomRight,
                 onPressed: () {},
                 icon: const FaIcon(
                   FontAwesomeIcons.magnifyingGlass,
+                  size: Sizes.size20,
                 ),
               ),
               IconButton(
-                alignment: Alignment.bottomCenter,
                 onPressed: () {
                   navigatorKey.currentState!.push(MaterialPageRoute(
                       builder: (context) => const NotifyScreen()));
                 },
-                icon: const FaIcon(FontAwesomeIcons.bell),
+                icon: const FaIcon(
+                  FontAwesomeIcons.bell,
+                  size: Sizes.size20,
+                ),
               ),
             ],
           ),

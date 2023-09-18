@@ -52,106 +52,109 @@ class _ContentsScreenState extends State<ContentsScreen> {
                 itemBuilder: (context, index) {
                   final content = contents[index];
 
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: Sizes.size14,
-                      horizontal: Sizes.size16,
-                    ),
-                    child: Container(
+                  return GestureDetector(
+                    onTap: () {
+                      navigatorKey.currentState!.push(MaterialPageRoute(
+                          builder: (context) => DetailScreen(
+                                postId: content['id'],
+                                isContent: true,
+                                videoKey: content['key'],
+                              )));
+                    },
+                    child: Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: Sizes.size10, vertical: Sizes.size10),
-                      decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(10),
-                              topRight: Radius.circular(50),
-                              bottomRight: Radius.circular(50),
-                              bottomLeft: Radius.circular(10)),
-                          gradient: const LinearGradient(
-                            colors: [Color(0xFFF5BFD0), Color(0xFFF6E7EC)],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.6),
-                              spreadRadius: 0,
-                              blurRadius: 3.0,
-                              offset: const Offset(
-                                  0, 5), // changes position of shadow
+                        vertical: Sizes.size14,
+                        horizontal: Sizes.size16,
+                      ),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: Sizes.size10, vertical: Sizes.size10),
+                        decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                topRight: Radius.circular(50),
+                                bottomRight: Radius.circular(50),
+                                bottomLeft: Radius.circular(10)),
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFFF5BFD0), Color(0xFFF6E7EC)],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
                             ),
-                          ]),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Container(
-                                  height: screenWidth / 8,
-                                  width: screenWidth / 8,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(width: 0.2),
-                                      color: Colors.grey),
-                                ),
-                                Gaps.h10,
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      padding:
-                                          const EdgeInsetsDirectional.symmetric(
-                                              horizontal: Sizes.size3),
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          border: Border.all(width: 2)),
-                                      child: const Text(
-                                        'FANDOM FM',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: Sizes.size10),
-                                      ),
-                                    ),
-                                    Text(
-                                      '${content['title']}',
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: Sizes.size16),
-                                    )
-                                  ],
-                                ),
-                              ],
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.6),
-                                      spreadRadius: 0,
-                                      blurRadius: 3.0,
-                                      offset: const Offset(
-                                          0, 3), // changes position of shadow
-                                    ),
-                                  ]),
-                              child: IconButton(
-                                onPressed: () {
-                                  navigatorKey.currentState!
-                                      .push(MaterialPageRoute(
-                                          builder: (context) => DetailScreen(
-                                                postId: content['id'],
-                                                isContent: true,
-                                                videoKey: content['key'],
-                                              )));
-                                },
-                                icon: const Icon(
-                                  Icons.play_arrow,
-                                  color: Color(0xFFF4BECF),
-                                ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.6),
+                                spreadRadius: 0,
+                                blurRadius: 3.0,
+                                offset: const Offset(
+                                    0, 5), // changes position of shadow
                               ),
-                            )
-                          ]),
+                            ]),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    height: screenWidth / 8,
+                                    width: screenWidth / 8,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(width: 0.2),
+                                        color: Colors.grey),
+                                  ),
+                                  Gaps.h10,
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsetsDirectional
+                                            .symmetric(horizontal: Sizes.size3),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            border: Border.all(width: 2)),
+                                        child: const Text(
+                                          'FANDOM FM',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: Sizes.size10),
+                                        ),
+                                      ),
+                                      Text(
+                                        '${content['title']}',
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: Sizes.size16),
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.6),
+                                        spreadRadius: 0,
+                                        blurRadius: 3.0,
+                                        offset: const Offset(
+                                            0, 3), // changes position of shadow
+                                      ),
+                                    ]),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Icon(
+                                    Icons.play_arrow,
+                                    color: Color(0xFFF4BECF),
+                                    size: Sizes.size24,
+                                  ),
+                                ),
+                              )
+                            ]),
+                      ),
                     ),
                   );
                 }),

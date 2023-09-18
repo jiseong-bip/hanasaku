@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 
 class BottomTextBar extends StatefulWidget {
   final TextEditingController commentController;
+  final bool isContent;
 
   final Function(bool isSendPost) onCommentChanged;
 
@@ -21,6 +22,7 @@ class BottomTextBar extends StatefulWidget {
     required this.commentController,
     required this.postId,
     required this.onCommentChanged,
+    required this.isContent,
   });
 
   @override
@@ -31,12 +33,13 @@ class _BottomTextBarState extends State<BottomTextBar> {
   String? nickName;
   bool _isWriting = false;
   bool _isSend = false;
+  bool? _isContent;
 
   Future<void> toggleCommentSend(
       BuildContext context, int postId, String comment) async {
     final GraphQLClient client = GraphQLProvider.of(context).value;
 
-    final MutationOptions options = MutationOptions(
+    final MutationOptions postOptions = MutationOptions(
       document: gql('''
         mutation Mutation(\$comment: String!, \$postId: Int!) {
           createComment(comment: \$comment, postId: \$postId) {
@@ -50,8 +53,24 @@ class _BottomTextBarState extends State<BottomTextBar> {
       },
       update: (cache, result) => result,
     );
+
+    final MutationOptions contentOptions = MutationOptions(
+      document: gql('''
+        mutation CreateContentComment(\$comment: String!, \$createContentCommentContentId2: Int!) {
+  createContentComment(comment: \$comment, contentId: \$createContentCommentContentId2) {
+    ok
+  }
+}
+      '''),
+      variables: <String, dynamic>{
+        'createContentCommentContentId2': postId,
+        'comment': comment,
+      },
+      update: (cache, result) => result,
+    );
     try {
-      final QueryResult result = await client.mutate(options);
+      final QueryResult result =
+          await client.mutate(_isContent! ? contentOptions : postOptions);
 
       if (result.hasException) {
         // Handle errors
@@ -59,9 +78,12 @@ class _BottomTextBarState extends State<BottomTextBar> {
         // You can also display an error message to the user if needed
       } else {
         final dynamic resultData = result.data;
-
-        if (resultData != null && resultData['createComment'] != null) {
-          final bool isLikeSuccessful = resultData['createComment']['ok'];
+        print(resultData);
+        if (resultData['createComment'] != null ||
+            resultData['createContentComment'] != null) {
+          final bool isLikeSuccessful = _isContent!
+              ? resultData['createContentComment']['ok']
+              : resultData['createComment']['ok'];
           if (isLikeSuccessful) {
             widget.commentController.clear();
             setState(() {
@@ -164,6 +186,7 @@ class _BottomTextBarState extends State<BottomTextBar> {
   @override
   void initState() {
     super.initState();
+    _isContent = widget.isContent;
     initName();
   }
 

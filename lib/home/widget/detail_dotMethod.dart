@@ -74,14 +74,14 @@ Future<dynamic> dotMethod(
                               borderRadius: BorderRadius.circular(10)),
                           child: const Stack(
                             children: [
-                              Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    vertical: Sizes.size16,
-                                  ),
-                                  child: FaIcon(
-                                    FontAwesomeIcons.penToSquare,
-                                    color: Colors.white,
-                                  )),
+                              // Padding(
+                              //     padding: EdgeInsets.symmetric(
+                              //       vertical: Sizes.size16,
+                              //     ),
+                              //     child: FaIcon(
+                              //       FontAwesomeIcons.penToSquare,
+                              //       color: Colors.white,
+                              //     )),
                               Padding(
                                 padding: EdgeInsets.symmetric(
                                     vertical: Sizes.size12),
@@ -90,7 +90,7 @@ Future<dynamic> dotMethod(
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontSize: Sizes.size24,
-                                          fontWeight: FontWeight.bold,
+                                          fontWeight: FontWeight.w400,
                                           fontFamily: MyFontFamily.lineSeedJP)),
                                 ),
                               )
@@ -196,14 +196,14 @@ Future<dynamic> dotMethod(
                               borderRadius: BorderRadius.circular(10)),
                           child: const Stack(
                             children: [
-                              Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    vertical: Sizes.size16,
-                                  ),
-                                  child: FaIcon(
-                                    FontAwesomeIcons.trash,
-                                    color: Colors.white,
-                                  )),
+                              // Padding(
+                              //     padding: EdgeInsets.symmetric(
+                              //       vertical: Sizes.size16,
+                              //     ),
+                              //     child: FaIcon(
+                              //       FontAwesomeIcons.trash,
+                              //       color: Colors.white,
+                              //     )),
                               Padding(
                                 padding: EdgeInsets.symmetric(
                                     vertical: Sizes.size12),
@@ -212,7 +212,7 @@ Future<dynamic> dotMethod(
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontSize: Sizes.size24,
-                                          fontWeight: FontWeight.bold,
+                                          fontWeight: FontWeight.w400,
                                           fontFamily: MyFontFamily.lineSeedJP)),
                                 ),
                               )
@@ -315,16 +315,16 @@ Future<dynamic> dotMethod(
                           borderRadius: BorderRadius.circular(10)),
                       child: const Stack(
                         children: [
-                          Padding(
-                              padding: EdgeInsets.symmetric(
-                                vertical: Sizes.size16,
-                              ),
-                              child: FaIcon(FontAwesomeIcons.solidFlag)),
+                          // Padding(
+                          //     padding: EdgeInsets.symmetric(
+                          //       vertical: Sizes.size16,
+                          //     ),
+                          //     child: FaIcon(FontAwesomeIcons.solidFlag)),
                           Center(
                             child: Text('届け出る',
                                 style: TextStyle(
                                     fontSize: Sizes.size24,
-                                    fontWeight: FontWeight.bold,
+                                    fontWeight: FontWeight.w400,
                                     fontFamily: MyFontFamily.lineSeedJP)),
                           )
                         ],
@@ -515,13 +515,13 @@ Future<dynamic> commentDotMethod(
                     borderRadius: BorderRadius.circular(10)),
                 child: Stack(
                   children: [
-                    Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: Sizes.size16,
-                        ),
-                        child: FaIcon(post['user']['userName'] == userName
-                            ? FontAwesomeIcons.solidTrashCan
-                            : FontAwesomeIcons.solidFlag)),
+                    // Padding(
+                    //     padding: const EdgeInsets.symmetric(
+                    //       vertical: Sizes.size16,
+                    //     ),
+                    //     child: FaIcon(post['user']['userName'] == userName
+                    //         ? FontAwesomeIcons.solidTrashCan
+                    //         : FontAwesomeIcons.solidFlag)),
                     Center(
                       child: Text(
                           post['user']['userName'] == userName
@@ -529,7 +529,7 @@ Future<dynamic> commentDotMethod(
                               : '届け出る',
                           style: const TextStyle(
                               fontSize: Sizes.size24,
-                              fontWeight: FontWeight.bold)),
+                              fontWeight: FontWeight.w400)),
                     )
                   ],
                 ),

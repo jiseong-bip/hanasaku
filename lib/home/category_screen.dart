@@ -73,23 +73,23 @@ class _CategoryPageState extends State<CategoryPage> {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.only(
+                    top: Sizes.size10, left: Sizes.size10, right: Sizes.size10),
                 child: Row(
                   children: [
                     Expanded(
                       child: Container(
                         height: screenHeight / 20,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                              color: Colors.grey,
-                              style: BorderStyle.solid,
-                              width: 0.80),
-                        ),
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.grey.shade300),
                         child: TextField(
+                          textAlign: TextAlign.start,
                           controller: _searchController,
                           style: const TextStyle(color: Colors.black),
                           decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 10.0, horizontal: 10.0),
                               focusedBorder: const OutlineInputBorder(
                                 borderSide:
                                     BorderSide(color: Colors.transparent),
@@ -102,7 +102,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                 borderSide:
                                     BorderSide(color: Colors.transparent),
                               ),
-                              labelText: "Search Idol",
+                              hintText: "Search Idol",
                               labelStyle: const TextStyle(
                                   color: Colors.grey), // 이 부분을 추가합니다.
                               hintStyle: const TextStyle(color: Colors.grey),
@@ -124,10 +124,10 @@ class _CategoryPageState extends State<CategoryPage> {
                           });
                         },
                         icon: FaIcon(
-                          FontAwesomeIcons.gear,
+                          FontAwesomeIcons.sliders,
                           color: gearIconClicked
                               ? Theme.of(context).primaryColor
-                              : null,
+                              : Colors.grey.shade600,
                         ))
                   ],
                 ),
@@ -216,7 +216,7 @@ class CategoryWidget extends StatelessWidget {
 
     String buttonText = isJoined ? 'Go' : 'Join';
     if (isJoined && gearIconClicked) {
-      buttonText = '탈퇴하기';
+      buttonText = 'Out';
     }
     return Stack(
       children: [
@@ -238,19 +238,20 @@ class CategoryWidget extends StatelessWidget {
           ),
           child: Stack(
             children: [
-              Positioned(
-                left: -15,
-                top: 0,
-                bottom: 0,
-                child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Container(
-                      width: 30,
-                      height: 30,
-                      decoration: const BoxDecoration(
-                          shape: BoxShape.circle, color: Colors.white),
-                    )),
-              ),
+              if (isJoined)
+                Positioned(
+                  left: -15,
+                  top: 0,
+                  bottom: 0,
+                  child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Container(
+                        width: 30,
+                        height: 30,
+                        decoration: const BoxDecoration(
+                            shape: BoxShape.circle, color: Colors.white),
+                      )),
+                ),
               Column(
                 children: [
                   Align(
@@ -305,7 +306,7 @@ class CategoryWidget extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.only(
-              top: Sizes.size5, bottom: Sizes.size10, right: Sizes.size10),
+              top: Sizes.size5, bottom: Sizes.size10, right: Sizes.size5),
           child: Align(
             alignment: Alignment.bottomRight,
             child: Row(

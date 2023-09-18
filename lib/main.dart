@@ -119,15 +119,14 @@ class MyApp extends StatelessWidget {
         title: 'social_community',
         theme: ThemeData(
             scaffoldBackgroundColor: Colors.white,
-            primaryColor: const Color(0xFFF9C7C7),
+            primaryColor: const Color(0xFFF4BECF),
             appBarTheme: const AppBarTheme(
-              toolbarHeight: Sizes.size56,
               foregroundColor: Colors.black,
               backgroundColor: Colors.white,
               elevation: 1,
               titleTextStyle: TextStyle(
                 color: Colors.black,
-                fontSize: Sizes.size16 + Sizes.size2,
+                fontSize: Sizes.size20,
                 fontWeight: FontWeight.w600,
               ),
             ),

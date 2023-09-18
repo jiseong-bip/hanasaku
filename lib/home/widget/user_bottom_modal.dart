@@ -144,6 +144,7 @@ void showMyBottomSheet(BuildContext context, int userId) {
                           context,
                           MaterialPageRoute(
                             builder: (context) => ChatRoom(
+                              userName: user['user']['userName'],
                               userId: user['id'],
                             ),
                           ),
@@ -152,6 +153,7 @@ void showMyBottomSheet(BuildContext context, int userId) {
                           context,
                           MaterialPageRoute(
                               builder: (context) => ChatRoom(
+                                    userName: user['user']['userName'],
                                     roomId: user['isChat'],
                                     userId: user['id'],
                                   )));

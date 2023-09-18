@@ -149,7 +149,7 @@ class _BottomTextBarState extends State<BottomTextBar> {
                 textInputAction: TextInputAction.newline,
                 cursorColor: Theme.of(context).primaryColor,
                 decoration: InputDecoration(
-                    hintText: "Add comment...",
+                    hintText: "Send Message...",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(
                         Sizes.size12,

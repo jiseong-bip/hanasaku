@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
@@ -72,11 +73,11 @@ class _CommentsQueryState extends State<CommentsQuery> {
     final minDifference = difference.inMinutes;
 
     if (dayDifference != 0) {
-      return "$dayDifference d ago";
+      return "${dayDifference}d ago";
     } else if (hoursDifference != 0) {
-      return "$hoursDifference h ago";
+      return "${hoursDifference}h ago";
     } else {
-      return "$minDifference m ago";
+      return "${minDifference}m ago";
     }
   }
 
@@ -88,8 +89,6 @@ class _CommentsQueryState extends State<CommentsQuery> {
     isLikedList = postInfo.getIsLikedList();
     commentsLikesCount = postInfo.getCommentLikesCount();
 
-    print("recommentshowed: $isRecommentShowed");
-    print("isLiked: $isLikedList");
     return postInfo.getComments() != null
         ? GestureDetector(
             onTap: () {
@@ -110,8 +109,13 @@ class _CommentsQueryState extends State<CommentsQuery> {
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const CircleAvatar(
-                              radius: 16,
+                            CircleAvatar(
+                              radius: 12,
+                              child: SvgPicture.asset(
+                                'assets/user.svg',
+                                width: 32,
+                                height: 32,
+                              ),
                             ),
                             Gaps.v10,
                             Expanded(
@@ -272,19 +276,21 @@ class _CommentsQueryState extends State<CommentsQuery> {
                                     child: Column(
                                       children: [
                                         FaIcon(
-                                          FontAwesomeIcons.heart,
-                                          size: Sizes.size20,
+                                          isLikedList[index1]
+                                              ? FontAwesomeIcons.solidHeart
+                                              : FontAwesomeIcons.heart,
+                                          size: Sizes.size16,
                                           color: isLikedList[index1]
-                                              ? Colors.red
+                                              ? Theme.of(context).primaryColor
                                               : Colors.grey.shade500,
                                         ),
                                         Gaps.v2,
-                                        Text(
-                                          '${commentsLikesCount[index1]}', // 좋아요 수 표시
-                                          style: TextStyle(
-                                            color: Colors.grey.shade500,
-                                          ),
-                                        ),
+                                        // Text(
+                                        //   '${commentsLikesCount[index1]}', // 좋아요 수 표시
+                                        //   style: TextStyle(
+                                        //       color: Colors.grey.shade500,
+                                        //       fontSize: Sizes.size12),
+                                        // ),
                                       ],
                                     ),
                                   ),

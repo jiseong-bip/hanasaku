@@ -12,10 +12,12 @@ import 'package:provider/provider.dart';
 
 class ChatRoom extends StatefulWidget {
   final int? roomId, userId;
+  final String userName;
   const ChatRoom({
     super.key,
     this.roomId,
     this.userId,
+    required this.userName,
   });
 
   @override
@@ -204,10 +206,14 @@ class _ChatRoomState extends State<ChatRoom> {
       onTap: _onScaffoldTap,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Chat'),
+          title: Text(widget.userName),
           actions: [
             IconButton(
-              icon: const Icon(Icons.settings),
+              icon: FaIcon(
+                FontAwesomeIcons.trash,
+                color: Colors.grey.shade500,
+                size: Sizes.size20,
+              ),
               onPressed: () {
                 setState(() {
                   _isSelectMode = !_isSelectMode;
@@ -246,54 +252,39 @@ class _ChatRoomState extends State<ChatRoom> {
                         ? Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: Sizes.size12,
-                                vertical: Sizes.size12),
+                                vertical: Sizes.size5),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                Transform.translate(
-                                  offset: const Offset(0, 20),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                            border: Border.all(width: 0.4),
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            color: Colors.grey.shade300),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: Sizes.size10,
-                                              vertical: Sizes.size5),
-                                          child: Text(
-                                            '${_chatList[index]['message']}',
-                                            style: const TextStyle(
-                                                fontSize: Sizes.size20,
-                                                fontWeight: FontWeight.w500),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: Sizes.size10),
+                                      constraints: const BoxConstraints(
+                                          minHeight: 35, maxHeight: 35),
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: const Color(0xFFEFAFC3)),
+                                      child: Center(
+                                        child: Text(
+                                          '${_chatList[index]['message']}',
+                                          style: const TextStyle(
+                                            fontSize: Sizes.size16,
+                                            fontWeight: FontWeight.w400,
                                           ),
                                         ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                Gaps.h12,
-                                Container(
-                                  width: Sizes.size24, // 아이콘 크기 + 여분의 여백
-                                  height: Sizes.size24, // 아이콘 크기 + 여분의 여백
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle, // 원 모양으로 만들기
-                                    color: Colors.blue, // 배경 색상 설정
-                                  ),
-                                  child: const Center(
-                                    child: FaIcon(
-                                      FontAwesomeIcons.user,
-                                      size: Sizes.size20,
-                                      color: Colors.white, // 아이콘 색상 설정
-                                    ),
-                                  ),
+                                      ),
+                                    )
+                                  ],
                                 ),
                                 if (_isSelectMode)
                                   Checkbox(
+                                    activeColor: Theme.of(context).primaryColor,
+                                    focusColor: Theme.of(context).primaryColor,
+                                    shape: const CircleBorder(),
                                     value: _isSelected[index],
                                     onChanged: (bool? newValue) {
                                       setState(() {
@@ -314,59 +305,35 @@ class _ChatRoomState extends State<ChatRoom> {
                         : Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: Sizes.size12,
-                                vertical: Sizes.size12),
+                                vertical: Sizes.size5),
                             child: Row(
                               children: [
-                                Container(
-                                  width: Sizes.size24, // 아이콘 크기 + 여분의 여백
-                                  height: Sizes.size24, // 아이콘 크기 + 여분의 여백
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle, // 원 모양으로 만들기
-                                    color: Colors.blue, // 배경 색상 설정
-                                  ),
-                                  child: const Center(
-                                    child: FaIcon(
-                                      FontAwesomeIcons.user,
-                                      size: Sizes.size20,
-                                      color: Colors.white, // 아이콘 색상 설정
-                                    ),
-                                  ),
-                                ),
-                                Gaps.h10,
-                                Transform.translate(
-                                  offset: const Offset(0, 20),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        '${_chatList[index]['user']['userName']}',
-                                        style: const TextStyle(
-                                          fontSize: Sizes.size16,
-                                          fontWeight: FontWeight.w400,
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      constraints: const BoxConstraints(
+                                          minHeight: 35, maxHeight: 35),
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: const Color(0xFFE3E7EB)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: Sizes.size10,
                                         ),
-                                      ),
-                                      Gaps.v10,
-                                      Container(
-                                        decoration: BoxDecoration(
-                                            border: Border.all(width: 0.4),
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            color: Colors.grey.shade300),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: Sizes.size10,
-                                              vertical: Sizes.size5),
+                                        child: Center(
                                           child: Text(
                                             '${_chatList[index]['message']}',
                                             style: const TextStyle(
-                                                fontSize: Sizes.size20,
-                                                fontWeight: FontWeight.w500),
+                                              fontSize: Sizes.size16,
+                                              fontWeight: FontWeight.w400,
+                                            ),
                                           ),
                                         ),
-                                      )
-                                    ],
-                                  ),
+                                      ),
+                                    )
+                                  ],
                                 ),
                                 if (_isSelectMode &&
                                     _chatList[index]['user']['userName'] ==
@@ -434,14 +401,13 @@ class _ChatRoomState extends State<ChatRoom> {
                           child: const Text(
                             'delete',
                             style: TextStyle(
-                                fontSize: Sizes.size24,
+                                fontSize: Sizes.size20,
                                 fontWeight: FontWeight.w500),
                           ),
                         ),
                       ),
                     ),
                   ),
-                  Gaps.h10,
                 ],
               ),
             BottomTextBar(

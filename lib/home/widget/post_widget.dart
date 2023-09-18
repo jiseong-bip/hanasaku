@@ -2,6 +2,7 @@
 
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/constants/font.dart';
@@ -155,11 +156,11 @@ class _PostState extends State<Post> {
       final minDifference = difference.inMinutes;
 
       if (dayDifference != 0) {
-        return "$dayDifference d ago";
+        return "${dayDifference}d ago";
       } else if (hoursDifference != 0) {
-        return "$hoursDifference h ago";
+        return "${hoursDifference}h ago";
       } else {
-        return "$minDifference m ago";
+        return "${minDifference}m ago";
       }
     }
 
@@ -173,7 +174,7 @@ class _PostState extends State<Post> {
             border: Border(
           // 위쪽 border
           bottom:
-              BorderSide(width: 3.0, color: Colors.grey.shade400), // 아래쪽 border
+              BorderSide(width: 1.5, color: Colors.grey.shade400), // 아래쪽 border
         )),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: Sizes.size5),
@@ -186,19 +187,10 @@ class _PostState extends State<Post> {
                 },
                 child: Row(
                   children: [
-                    Container(
-                      width: Sizes.size20, // 아이콘 크기 + 여분의 여백
-                      height: Sizes.size20, // 아이콘 크기 + 여분의 여백
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle, // 원 모양으로 만들기
-                        color: Colors.blue, // 배경 색상 설정
-                      ),
-                      child: const Center(
-                        child: FaIcon(
-                          FontAwesomeIcons.user,
-                          size: Sizes.size16,
-                          color: Colors.white, // 아이콘 색상 설정
-                        ),
+                    CircleAvatar(
+                      radius: 12,
+                      child: SvgPicture.asset(
+                        'assets/user.svg',
                       ),
                     ),
                     Gaps.h10,
@@ -211,14 +203,11 @@ class _PostState extends State<Post> {
                       ),
                     ),
                     Gaps.h10,
-                    Transform.translate(
-                      offset: const Offset(0, 3),
-                      child: Text(
-                        getTime(createDate),
-                        style: const TextStyle(
-                          fontFamily: MyFontFamily.lineSeedJP,
-                          fontSize: Sizes.size10,
-                        ),
+                    Text(
+                      getTime(createDate),
+                      style: const TextStyle(
+                        fontFamily: MyFontFamily.lineSeedJP,
+                        fontSize: Sizes.size10,
                       ),
                     ),
                   ],
@@ -263,9 +252,15 @@ class _PostState extends State<Post> {
                                 itemCount: imagekey.length,
                                 itemBuilder: (context, index) {
                                   return Center(
-                                    child: CachedImage(
-                                        url: (imagekey[index]
-                                            as Map<String, dynamic>)['url']),
+                                    child: Container(
+                                      clipBehavior: Clip.hardEdge,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: CachedImage(
+                                          url: (imagekey[index]
+                                              as Map<String, dynamic>)['url']),
+                                    ),
                                   );
                                 },
                                 onPageChanged: (int page) {
@@ -310,17 +305,18 @@ class _PostState extends State<Post> {
                         },
                         child: Row(
                           children: [
-                            Icon(
-                              Icons.thumb_up_alt,
-                              color: isLiked
-                                  ? Theme.of(context).primaryColor
-                                  : Colors.black,
+                            FaIcon(
+                              isLiked
+                                  ? FontAwesomeIcons.solidHeart
+                                  : FontAwesomeIcons.heart,
+                              color: Theme.of(context).primaryColor,
                               size: Sizes.size16,
                             ),
                             Gaps.h5,
                             Text(
                               '$counts',
                               style: const TextStyle(
+                                fontSize: Sizes.size12,
                                 fontFamily: MyFontFamily.lineSeedJP,
                               ),
                             ),
@@ -334,14 +330,16 @@ class _PostState extends State<Post> {
                         },
                         child: Row(
                           children: [
-                            const FaIcon(
+                            FaIcon(
                               FontAwesomeIcons.comment,
+                              color: Colors.grey.shade600,
                               size: Sizes.size16,
                             ),
                             Gaps.h5,
                             Text(
                               '$commentCount',
                               style: const TextStyle(
+                                fontSize: Sizes.size12,
                                 fontFamily: MyFontFamily.lineSeedJP,
                               ),
                             ),

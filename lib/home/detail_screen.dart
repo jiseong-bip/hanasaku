@@ -1,6 +1,7 @@
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/constants/font.dart';
@@ -125,14 +126,8 @@ class _DetailScreenState extends State<DetailScreen> {
   Future<void> _toggleLikePost(BuildContext context, int postId) async {
     final GraphQLClient client = GraphQLProvider.of(context).value;
 
-    final MutationOptions options = MutationOptions(
-      document: isContent! ? gql('''
-        mutation LikeContent(\$likeContentContentId2: Int!) {
-          likeContent(contentId: \$likeContentContentId2) {
-            ok
-          }
-        }
-      ''') : gql('''
+    final MutationOptions postOptions = MutationOptions(
+      document: gql('''
         mutation LikePost(\$postId: Int!) {
           likePost(postId: \$postId) {
             ok
@@ -145,8 +140,23 @@ class _DetailScreenState extends State<DetailScreen> {
       update: (cache, result) => result,
     );
 
+    final MutationOptions commentOptions = MutationOptions(
+      document: gql('''
+        mutation LikeContent(\$likeContentContentId2: Int!) {
+          likeContent(contentId: \$likeContentContentId2) {
+            ok
+          }
+        }
+      '''),
+      variables: <String, dynamic>{
+        'likeContentContentId2': postId,
+      },
+      update: (cache, result) => result,
+    );
+
     try {
-      final QueryResult result = await client.mutate(options);
+      final QueryResult result =
+          await client.mutate(isContent! ? commentOptions : postOptions);
 
       if (result.hasException) {
         // Handle errors
@@ -155,8 +165,11 @@ class _DetailScreenState extends State<DetailScreen> {
       } else {
         final dynamic resultData = result.data;
 
-        if (resultData != null && resultData['likePost'] != null) {
-          final bool isLikeSuccessful = resultData['likePost']['ok'];
+        if (resultData != null) {
+          final bool isLikeSuccessful = isContent!
+              ? resultData['likeContent']['ok']
+              : resultData['likePost']['ok'];
+
           if (isLikeSuccessful) {
             setState(() {
               isLiked = !isLiked;
@@ -203,11 +216,11 @@ class _DetailScreenState extends State<DetailScreen> {
     final minDifference = difference.inMinutes;
 
     if (dayDifference != 0) {
-      return "$dayDifference d ago";
+      return "${dayDifference}d ago";
     } else if (hoursDifference != 0) {
-      return "$hoursDifference h ago";
+      return "${hoursDifference}h ago";
     } else {
-      return "$minDifference m ago";
+      return "${minDifference}m ago";
     }
   }
 
@@ -270,6 +283,7 @@ class _DetailScreenState extends State<DetailScreen> {
           ),
         ),
         bottomSheet: BottomTextBar(
+          isContent: widget.isContent,
           commentController: _commentController,
           postId: widget.postId,
           onCommentChanged: (isSendPost) async {
@@ -304,7 +318,7 @@ class _DetailScreenState extends State<DetailScreen> {
                 border: Border(
               // 위쪽 border
               bottom: BorderSide(
-                  width: 3.0, color: Colors.grey.shade400), // 아래쪽 border
+                  width: 1.5, color: Colors.grey.shade400), // 아래쪽 border
             )),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: Sizes.size5),
@@ -313,8 +327,11 @@ class _DetailScreenState extends State<DetailScreen> {
                 children: [
                   Row(
                     children: [
-                      const CircleAvatar(
+                      CircleAvatar(
                         radius: 12,
+                        child: SvgPicture.asset(
+                          'assets/user.svg',
+                        ),
                       ),
                       Gaps.h10,
                       Text(
@@ -325,13 +342,10 @@ class _DetailScreenState extends State<DetailScreen> {
                         ),
                       ),
                       Gaps.h10,
-                      Transform.translate(
-                        offset: const Offset(0, 3),
-                        child: Text(
-                          createDate != null ? getTime(createDate) : '',
-                          style: const TextStyle(
-                            fontSize: Sizes.size10,
-                          ),
+                      Text(
+                        createDate != null ? getTime(createDate) : '',
+                        style: const TextStyle(
+                          fontSize: Sizes.size10,
                         ),
                       ),
                     ],
@@ -378,24 +392,29 @@ class _DetailScreenState extends State<DetailScreen> {
                                   itemBuilder: (context, index) {
                                     return GestureDetector(
                                       onTap: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return Dialog(
-                                              child: Stack(
-                                                fit: StackFit
-                                                    .expand, // 스택을 전체 화면으로 확장
-                                                children: [
-                                                  CachedImage(
-                                                      url: (imagekey[index]
-                                                          as Map<String,
-                                                              dynamic>)['url']),
-                                                  Positioned(
-                                                    right: 10,
-                                                    bottom: 10,
-                                                    child: IconButton(
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (BuildContext context) {
+                                              return Scaffold(
+                                                backgroundColor: Colors.black,
+                                                appBar: AppBar(
+                                                  backgroundColor:
+                                                      Colors.transparent,
+                                                  elevation: 0.0,
+                                                  leading: IconButton(
+                                                    icon: const Icon(
+                                                        Icons.close,
+                                                        color: Colors.white),
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                  ),
+                                                  actions: [
+                                                    IconButton(
                                                       icon: const Icon(
-                                                          Icons.share),
+                                                          Icons.share,
+                                                          color: Colors.white),
                                                       onPressed: () async {
                                                         try {
                                                           var image = await DefaultCacheManager()
@@ -410,24 +429,46 @@ class _DetailScreenState extends State<DetailScreen> {
                                                           await Share
                                                               .shareXFiles([
                                                             xImage
-                                                          ], text: 'Great picture');
+                                                          ], text: '멋진 사진입니다');
                                                         } catch (e) {
                                                           print(
-                                                              "Error while sharing: $e");
+                                                              "공유 중 오류 발생: $e");
                                                         }
                                                       },
                                                     ),
+                                                  ],
+                                                ),
+                                                body: SafeArea(
+                                                  child: Center(
+                                                    child: InteractiveViewer(
+                                                      boundaryMargin:
+                                                          const EdgeInsets.all(
+                                                              20.0),
+                                                      minScale: 0.1,
+                                                      maxScale: 2.0,
+                                                      child: CachedImage(
+                                                          url: (imagekey[index]
+                                                                  as Map<String,
+                                                                      dynamic>)[
+                                                              'url']),
+                                                    ),
                                                   ),
-                                                ],
-                                              ),
-                                            );
-                                          },
+                                                ),
+                                              );
+                                            },
+                                          ),
                                         );
                                       },
                                       child: Center(
-                                        child: CachedImage(
-                                            url: (imagekey[index] as Map<String,
-                                                dynamic>)['url']),
+                                        child: Container(
+                                          clipBehavior: Clip.hardEdge,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          child: CachedImage(
+                                              url: (imagekey[index] as Map<
+                                                  String, dynamic>)['url']),
+                                        ),
                                       ),
                                     );
                                   },
@@ -474,27 +515,40 @@ class _DetailScreenState extends State<DetailScreen> {
                             },
                             child: Row(
                               children: [
-                                Icon(
-                                  Icons.thumb_up_alt,
-                                  color: isLiked
-                                      ? Theme.of(context).primaryColor
-                                      : Colors.black,
+                                FaIcon(
+                                  isLiked
+                                      ? FontAwesomeIcons.solidHeart
+                                      : FontAwesomeIcons.heart,
+                                  color: Theme.of(context).primaryColor,
                                   size: Sizes.size16,
                                 ),
                                 Gaps.h5,
-                                Text('$postLikeCounts'),
+                                Text(
+                                  '$postLikeCounts',
+                                  style: const TextStyle(
+                                    fontSize: Sizes.size12,
+                                    fontFamily: MyFontFamily.lineSeedJP,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
                           Gaps.h16,
                           Row(
                             children: [
-                              const FaIcon(
+                              FaIcon(
                                 FontAwesomeIcons.comment,
                                 size: Sizes.size16,
+                                color: Colors.grey.shade600,
                               ),
                               Gaps.h5,
-                              Text('$commentsCount'),
+                              Text(
+                                '$commentsCount',
+                                style: const TextStyle(
+                                  fontSize: Sizes.size12,
+                                  fontFamily: MyFontFamily.lineSeedJP,
+                                ),
+                              ),
                             ],
                           ),
                         ],

@@ -143,229 +143,248 @@ class _CreateScreenState extends State<CreateScreen> {
         Provider.of<UserInfoProvider>(context, listen: false);
     final selectedCategory = userInfoProvider.getSelectedCategory();
     final deviceHeight = MediaQuery.of(context).size.height;
-    return Scaffold(
-      appBar: AppBar(
-          title: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                  color: Colors.grey, style: BorderStyle.solid, width: 0.80),
-            ),
-            child: DropdownButtonFormField(
-              focusColor: Colors.white,
-              isExpanded: true,
-              decoration: const InputDecoration(
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.transparent),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.transparent),
-                ),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.transparent),
-                ),
-              ),
-              hint: const Center(
-                child: Text(
-                  'category',
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              items: selectedCategory.map((value) {
-                return DropdownMenuItem(
-                  value: value['id'],
-                  child: Center(
-                    child: Text(
-                      value['name'],
-                    ),
-                  ),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  categoryId = value as int;
-                });
-              },
-              onSaved: (newValue) {
-                formData['categoryId'] = newValue;
-              },
-            ),
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        appBar: AppBar(),
+        body: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: Sizes.size16, vertical: Sizes.size10),
-              child: GestureDetector(
-                onTap: () {
-                  //_toggleSubmit(context);
-                  if (_formKey.currentState != null) {
-                    if (_formKey.currentState!.validate() &&
-                        categoryId != null) {
-                      _formKey.currentState!.save();
-                      _toggleSubmit(context);
-                      Navigator.pop(context);
-                    } else {
-                      // If the category is not selected, show an AlertDialog
-                      if (categoryId == null) {
-                        _showDialog(context, "카테고리를 선택해주세요");
-                      }
-                    }
-                  }
-                },
-                child: Container(
-                  width: 85,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      border: Border.all(width: 0.3),
-                      color: Colors.grey.shade300),
-                  child: Transform.translate(
-                    offset: const Offset(0, 8),
-                    child: const Text(
-                      'Submit',
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-              ),
-            )
-          ]),
-      body: Stack(
-        children: [
-          Form(
-              key: _formKey,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Sizes.size10),
-                child: Column(
-                  children: [
-                    TextFormField(
-                      textInputAction: TextInputAction.newline,
-                      minLines: null,
-                      maxLines: null,
-                      decoration: InputDecoration(
-                        hintText: 'Title',
-                        hintStyle: const TextStyle(
-                            fontSize: Sizes.size20,
-                            fontWeight: FontWeight.w600),
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.grey.shade200,
+          child: Stack(
+            children: [
+              // Container(
+              //   height: 40,
+              //   decoration: BoxDecoration(
+              //     borderRadius: BorderRadius.circular(20),
+              //     border: Border.all(
+              //         color: Colors.grey, style: BorderStyle.solid, width: 0.80),
+              //   ),
+              //   child:
+              // ),
+              Form(
+                  key: _formKey,
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: Sizes.size10),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        DropdownButtonFormField(
+                          focusColor: Colors.white,
+                          isExpanded: true,
+                          decoration: const InputDecoration(
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.transparent),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.transparent),
+                            ),
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.transparent),
+                            ),
                           ),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.grey.shade200,
+                          hint: const Center(
+                            child: Text(
+                              'Room',
+                            ),
                           ),
+                          items: selectedCategory.map((value) {
+                            return DropdownMenuItem(
+                              value: value['id'],
+                              child: Center(
+                                child: Text(
+                                  value['name'],
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              categoryId = value as int;
+                            });
+                          },
+                          onSaved: (newValue) {
+                            formData['categoryId'] = newValue;
+                          },
                         ),
-                      ),
-                      validator: (value) {
-                        if (value != null && value.isEmpty) {
-                          return "Plase write your Title";
-                        }
-                        return null;
-                      },
-                      onSaved: (newValue) {
-                        if (newValue != null) {
-                          formData['title'] = newValue;
-                        }
-                      },
-                    ),
-                    TextFormField(
-                      textInputAction: TextInputAction.newline,
-                      minLines: null,
-                      maxLines: null,
-                      decoration: const InputDecoration(
-                        hintText: 'Contents',
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.white,
-                          ),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      validator: (value) {
-                        return null;
-                      },
-                      onSaved: (newValue) {
-                        formData['contents'] = newValue ?? " ";
-                      },
-                    ),
-                    SizedBox(
-                      height: deviceHeight / 4, // 디바이스 높이의 1/4
-                      child: _images.isEmpty
-                          ? const Center(child: Text('No images selected'))
-                          : CarouselSlider.builder(
-                              itemCount: _images.length,
-                              itemBuilder: (BuildContext context, int index,
-                                  int pageViewIndex) {
-                                return Column(
-                                  children: [
-                                    Flexible(
-                                        child: Image.file(
-                                            File(_images[index].path))),
-                                    IconButton(
-                                      icon: const Icon(Icons.delete,
-                                          color: Colors.black),
-                                      onPressed: () {
-                                        setState(() {
-                                          _images.removeAt(index);
-                                        });
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
-                              options: CarouselOptions(
-                                height: deviceHeight / 4,
-                                enlargeCenterPage: true,
-                                autoPlay: false,
+                        TextFormField(
+                          textInputAction: TextInputAction.newline,
+                          minLines: null,
+                          maxLines: null,
+                          decoration: InputDecoration(
+                            hintText: 'Title',
+                            hintStyle: const TextStyle(
+                                fontSize: Sizes.size20,
+                                fontWeight: FontWeight.w600),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.grey.shade200,
                               ),
                             ),
-                    )
-                  ],
-                ),
-              )),
-          Positioned(
-              bottom: 0,
-              width: size.width,
-              child: BottomAppBar(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: Sizes.size5,
-                    vertical: Sizes.size10,
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                          child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: Sizes.size14),
-                        child: Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                getImages(ImageSource.gallery);
-                              },
-                              child: const FaIcon(FontAwesomeIcons.photoFilm),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.grey.shade200,
+                              ),
                             ),
-                            Gaps.h20,
-                            GestureDetector(
-                              onTap: () {
-                                getImages(ImageSource.camera);
-                              },
-                              child: const FaIcon(FontAwesomeIcons.camera),
-                            )
-                          ],
+                          ),
+                          validator: (value) {
+                            if (value != null && value.isEmpty) {
+                              return "Plase write your Title";
+                            }
+                            return null;
+                          },
+                          onSaved: (newValue) {
+                            if (newValue != null) {
+                              formData['title'] = newValue;
+                            }
+                          },
                         ),
-                      )),
+                        TextFormField(
+                          textInputAction: TextInputAction.newline,
+                          minLines: null,
+                          maxLines: null,
+                          decoration: const InputDecoration(
+                            hintText: 'Contents',
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.white,
+                              ),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          validator: (value) {
+                            return null;
+                          },
+                          onSaved: (newValue) {
+                            formData['contents'] = newValue ?? " ";
+                          },
+                        ),
+                        SizedBox(
+                          height: deviceHeight / 3, // 디바이스 높이의 1/4
+                          child: _images.isEmpty
+                              ? const Center(child: Text('No images selected'))
+                              : CarouselSlider.builder(
+                                  itemCount: _images.length,
+                                  itemBuilder: (BuildContext context, int index,
+                                      int pageViewIndex) {
+                                    return Column(
+                                      children: [
+                                        Flexible(
+                                            child: Image.file(
+                                                File(_images[index].path))),
+                                        IconButton(
+                                          icon: const FaIcon(
+                                            FontAwesomeIcons.circleXmark,
+                                            color: Colors.black,
+                                            size: Sizes.size16,
+                                          ),
+                                          onPressed: () {
+                                            setState(() {
+                                              _images.removeAt(index);
+                                            });
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                  options: CarouselOptions(
+                                    height: deviceHeight / 4,
+                                    enlargeCenterPage: true,
+                                    autoPlay: false,
+                                  ),
+                                ),
+                        )
+                      ],
+                    ),
+                  )),
+              // Positioned(
+              //     bottom: 0,
+              //     width: size.width,
+              //     child: )
+            ],
+          ),
+        ),
+        bottomSheet: BottomAppBar(
+          elevation: 3,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: Sizes.size5,
+              vertical: Sizes.size10,
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                    child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: Sizes.size14),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          getImages(ImageSource.gallery);
+                        },
+                        child: FaIcon(
+                          FontAwesomeIcons.image,
+                          color: Colors.grey.shade500,
+                        ),
+                      ),
+                      Gaps.h20,
+                      // GestureDetector(
+                      //   onTap: () {
+                      //     getImages(ImageSource.camera);
+                      //   },
+                      //   child: const FaIcon(FontAwesomeIcons.camera),
+                      // ),
+
+                      GestureDetector(
+                        onTap: () {
+                          //_toggleSubmit(context);
+                          if (_formKey.currentState != null) {
+                            if (_formKey.currentState!.validate() &&
+                                categoryId != null) {
+                              _formKey.currentState!.save();
+                              _toggleSubmit(context);
+                              Navigator.pop(context);
+                            } else {
+                              // If the category is not selected, show an AlertDialog
+                              if (categoryId == null) {
+                                _showDialog(context, "카테고리를 선택해주세요");
+                              }
+                            }
+                          }
+                        },
+                        child: Container(
+                          height: 45,
+                          width: 100,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              color: Theme.of(context).primaryColor),
+                          child: const Center(
+                            child: Text(
+                              'Submit',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      )
                     ],
                   ),
-                ),
-              ))
-        ],
+                )),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

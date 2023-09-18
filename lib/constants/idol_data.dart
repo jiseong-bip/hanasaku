@@ -29,7 +29,7 @@ List<Map<String, dynamic>> idolData = [
   {
     "id": 6,
     "type": "LE SSERAFIM",
-    "color": [const Color(0xFF87A3F2), const Color(0xFF1F263C)]
+    "color": [const Color(0xFF87A3F2), const Color(0xFFB8CAFF)]
   },
   {
     "id": 7,

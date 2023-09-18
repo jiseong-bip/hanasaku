@@ -47,18 +47,14 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
   }
 
   void _toggleFullScreen() {
-    if (Navigator.canPop(context)) {
-      Navigator.pop(context);
-    } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Scaffold(
-            body: Center(child: _buildVideoPlayer()),
-          ),
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Scaffold(
+          body: Center(child: _buildVideoPlayer()),
         ),
-      );
-    }
+      ),
+    );
   }
 
   Widget _buildVideoPlayer() {
@@ -69,13 +65,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
         child: Stack(
           alignment: Alignment.center,
           children: <Widget>[
-            Transform.scale(
-              scale: 1, // 조절하려는 크기 비율입니다.
-              child: AspectRatio(
-                aspectRatio: controller.value.aspectRatio,
-                child: VideoPlayer(controller),
-              ),
-            ),
+            VideoPlayer(controller),
             if (showIndicator)
               Positioned(
                 bottom: 0,
@@ -93,7 +83,10 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
                         Row(
                           children: [
                             IconButton(
-                              icon: const Icon(Icons.replay_5),
+                              icon: const Icon(
+                                Icons.replay_5,
+                                color: Colors.white,
+                              ),
                               onPressed: () {
                                 final newPosition = controller.value.position -
                                     const Duration(seconds: 5);
@@ -102,12 +95,21 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
                             ),
                             IconButton(
                               icon: controller.value.isPlaying
-                                  ? const Icon(Icons.pause)
-                                  : const Icon(Icons.play_arrow),
+                                  ? const Icon(
+                                      Icons.pause,
+                                      color: Colors.white,
+                                    )
+                                  : const Icon(
+                                      Icons.play_arrow,
+                                      color: Colors.white,
+                                    ),
                               onPressed: _handleTap,
                             ),
                             IconButton(
-                              icon: const Icon(Icons.forward_5),
+                              icon: const Icon(
+                                Icons.forward_5,
+                                color: Colors.white,
+                              ),
                               onPressed: () {
                                 final newPosition = controller.value.position +
                                     const Duration(seconds: 5);
@@ -117,7 +119,10 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
                           ],
                         ),
                         IconButton(
-                          icon: const Icon(Icons.fullscreen),
+                          icon: const Icon(
+                            Icons.fullscreen,
+                            color: Colors.white,
+                          ),
                           onPressed: _toggleFullScreen,
                         ),
                       ],

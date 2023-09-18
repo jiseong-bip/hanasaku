@@ -245,3 +245,14 @@ final viewContansQuery = gql("""query ViewContents {
     id
   }
 }""");
+
+final getMyInfoQuery = gql("""
+      query Query {
+  me {
+    medals {
+      level
+      name
+    }
+  }
+}
+    """);

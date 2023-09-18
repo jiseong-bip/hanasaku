@@ -52,6 +52,7 @@ class _MyPostScreenState extends State<MyPostScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(idolData.singleWhere((idol) => idol["id"] == 1)["color"]);
     if (_posts.isEmpty) {
       return Scaffold(
         appBar: AppBar(
@@ -83,7 +84,8 @@ class _MyPostScreenState extends State<MyPostScreen> {
       appBar: AppBar(
         title: const Text(
           '私が書いた掲示物',
-          style: TextStyle(fontFamily: MyFontFamily.lineSeedJP),
+          style: TextStyle(
+              fontFamily: MyFontFamily.lineSeedJP, fontWeight: FontWeight.w400),
         ),
       ),
       body: CustomScrollView(
@@ -93,7 +95,7 @@ class _MyPostScreenState extends State<MyPostScreen> {
               pinned: true,
               delegate: _SliverAppBarDelegate(
                 minHeight: 50.0,
-                maxHeight: 50.0,
+                maxHeight: 60.0,
                 child: GestureDetector(
                   onTap: () {
                     setState(() {
@@ -107,19 +109,45 @@ class _MyPostScreenState extends State<MyPostScreen> {
                     });
                   },
                   child: Container(
-                    color: Colors.grey[300],
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: Sizes.size10,
+                    ),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: idolData.singleWhere(
+                            (idol) => idol["id"] == categoryId)["color"],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                    ),
+                    child: Stack(
                       children: [
-                        Text(
-                          "${idolData.singleWhere((idol) => idol["id"] == categoryId)["type"]}",
-                          style: const TextStyle(
-                              fontFamily: MyFontFamily.lineSeedJP),
+                        Center(
+                          child: Text(
+                            "${idolData.singleWhere((idol) => idol["id"] == categoryId)["type"]} Room",
+                            style: const TextStyle(
+                                fontSize: Sizes.size20,
+                                fontFamily: MyFontFamily.lineSeedJP,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600),
+                          ),
                         ),
-                        Gaps.h14,
                         _expandedCategoryId == categoryId
-                            ? const FaIcon(FontAwesomeIcons.angleUp)
-                            : const FaIcon(FontAwesomeIcons.angleDown)
+                            ? const Align(
+                                alignment: Alignment.centerRight,
+                                child: FaIcon(
+                                  FontAwesomeIcons.angleUp,
+                                  size: Sizes.size20,
+                                  color: Colors.white,
+                                ))
+                            : const Align(
+                                alignment: Alignment.centerRight,
+                                child: FaIcon(
+                                  FontAwesomeIcons.angleDown,
+                                  size: Sizes.size20,
+                                  color: Colors.white,
+                                ),
+                              )
                       ],
                     ),
                   ),
@@ -154,15 +182,15 @@ class _MyPostScreenState extends State<MyPostScreen> {
                               Text(
                                 "${post?['title']}",
                                 style: const TextStyle(
-                                    fontSize: Sizes.size20,
+                                    fontSize: Sizes.size16,
                                     fontFamily: MyFontFamily.lineSeedJP,
-                                    fontWeight: FontWeight.w600),
+                                    fontWeight: FontWeight.bold),
                               ),
                               Gaps.v10,
                               Row(
                                 children: [
-                                  Icon(
-                                    Icons.thumb_up_alt,
+                                  FaIcon(
+                                    FontAwesomeIcons.solidHeart,
                                     color: Theme.of(context).primaryColor,
                                     size: Sizes.size16,
                                   ),
@@ -170,17 +198,20 @@ class _MyPostScreenState extends State<MyPostScreen> {
                                   Text(
                                     '${post?['likeCount']}',
                                     style: const TextStyle(
+                                        fontSize: Sizes.size12,
                                         fontFamily: MyFontFamily.lineSeedJP),
                                   ),
                                   Gaps.h10,
-                                  const FaIcon(
+                                  FaIcon(
                                     FontAwesomeIcons.comment,
+                                    color: Colors.grey.shade600,
                                     size: Sizes.size16,
                                   ),
                                   Gaps.h5,
                                   Text(
                                     '${post?['comments'].length}',
                                     style: const TextStyle(
+                                        fontSize: Sizes.size12,
                                         fontFamily: MyFontFamily.lineSeedJP),
                                   ),
                                 ],

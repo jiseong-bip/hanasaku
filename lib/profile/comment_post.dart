@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:hanasaku/constants/font.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/idol_data.dart';
 import 'package:hanasaku/constants/sizes.dart';
@@ -43,7 +44,6 @@ class _CommentPostScreenState extends State<CommentPostScreen> {
             _posts.addAll(result.data!['me']['postComments']);
           }
         });
-        print(_posts);
       } else {
         print(result.exception);
       }
@@ -107,20 +107,45 @@ class _CommentPostScreenState extends State<CommentPostScreen> {
                     });
                   },
                   child: Container(
-                    color: Colors.grey[300],
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: Sizes.size10,
+                    ),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: idolData.singleWhere(
+                            (idol) => idol["id"] == categoryId)["color"],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                    ),
+                    child: Stack(
                       children: [
-                        Text(
-                          "${idolData.singleWhere((idol) => idol["id"] == categoryId)["type"]}",
-                          style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: Sizes.size16),
+                        Center(
+                          child: Text(
+                            "${idolData.singleWhere((idol) => idol["id"] == categoryId)["type"]} Room",
+                            style: const TextStyle(
+                                fontSize: Sizes.size20,
+                                fontFamily: MyFontFamily.lineSeedJP,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600),
+                          ),
                         ),
-                        Gaps.h14,
                         _expandedCategoryId == categoryId
-                            ? const FaIcon(FontAwesomeIcons.angleUp)
-                            : const FaIcon(FontAwesomeIcons.angleDown)
+                            ? const Align(
+                                alignment: Alignment.centerRight,
+                                child: FaIcon(
+                                  FontAwesomeIcons.angleUp,
+                                  size: Sizes.size20,
+                                  color: Colors.white,
+                                ))
+                            : const Align(
+                                alignment: Alignment.centerRight,
+                                child: FaIcon(
+                                  FontAwesomeIcons.angleDown,
+                                  size: Sizes.size20,
+                                  color: Colors.white,
+                                ),
+                              )
                       ],
                     ),
                   ),
@@ -154,25 +179,39 @@ class _CommentPostScreenState extends State<CommentPostScreen> {
                             children: [
                               Text(
                                 "${post?['post']['title']}",
-                                style: const TextStyle(fontSize: Sizes.size20),
+                                style: const TextStyle(
+                                    fontSize: Sizes.size16,
+                                    fontFamily: MyFontFamily.lineSeedJP,
+                                    fontWeight: FontWeight.bold),
                               ),
                               Gaps.v10,
                               Row(
                                 children: [
-                                  Icon(
-                                    Icons.thumb_up_alt,
+                                  FaIcon(
+                                    FontAwesomeIcons.solidHeart,
                                     color: Theme.of(context).primaryColor,
                                     size: Sizes.size16,
                                   ),
                                   Gaps.h5,
-                                  Text('${post?['post']['likeCount']}'),
+                                  Text(
+                                    '${post?['post']['likeCount']}',
+                                    style: const TextStyle(
+                                        fontSize: Sizes.size12,
+                                        fontFamily: MyFontFamily.lineSeedJP),
+                                  ),
                                   Gaps.h10,
-                                  const FaIcon(
+                                  FaIcon(
                                     FontAwesomeIcons.comment,
+                                    color: Colors.grey.shade600,
                                     size: Sizes.size16,
                                   ),
                                   Gaps.h5,
-                                  Text('${post?['post']['comments'].length}'),
+                                  Text(
+                                    '${post?['post']['comments'].length}',
+                                    style: const TextStyle(
+                                        fontSize: Sizes.size12,
+                                        fontFamily: MyFontFamily.lineSeedJP),
+                                  ),
                                 ],
                               ),
                             ],

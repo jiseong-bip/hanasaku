@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/chat/chat_room_screen.dart';
@@ -52,11 +53,11 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     final minDifference = difference.inMinutes;
 
     if (dayDifference != 0) {
-      return "$dayDifference d ago";
+      return "${dayDifference}d ago";
     } else if (hoursDifference != 0) {
-      return "$hoursDifference h ago";
+      return "${hoursDifference}h ago";
     } else {
-      return "$minDifference m ago";
+      return "${minDifference}m ago";
     }
   }
 
@@ -145,7 +146,11 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings),
+            icon: Icon(
+              Icons.exit_to_app,
+              color: Colors.grey.shade500,
+              size: Sizes.size28,
+            ),
             onPressed: () {
               setState(() {
                 _isSelectMode = !_isSelectMode;
@@ -162,9 +167,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           padding: const EdgeInsets.symmetric(
               horizontal: Sizes.size12, vertical: Sizes.size10),
           child: _chatList.isEmpty
-              ? const Text('대화를 걸어보세요')
+              ? const Center(child: Text('대화를 걸어보세요'))
               : ListView.separated(
-                  separatorBuilder: (context, index) => Gaps.v12,
+                  separatorBuilder: (context, index) => Gaps.v14,
                   itemCount: _chatList.length,
                   itemBuilder: (context, index) {
                     return InkWell(
@@ -183,81 +188,95 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                           : () {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => ChatRoom(
+                                        userName: _chatList[index]['user']
+                                            ['userName'],
                                         roomId: _chatList[index]['id'],
                                       )));
                             },
-                      child: Row(
-                        children: [
-                          Container(
-                            width: Sizes.size52, // 아이콘 크기 + 여분의 여백
-                            height: Sizes.size52, // 아이콘 크기 + 여분의 여백
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle, // 원 모양으로 만들기
-                              color: Colors.blue, // 배경 색상 설정
-                            ),
-                            child: const Center(
-                              child: FaIcon(
-                                FontAwesomeIcons.user,
-                                size: Sizes.size32,
-                                color: Colors.white, // 아이콘 색상 설정
+                      child: Container(
+                        constraints:
+                            const BoxConstraints(minHeight: 50, maxHeight: 50),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            CircleAvatar(
+                              radius: 20,
+                              child: SvgPicture.asset(
+                                'assets/user.svg',
+                                width: 40,
+                                height: 40,
                               ),
                             ),
-                          ),
-                          Gaps.h14,
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '${_chatList[index]['user']['userName']}',
-                                  style: const TextStyle(
-                                    fontSize: Sizes.size16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                Gaps.v10,
-                                (_chatList[index]['lastMessage']['isRead'] ||
-                                        _chatList[index]['lastMessage']['user']
-                                                ['userName'] ==
-                                            nickName)
-                                    ? Text(
-                                        '${_chatList[index]['lastMessage']['message']}',
-                                        style: TextStyle(
-                                            fontSize: Sizes.size20,
-                                            fontWeight: FontWeight.w400,
-                                            color: Colors.grey.shade600),
-                                      )
-                                    : Text(
-                                        '${_chatList[index]['lastMessage']['message']}',
-                                        style: const TextStyle(
-                                          fontSize: Sizes.size20,
-                                          fontWeight: FontWeight.w600,
-                                        ),
+                            Gaps.h14,
+                            Expanded(
+                              child: Stack(
+                                children: [
+                                  Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Text(
+                                      '${_chatList[index]['user']['userName']}',
+                                      style: const TextStyle(
+                                        fontSize: Sizes.size16,
+                                        fontWeight: FontWeight.w600,
                                       ),
-                              ],
+                                    ),
+                                  ),
+                                  (_chatList[index]['lastMessage']['isRead'] ||
+                                          _chatList[index]['lastMessage']
+                                                  ['user']['userName'] ==
+                                              nickName)
+                                      ? Align(
+                                          alignment: Alignment.bottomLeft,
+                                          child: Text(
+                                            '${_chatList[index]['lastMessage']['message']}',
+                                            style: TextStyle(
+                                                fontSize: Sizes.size16,
+                                                fontWeight: FontWeight.w400,
+                                                color: Colors.grey.shade600),
+                                          ),
+                                        )
+                                      : Align(
+                                          alignment: Alignment.bottomLeft,
+                                          child: Text(
+                                            '${_chatList[index]['lastMessage']['message']}',
+                                            style: const TextStyle(
+                                              fontSize: Sizes.size16,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                ],
+                              ),
                             ),
-                          ),
-                          Text(
-                            getTime(
-                                _chatList[index]['lastMessage']['createDate']),
-                          ),
-                          if (_isSelectMode)
-                            Checkbox(
-                              value: _isSelected[index],
-                              onChanged: (bool? newValue) {
-                                setState(() {
-                                  _isSelected[index] = newValue!;
-                                  if (_isSelected[index]) {
-                                    _selectedChatIds
-                                        .add(_chatList[index]['id']);
-                                  } else {
-                                    _selectedChatIds
-                                        .remove(_chatList[index]['id']);
-                                  }
-                                });
-                              },
+                            Align(
+                              alignment: Alignment.bottomRight,
+                              child: Text(
+                                getTime(
+                                  _chatList[index]['lastMessage']['createDate'],
+                                ),
+                                style: TextStyle(
+                                    color: Colors.grey.shade400,
+                                    fontSize: Sizes.size12),
+                              ),
                             ),
-                        ],
+                            if (_isSelectMode)
+                              Checkbox(
+                                value: _isSelected[index],
+                                onChanged: (bool? newValue) {
+                                  setState(() {
+                                    _isSelected[index] = newValue!;
+                                    if (_isSelected[index]) {
+                                      _selectedChatIds
+                                          .add(_chatList[index]['id']);
+                                    } else {
+                                      _selectedChatIds
+                                          .remove(_chatList[index]['id']);
+                                    }
+                                  });
+                                },
+                              ),
+                          ],
+                        ),
                       ),
                     );
                   },
