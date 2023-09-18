@@ -16,7 +16,6 @@ class ContentsScreen extends StatefulWidget {
 class _ContentsScreenState extends State<ContentsScreen> {
   @override
   Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(

@@ -10,7 +10,6 @@ import 'package:hanasaku/home/category_screen.dart';
 import 'package:hanasaku/home/posts_screen.dart';
 import 'package:hanasaku/home/subscription.dart';
 import 'package:hanasaku/nav/nav_button.dart';
-import 'package:hanasaku/print_token.dart';
 import 'package:hanasaku/profile/my_page_screen.dart';
 
 import 'package:hanasaku/setup/provider_model.dart';

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hanasaku/constants/gaps.dart';
@@ -76,6 +78,7 @@ class _CategoryPageState extends State<CategoryPage> {
                   children: [
                     Expanded(
                       child: Container(
+                        height: screenHeight / 20,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
@@ -85,24 +88,32 @@ class _CategoryPageState extends State<CategoryPage> {
                         ),
                         child: TextField(
                           controller: _searchController,
+                          style: const TextStyle(color: Colors.black),
                           decoration: InputDecoration(
-                            focusedBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.transparent),
-                            ),
-                            enabledBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.transparent),
-                            ),
-                            border: const OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.transparent),
-                            ),
-                            labelText: "Search Idol",
-                            suffixIcon: IconButton(
-                              icon: const Icon(Icons.search),
-                              onPressed: () {
-                                scrollToIdol(_searchController.text);
-                              },
-                            ),
-                          ),
+                              focusedBorder: const OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.transparent),
+                              ),
+                              enabledBorder: const OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.transparent),
+                              ),
+                              border: const OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.transparent),
+                              ),
+                              labelText: "Search Idol",
+                              labelStyle: const TextStyle(
+                                  color: Colors.grey), // 이 부분을 추가합니다.
+                              hintStyle: const TextStyle(color: Colors.grey),
+                              suffixIcon: GestureDetector(
+                                  onTap: () {
+                                    scrollToIdol(_searchController.text);
+                                  },
+                                  child: const Icon(
+                                    Icons.search,
+                                    color: Colors.grey,
+                                  ))),
                         ),
                       ),
                     ),
@@ -203,12 +214,11 @@ class CategoryWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
 
-    String buttonText = isJoined ? '입장하기' : '가입하기';
+    String buttonText = isJoined ? 'Go' : 'Join';
     if (isJoined && gearIconClicked) {
       buttonText = '탈퇴하기';
     }
     return Stack(
-      alignment: Alignment.bottomCenter,
       children: [
         Container(
           width: screenWidth,
@@ -221,152 +231,164 @@ class CategoryWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
             boxShadow: [
               BoxShadow(
-                blurRadius: 3,
-                color: Colors.black.withOpacity(0.5),
-              ),
+                  blurRadius: 3,
+                  color: Colors.black.withOpacity(0.3),
+                  offset: const Offset(3, 5)),
             ],
           ),
-          child: Align(
-            alignment: Alignment.topLeft,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: Sizes.size10,
-                horizontal: Sizes.size10,
+          child: Stack(
+            children: [
+              Positioned(
+                left: -15,
+                top: 0,
+                bottom: 0,
+                child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Container(
+                      width: 30,
+                      height: 30,
+                      decoration: const BoxDecoration(
+                          shape: BoxShape.circle, color: Colors.white),
+                    )),
               ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.baseline,
-                textBaseline: TextBaseline.ideographic,
+              Column(
                 children: [
-                  Text(
-                    '$idolName ROOM',
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: Sizes.size24),
-                  ),
-                  Gaps.h5,
-                  const FaIcon(
-                    FontAwesomeIcons.solidUser,
-                    size: Sizes.size12,
-                    color: Colors.white,
-                  ),
-                  Gaps.h3,
-                  Text(
-                    '${data['userCount']}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: Sizes.size12,
-                      fontWeight: FontWeight.w600,
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: Sizes.size10,
+                        horizontal: Sizes.size10,
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                        textBaseline: TextBaseline.ideographic,
+                        children: [
+                          Text(
+                            idolName,
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: Sizes.size24),
+                          ),
+                          Gaps.h5,
+                          const Text(
+                            'Room',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: Sizes.size16 + Sizes.size2),
+                          ),
+                          Gaps.h5,
+                          const FaIcon(
+                            FontAwesomeIcons.solidUser,
+                            size: Sizes.size12,
+                            color: Colors.white,
+                          ),
+                          Gaps.h3,
+                          Text(
+                            '${data['userCount']}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: Sizes.size12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
               ),
-            ),
+            ],
           ),
         ),
-        Align(
-          alignment: Alignment.bottomRight,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-                vertical: Sizes.size10, horizontal: Sizes.size10),
-            child: GestureDetector(
-              onTap: () {
-                if (!disableJoin || isJoined) {
-                  onJoin(id);
-                }
-                if (isJoined && !gearIconClicked) {
-                  userInfo.setCurrentCategory(id);
-                }
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                    vertical: Sizes.size10, horizontal: Sizes.size14),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.white.withOpacity(0.8)),
-                child: Text(
-                  buttonText,
-                  style: TextStyle(
-                    fontSize: Sizes.size16,
-                    fontWeight: FontWeight.w600,
-                    color: disableJoin && !isJoined
-                        ? Colors.grey
-                        : Color(int.parse(data['topColor'])),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+              horizontal: Sizes.size5, vertical: Sizes.size10),
+          child: Align(
+            alignment: Alignment.bottomRight,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Container(
+                    height: 1.5, // 선의 높이를 조절하세요.
+                    // 선의 너비를 조절하세요.
+                    color: Colors.white,
+                    child: null,
                   ),
                 ),
-              ),
+                Gaps.h5,
+                GestureDetector(
+                  onTap: () {
+                    if (!disableJoin || isJoined) {
+                      onJoin(id);
+                    }
+                    if (isJoined && !gearIconClicked) {
+                      userInfo.setCurrentCategory(id);
+                    }
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: Sizes.size10, horizontal: Sizes.size14),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                            blurRadius: 3,
+                            color: Colors.black.withOpacity(0.3),
+                            offset: const Offset(0, 5)),
+                      ],
+                    ),
+                    child: Text(
+                      buttonText,
+                      style: TextStyle(
+                        fontSize: Sizes.size16,
+                        fontWeight: FontWeight.w600,
+                        color: disableJoin && !isJoined
+                            ? Colors.grey
+                            : Color(int.parse(data['topColor'])),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //   children: [
-            //     Container(
-            //       padding: const EdgeInsets.symmetric(
-            //           vertical: Sizes.size10, horizontal: Sizes.size14),
-            //       decoration: BoxDecoration(
-            //           borderRadius: BorderRadius.circular(10),
-            //           color: Colors.white.withOpacity(0.6)),
-            //       child: Row(
-            //         children: [
-            //           const FaIcon(
-            //             FontAwesomeIcons.user,
-            //             size: Sizes.size12,
-            //           ),
-            //           Gaps.h12,
-            //           Text(
-            //             '${data['userCount']}',
-            //             style: const TextStyle(
-            //               fontSize: Sizes.size16,
-            //               fontWeight: FontWeight.w400,
-            //             ),
-            //           ),
-            //           Gaps.h24,
-            //           const FaIcon(
-            //             FontAwesomeIcons.comment,
-            //             size: Sizes.size12,
-            //           ),
-            //           Gaps.h12,
-            //           Text(
-            //             '${data['postCount']}',
-            //             style: const TextStyle(
-            //               fontSize: Sizes.size16,
-            //               fontWeight: FontWeight.w400,
-            //             ),
-            //           ),
-            //         ],
-            //       ),
-            //     ),
-            //     GestureDetector(
-            //       onTap: () {
-            //         if (!disableJoin || isJoined) {
-            //           onJoin(id);
-            //         }
-            //         if (isJoined && !gearIconClicked) {
-            //           userInfo.setCurrentCategory(id);
-            //         }
-            //       },
-            //       child: Container(
-            //         padding: const EdgeInsets.symmetric(
-            //             vertical: Sizes.size10, horizontal: Sizes.size14),
-            //         decoration: BoxDecoration(
-            //             borderRadius: BorderRadius.circular(10),
-            //             color: Colors.white.withOpacity(0.6)),
-            //         child: Text(
-            //           buttonText,
-            //           style: TextStyle(
-            //             fontSize: Sizes.size16,
-            //             fontWeight: FontWeight.w600,
-            //             color: disableJoin && !isJoined
-            //                 ? Colors.grey
-            //                 : Colors.black,
-            //           ),
-            //         ),
-            //       ),
-            //     ),
-            //   ],
-            // ),
           ),
         ),
       ],
     );
+  }
+}
+
+class HalfCirclePainter extends CustomPainter {
+  final Color color;
+
+  HalfCirclePainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+
+    canvas.drawArc(
+      Rect.fromCenter(
+        center: Offset(size.width / 2, size.height / 2),
+        width: size.width,
+        height: size.height,
+      ),
+      -pi / 2, // Start angle
+      pi, // Sweep angle
+      false, // Use center
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false; // Return true if the paint details change.
   }
 }
