@@ -304,8 +304,8 @@ class CategoryWidget extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(
-              horizontal: Sizes.size5, vertical: Sizes.size10),
+          padding: const EdgeInsets.only(
+              top: Sizes.size5, bottom: Sizes.size10, right: Sizes.size10),
           child: Align(
             alignment: Alignment.bottomRight,
             child: Row(
@@ -360,35 +360,5 @@ class CategoryWidget extends StatelessWidget {
         ),
       ],
     );
-  }
-}
-
-class HalfCirclePainter extends CustomPainter {
-  final Color color;
-
-  HalfCirclePainter({required this.color});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..style = PaintingStyle.fill;
-
-    canvas.drawArc(
-      Rect.fromCenter(
-        center: Offset(size.width / 2, size.height / 2),
-        width: size.width,
-        height: size.height,
-      ),
-      -pi / 2, // Start angle
-      pi, // Sweep angle
-      false, // Use center
-      paint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false; // Return true if the paint details change.
   }
 }
