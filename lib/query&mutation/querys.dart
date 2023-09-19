@@ -256,3 +256,29 @@ final getMyInfoQuery = gql("""
   }
 }
     """);
+
+final searchPost = gql("""
+    query SearchPost(\$keyword: String!) {
+  searchPost(keyword: \$keyword) {
+    id
+          title
+          createDate
+          content
+          images {
+            url
+          }
+          user {
+            id
+            userName
+          }
+          likeCount
+          isLiked
+          comments {
+            user {
+              id
+              userName
+            }
+          }
+  }
+}
+""");

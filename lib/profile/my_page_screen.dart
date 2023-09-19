@@ -209,6 +209,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
 
   @override
   void dispose() {
+    scrollController.dispose();
     textController.dispose();
     super.dispose();
   }

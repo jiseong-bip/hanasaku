@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>1056608488794-9bf7ivlv2qpimmrpis6670iud2uqaufo.apps.googleusercontent.com</string>
+	<string>1056608488794-jmllqnss0p7fvtqcc97r7ccchqo6nd9d.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.1056608488794-9bf7ivlv2qpimmrpis6670iud2uqaufo</string>
+	<string>com.googleusercontent.apps.1056608488794-jmllqnss0p7fvtqcc97r7ccchqo6nd9d</string>
 	<key>ANDROID_CLIENT_ID</key>
 	<string>1056608488794-9lu7pgj6apjbfikdb16q31lpecaighfn.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
@@ -15,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.hanasaku</string>
+	<string>com.hana.hanasaku</string>
 	<key>PROJECT_ID</key>
 	<string>hanasaku-abc</string>
 	<key>STORAGE_BUCKET</key>
@@ -31,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:1056608488794:ios:c0d00c41cf35b721147763</string>
+	<string>1:1056608488794:ios:69d650990c110cae147763</string>
 </dict>
 </plist>

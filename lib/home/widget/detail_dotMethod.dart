@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hanasaku/constants/font.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/home/edit_post_screen.dart';

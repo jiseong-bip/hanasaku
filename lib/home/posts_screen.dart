@@ -5,6 +5,7 @@ import 'package:hanasaku/constants/idol_data.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/home/notify_screen.dart';
 import 'package:hanasaku/home/post_query_widget.dart';
+import 'package:hanasaku/home/widget/search_widget.dart';
 
 import 'package:hanasaku/setup/navigator.dart';
 
@@ -69,7 +70,10 @@ class _PostsScreenState extends State<PostsScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  navigatorKey.currentState!.push(MaterialPageRoute(
+                      builder: (context) => const SearchWidget()));
+                },
                 icon: const FaIcon(
                   FontAwesomeIcons.magnifyingGlass,
                   size: Sizes.size20,
