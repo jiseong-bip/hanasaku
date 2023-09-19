@@ -84,6 +84,7 @@ class _CreateScreenState extends State<CreateScreen> {
         filename: '${DateTime.now().second}.jpg',
         contentType: MediaType("image", "jpg"),
       );
+      print(multipartFile);
       listMultipartFile.add(multipartFile);
     }
 

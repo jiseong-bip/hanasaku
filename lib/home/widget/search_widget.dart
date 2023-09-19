@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/home/widget/post_widget.dart';
 import 'package:hanasaku/query&mutation/querys.dart';
@@ -43,7 +44,6 @@ class _SearchWidgetState extends State<SearchWidget> {
 
   @override
   Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.of(context).size.height;
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -63,52 +63,43 @@ class _SearchWidgetState extends State<SearchWidget> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: Container(
-                        height: screenHeight / 20,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.grey.shade300),
-                        child: Center(
-                          child: TextField(
-                            autofocus: true,
-                            textAlign: TextAlign.start,
-                            controller: textController,
-                            style: const TextStyle(color: Colors.black),
-                            decoration: InputDecoration(
-                                focusedBorder: const OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.transparent),
-                                ),
-                                enabledBorder: const OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.transparent),
-                                ),
-                                border: const OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.transparent),
-                                ),
-                                hintText: "",
-                                labelStyle: const TextStyle(
-                                    color: Colors.grey), // 이 부분을 추가합니다.
-                                hintStyle: const TextStyle(color: Colors.grey),
-                                prefixIcon: GestureDetector(
-                                    onTap: () {},
-                                    child: const Icon(
-                                      Icons.search,
-                                      color: Colors.grey,
-                                    ))),
+                        child: SearchBar(
+                      shadowColor: const MaterialStatePropertyAll(Colors.white),
+                      controller: textController,
+                      leading: Icon(
+                        Icons.search,
+                        color: Colors.grey.shade400,
+                      ),
+                      trailing: [
+                        GestureDetector(
+                          onTap: () {
+                            textController.clear();
+                          },
+                          child: Icon(
+                            Icons.cancel,
+                            color: Colors.grey.shade400,
                           ),
                         ),
+                      ],
+                      backgroundColor:
+                          MaterialStatePropertyAll(Colors.grey.shade300),
+                      hintText: 'Search',
+                      hintStyle: MaterialStateProperty.all(
+                          const TextStyle(color: Colors.grey)),
+                      onSubmitted: (value) {
+                        _fetchMorePosts(value);
+                      },
+                    )),
+                    Gaps.h5,
+                    GestureDetector(
+                      onTap: () {
+                        navigatorKey.currentState!.pop(context);
+                      },
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(fontSize: Sizes.size12),
                       ),
                     ),
-                    IconButton(
-                        onPressed: () {
-                          navigatorKey.currentState!.pop(context);
-                        },
-                        icon: FaIcon(
-                          FontAwesomeIcons.circleXmark,
-                          color: Colors.grey.shade400,
-                        ))
                   ],
                 ),
               ),

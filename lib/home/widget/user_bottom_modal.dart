@@ -17,8 +17,15 @@ void showMyBottomSheet(BuildContext context, int userId) {
               id
               userName
               isChat
+              medals {
+                level
+                name
+              }
+              categories {
+                name
+              }
             }
-        }
+          }
       """;
 
       return Query(
@@ -39,7 +46,16 @@ void showMyBottomSheet(BuildContext context, int userId) {
             return const CircularProgressIndicator();
           }
           Map<String, dynamic> user = result.data?['viewUser'];
+          Map<int, List<String>> groupedMedals = {};
 
+          for (var medal in user['medals']) {
+            if (groupedMedals[medal["level"]] == null) {
+              groupedMedals[medal["level"]] = [];
+            }
+            groupedMedals[medal["level"]]!.add(medal["name"]);
+          }
+
+          double screenHeight = MediaQuery.of(context).size.height;
           return Scaffold(
             appBar: AppBar(
               toolbarHeight: 40,
@@ -93,42 +109,97 @@ void showMyBottomSheet(BuildContext context, int userId) {
                                   fontFamily: MyFontFamily.lineSeedJP),
                             ),
                             Gaps.v5,
-                            const Row(
-                              children: [
-                                Text('방탄소년단'),
-                                Gaps.h5,
-                                Text('nmix'),
-                                Gaps.h5,
-                                Text('twice'),
-                              ],
-                            ),
+                            //ListView.builder(itemCount: user['categories'],itemBuilder: )
                           ],
                         ),
                       ],
                     ),
                   ),
                 ),
-                const FittedBox(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: Sizes.size16,
-                      vertical: Sizes.size12,
-                    ),
-                    child: Column(
-                      children: [
-                        Text(
-                          '獲得した称号 : ',
-                          style: TextStyle(
-                              fontSize: Sizes.size12,
-                              fontFamily: MyFontFamily.lineSeedJP),
-                        ),
-                      ],
-                    ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: Sizes.size10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      const Text('View all medals'),
+                      Row(
+                        children: [
+                          Column(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: Sizes.size5),
+                                decoration: BoxDecoration(
+                                    border: Border.all(),
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 10,
+                                      height: 10,
+                                      decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Color(0xFF946125)),
+                                    ),
+                                    Gaps.h5,
+                                    Text(groupedMedals[1]![0]),
+                                  ],
+                                ),
+                              ),
+                              Gaps.v10,
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: Sizes.size5),
+                                decoration: BoxDecoration(
+                                    border: Border.all(),
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 10,
+                                      height: 10,
+                                      decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Color(0xFF946125)),
+                                    ),
+                                    Gaps.h5,
+                                    Text(groupedMedals[1]![1]),
+                                  ],
+                                ),
+                              ),
+                              Gaps.v10,
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: Sizes.size5),
+                                decoration: BoxDecoration(
+                                    border: Border.all(),
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 10,
+                                      height: 10,
+                                      decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Color(0xFF946125)),
+                                    ),
+                                    Gaps.h5,
+                                    Text(groupedMedals[1]![2]),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                          const Column(),
+                          const Column()
+                        ],
+                      ),
+                    ],
                   ),
-                ),
+                )
               ],
             ),
-            bottomNavigationBar: BottomAppBar(
+            bottomSheet: BottomAppBar(
                 child: Padding(
               padding: const EdgeInsets.only(
                 bottom: Sizes.size40,
@@ -138,13 +209,12 @@ void showMyBottomSheet(BuildContext context, int userId) {
               ),
               child: GestureDetector(
                 onTap: () {
-                  print(user['isChat']);
                   user['isChat'] == null
                       ? Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => ChatRoom(
-                              userName: user['user']['userName'],
+                              userName: user['userName'],
                               userId: user['id'],
                             ),
                           ),
@@ -153,25 +223,28 @@ void showMyBottomSheet(BuildContext context, int userId) {
                           context,
                           MaterialPageRoute(
                               builder: (context) => ChatRoom(
-                                    userName: user['user']['userName'],
+                                    userName: user['userName'],
                                     roomId: user['isChat'],
                                     userId: user['id'],
                                   )));
                 },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: Sizes.size16 + Sizes.size2,
-                  ),
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
-                      borderRadius: BorderRadius.circular(5)),
-                  child: const Text(
-                    'メッセージ送信',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: Sizes.size20,
+                child: Expanded(
+                  child: Container(
+                    width: screenHeight,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: Sizes.size16,
+                    ),
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        borderRadius: BorderRadius.circular(15)),
+                    child: const Text(
+                      'メッセージ送信',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: Sizes.size16,
+                      ),
                     ),
                   ),
                 ),

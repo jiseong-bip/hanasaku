@@ -95,7 +95,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
 
   Future<void> setProfile(String? userName, File? profileImage) async {
     final GraphQLClient client = GraphQLProvider.of(context).value;
-    List<MultipartFile> listMultipartFile = [];
+    MultipartFile? listMultipartFile;
     if (profileImage != null) {
       Uint8List byteData = await profileImage.readAsBytes();
       var multipartFile = MultipartFile.fromBytes(
@@ -104,7 +104,9 @@ class _MyPageScreenState extends State<MyPageScreen> {
         filename: '$nickName${DateTime.now()}.jpg',
         contentType: MediaType("image", "jpg"),
       );
-      listMultipartFile.add(multipartFile);
+      listMultipartFile = multipartFile;
+      print(multipartFile);
+      print(listMultipartFile);
     }
 
     final MutationOptions editUser = MutationOptions(
@@ -118,7 +120,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
       '''),
       variables: <String, dynamic>{
         "userName": userName!.isNotEmpty ? userName : null,
-        "avator": listMultipartFile
+        "avatar": listMultipartFile
       },
       update: (cache, result) => result,
     );
@@ -308,10 +310,10 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                         ),
                                   Gaps.h5,
                                   GestureDetector(
-                                    onTap: () {
+                                    onTap: () async {
                                       if (_editMode) {
                                         _saveImage();
-                                        setProfile(
+                                        await setProfile(
                                             textController.text, _profileImage);
                                         setState(() {});
                                       }

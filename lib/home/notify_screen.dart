@@ -38,7 +38,7 @@ class _NotifyScreenState extends State<NotifyScreen> {
                 onPressed: _onTapDelete,
                 icon: FaIcon(
                   FontAwesomeIcons.trash,
-                  color: Theme.of(context).primaryColor,
+                  color: Colors.grey.shade400,
                 )),
           )
         ],
@@ -87,9 +87,9 @@ class _NotifyScreenState extends State<NotifyScreen> {
                                   ),
                                 ],
                               ),
-                              const FaIcon(
+                              FaIcon(
                                 FontAwesomeIcons.solidHeart,
-                                color: Colors.red,
+                                color: Theme.of(context).primaryColor,
                                 size: Sizes.size24,
                               )
                             ],
@@ -118,9 +118,9 @@ class _NotifyScreenState extends State<NotifyScreen> {
                                   ),
                                 ],
                               ),
-                              FaIcon(
+                              const FaIcon(
                                 FontAwesomeIcons.solidComment,
-                                color: Colors.grey.shade400,
+                                color: Color(0xFFC1DE92),
                                 size: Sizes.size24,
                               )
                             ],
