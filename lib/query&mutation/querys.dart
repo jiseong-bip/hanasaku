@@ -256,6 +256,9 @@ final viewContansQuery = gql("""query ViewContents {
 final getMyInfoQuery = gql("""
       query Query {
   me {
+    id
+    userName
+    avatar
     medals {
       level
       name

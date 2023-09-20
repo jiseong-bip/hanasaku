@@ -2,6 +2,7 @@
 
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -10,6 +11,7 @@ import 'package:hanasaku/auth/logout_screen.dart';
 import 'package:hanasaku/constants/font.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
+import 'package:hanasaku/home/widget/user_bottom_modal.dart';
 import 'package:hanasaku/profile/comment_post.dart';
 import 'package:hanasaku/profile/liked_post.dart';
 import 'package:hanasaku/profile/my_post.dart';
@@ -42,6 +44,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
   int? lengthOfKey1;
   int? lengthOfKey2;
   int? lengthOfKey3;
+  Map<String, dynamic> myInfo = {};
   TextEditingController textController = TextEditingController();
   ScrollController scrollController = ScrollController();
 
@@ -130,22 +133,55 @@ class _MyPageScreenState extends State<MyPageScreen> {
     );
     try {
       final QueryResult result = await client.mutate(editUser);
+      print(result);
       if (result.data != null) {
-        print(result.data!['editProfile']['ok']);
-        if (userName.isNotEmpty) {
-          await Provider.of<UserInfoProvider>(context, listen: false)
-              .setNickName(userName);
-          setState(() {
-            nickName = userName;
-          });
+        if (result.data!['editProfile']['ok']) {
+          _editMode = false;
+          if (userName.isNotEmpty) {
+            await Provider.of<UserInfoProvider>(context, listen: false)
+                .setNickName(userName);
+            setState(() {
+              nickName = userName;
+            });
+          }
         }
+      } else {
+        // ignore: use_build_context_synchronously
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            content: const FittedBox(
+              child: Center(
+                child: Text(
+                  "使用中の名前です",
+                ),
+              ),
+            ),
+            contentTextStyle:
+                const TextStyle(fontSize: Sizes.size10, color: Colors.black),
+            actions: <Widget>[
+              Center(
+                child: CupertinoButton(
+                  borderRadius: BorderRadius.circular(16.0),
+                  color: Theme.of(context).primaryColor,
+                  child: const Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
       }
     } catch (e) {
       print(e);
+      return;
+      // ignore: use_build_context_synchronously
     }
   }
 
-  Future<void> _fetchMyPosts() async {
+  Future<void> _fetchMyInfo() async {
     final GraphQLClient client = GraphQLProvider.of(context).value;
 
     final QueryOptions options = QueryOptions(
@@ -156,6 +192,8 @@ class _MyPageScreenState extends State<MyPageScreen> {
 
     if (!result.hasException) {
       setState(() {
+        myInfo = result.data!['me'];
+        print(myInfo);
         if (result.data!['me']['medals'] != null) {
           var medals = result.data!['me']['medals'];
           Map<int, List<String>> groupedMedals = {};
@@ -208,7 +246,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
     initName();
     _loadSavedImage();
     Future.delayed(Duration.zero, () {
-      _fetchMyPosts();
+      _fetchMyInfo();
     });
   }
 
@@ -237,158 +275,167 @@ class _MyPageScreenState extends State<MyPageScreen> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: Sizes.size16, vertical: Sizes.size10),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Column(
-                          children: [
-                            GestureDetector(
-                              onTap: _editMode ? getImage : null,
-                              child: _editMode
-                                  ? CircleAvatar(
-                                      radius: 35,
-                                      backgroundColor: Colors.grey,
-                                      backgroundImage: _profileImage != null
-                                          ? FileImage(_profileImage!)
-                                          : null,
-                                      child: const Text(
-                                        '写真編集',
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontFamily:
-                                                MyFontFamily.lineSeedJP),
-                                      ),
-                                    )
-                                  : CircleAvatar(
-                                      radius: 35,
-                                      backgroundImage: _profileImage != null
-                                          ? FileImage(_profileImage!)
-                                          : null,
-                                      child: _profileImage != null
-                                          ? null
-                                          : SvgPicture.asset(
-                                              'assets/user.svg',
-                                              width: 70,
-                                              height: 70,
-                                            ),
-                                    ),
-                            ),
-                            Gaps.v14,
-                          ],
-                        ),
-                        Gaps.h20,
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: Sizes.size16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                    child: GestureDetector(
+                      onTap: () {
+                        showMyBottomSheet(
+                            context, myInfo['id'], myInfo['avatar']);
+                      },
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Column(
                             children: [
-                              Row(
-                                children: [
-                                  _editMode
-                                      ? SizedBox(
-                                          width: 150,
-                                          child: TextField(
-                                            controller: textController,
-                                            autocorrect: false,
-                                            decoration: InputDecoration(
-                                              hintText: "$nickName",
-                                              enabledBorder:
-                                                  UnderlineInputBorder(
-                                                borderSide: BorderSide(
-                                                  color: Colors.grey.shade400,
-                                                ),
+                              GestureDetector(
+                                onTap: _editMode ? getImage : null,
+                                child: _editMode
+                                    ? CircleAvatar(
+                                        radius: 35,
+                                        backgroundColor: Colors.grey,
+                                        backgroundImage: _profileImage != null
+                                            ? FileImage(_profileImage!)
+                                            : null,
+                                        child: const Text(
+                                          '写真編集',
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontFamily:
+                                                  MyFontFamily.lineSeedJP),
+                                        ),
+                                      )
+                                    : CircleAvatar(
+                                        radius: 35,
+                                        backgroundImage: _profileImage != null
+                                            ? FileImage(_profileImage!)
+                                            : null,
+                                        child: _profileImage != null
+                                            ? null
+                                            : SvgPicture.asset(
+                                                'assets/user.svg',
+                                                width: 70,
+                                                height: 70,
                                               ),
-                                              focusedBorder:
-                                                  UnderlineInputBorder(
-                                                borderSide: BorderSide(
-                                                  color: Colors.grey.shade400,
-                                                ),
-                                              ),
-                                            ),
-                                            cursorColor:
-                                                Theme.of(context).primaryColor,
-                                          ),
-                                        )
-                                      : Text(
-                                          "$nickName",
-                                          style: const TextStyle(
-                                            fontSize: Sizes.size20,
-                                            fontFamily: MyFontFamily.lineSeedJP,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                  Gaps.h5,
-                                  GestureDetector(
-                                    onTap: () async {
-                                      if (_editMode) {
-                                        _saveImage();
-                                        await setProfile(
-                                            textController.text, _profileImage);
-                                        setState(() {});
-                                      }
-                                      setState(() {
-                                        _editMode = !_editMode;
-                                      });
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5),
-                                        color: Colors.grey.shade200,
                                       ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: Sizes.size5,
-                                          vertical: Sizes.size3,
-                                        ),
-                                        child: Text(
-                                          _editMode ? '貯蔵' : '編集',
-                                          style: const TextStyle(
-                                              fontSize: Sizes.size12),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
                               ),
-                              Gaps.v12,
-                              Row(
-                                children: [
-                                  Container(
-                                    width: 10,
-                                    height: 10,
-                                    decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Color(0xFFECC12A)),
-                                  ),
-                                  Gaps.h5,
-                                  Text('${lengthOfKey1 ?? 0}'),
-                                  Gaps.h5,
-                                  Container(
-                                    width: 10,
-                                    height: 10,
-                                    decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Color(0xFFC8C8C8)),
-                                  ),
-                                  Gaps.h5,
-                                  Text('${lengthOfKey2 ?? 0}'),
-                                  Gaps.h5,
-                                  Container(
-                                    width: 10,
-                                    height: 10,
-                                    decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Color(0xFF946125)),
-                                  ),
-                                  Gaps.h5,
-                                  Text('${lengthOfKey3 ?? 0}'),
-                                ],
-                              )
+                              Gaps.v14,
                             ],
                           ),
-                        )
-                      ],
+                          Gaps.h20,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: Sizes.size16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    _editMode
+                                        ? SizedBox(
+                                            width: 150,
+                                            child: TextField(
+                                              controller: textController,
+                                              autocorrect: false,
+                                              decoration: InputDecoration(
+                                                hintText: "$nickName",
+                                                enabledBorder:
+                                                    UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                    color: Colors.grey.shade400,
+                                                  ),
+                                                ),
+                                                focusedBorder:
+                                                    UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                    color: Colors.grey.shade400,
+                                                  ),
+                                                ),
+                                              ),
+                                              cursorColor: Theme.of(context)
+                                                  .primaryColor,
+                                            ),
+                                          )
+                                        : Text(
+                                            "$nickName",
+                                            style: const TextStyle(
+                                              fontSize: Sizes.size20,
+                                              fontFamily:
+                                                  MyFontFamily.lineSeedJP,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                    Gaps.h5,
+                                    GestureDetector(
+                                      onTap: () {
+                                        if (_editMode) {
+                                          _saveImage();
+                                          setProfile(textController.text,
+                                              _profileImage);
+                                          setState(() {});
+                                        } else {
+                                          setState(() {
+                                            _editMode = true;
+                                          });
+                                        }
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          color: Colors.grey.shade200,
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: Sizes.size5,
+                                            vertical: Sizes.size3,
+                                          ),
+                                          child: Text(
+                                            _editMode ? '貯蔵' : '編集',
+                                            style: const TextStyle(
+                                                fontSize: Sizes.size12),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Gaps.v12,
+                                Row(
+                                  children: [
+                                    Container(
+                                      width: 10,
+                                      height: 10,
+                                      decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Color(0xFFECC12A)),
+                                    ),
+                                    Gaps.h5,
+                                    Text('${lengthOfKey1 ?? 0}'),
+                                    Gaps.h5,
+                                    Container(
+                                      width: 10,
+                                      height: 10,
+                                      decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Color(0xFFC8C8C8)),
+                                    ),
+                                    Gaps.h5,
+                                    Text('${lengthOfKey2 ?? 0}'),
+                                    Gaps.h5,
+                                    Container(
+                                      width: 10,
+                                      height: 10,
+                                      decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Color(0xFF946125)),
+                                    ),
+                                    Gaps.h5,
+                                    Text('${lengthOfKey3 ?? 0}'),
+                                  ],
+                                )
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),

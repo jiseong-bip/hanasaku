@@ -297,17 +297,17 @@ class _DetailScreenState extends State<DetailScreen> {
             ),
           ),
         ),
-        bottomSheet: BottomTextBar(
-          isContent: widget.isContent,
-          postId: widget.postId,
-          onCommentChanged: (isSendPost) async {
-            if (isSendPost) {
-              _fetchPost(FetchPolicy.networkOnly);
-            }
-          },
-          recommentMode: postInfo.getRecommentMode(),
-          comment: postInfo.getComment(),
-        ),
+        // bottomSheet: BottomTextBar(
+        //   isContent: widget.isContent,
+        //   postId: widget.postId,
+        //   onCommentChanged: (isSendPost) async {
+        //     if (isSendPost) {
+        //       _fetchPost(FetchPolicy.networkOnly);
+        //     }
+        //   },
+        //   recommentMode: postInfo.getRecommentMode(),
+        //   comment: postInfo.getComment(),
+        // ),
       ),
     );
   }

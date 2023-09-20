@@ -32,10 +32,6 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
   }
 
   void _onSubmitTap() async {
-    final authRepo = context.read<AuthenticationRepository>();
-    final GraphQLClient client = GraphQLProvider.of(context).value;
-    final userInfoProvider =
-        Provider.of<UserInfoProvider>(context, listen: false);
     if (_formKey.currentState != null) {
       if (_formKey.currentState!.validate()) {
         _formKey.currentState!.save();
@@ -44,10 +40,6 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
               .read<AuthenticationRepository>()
               .signInWithEmailAndPassword(
                   context, formData['email']!, formData['password']!);
-          final uid = await authRepo.getUserUid();
-          print(uid);
-
-          await GetUserInfo().checkingUser(client, userInfoProvider, uid!);
         } catch (e) {
           print(e);
         }
