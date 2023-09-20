@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/constants/gaps.dart';
@@ -235,10 +236,19 @@ class _BottomTextBarState extends State<BottomTextBar> {
         ),
         child: Row(
           children: [
-            CircleAvatar(
-              radius: 18,
-              backgroundImage: FileImage(_profileImage!),
-            ),
+            _profileImage != null
+                ? CircleAvatar(
+                    radius: 18,
+                    backgroundImage: FileImage(_profileImage!),
+                  )
+                : CircleAvatar(
+                    radius: 18,
+                    child: SvgPicture.asset(
+                      'assets/user.svg',
+                      width: 36,
+                      height: 36,
+                    ),
+                  ),
             Gaps.h10,
             Expanded(
               child: TextField(

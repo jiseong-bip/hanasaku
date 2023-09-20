@@ -207,7 +207,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                             },
                       child: Container(
                         constraints:
-                            const BoxConstraints(minHeight: 50, maxHeight: 50),
+                            const BoxConstraints(minHeight: 55, maxHeight: 55),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
