@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, use_build_context_synchronously
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,6 +11,7 @@ import 'package:hanasaku/setup/userinfo_provider_model.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:twitter_login/twitter_login.dart';
 
 class AuthenticationRepository {
@@ -49,7 +50,6 @@ class AuthenticationRepository {
           errorCode = null;
       }
 
-      // ignore: use_build_context_synchronously
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -94,7 +94,6 @@ class AuthenticationRepository {
 
       await GetUserInfo().checkingUser(client, userInfoProvider, uid!);
     } on FirebaseAuthException catch (error) {
-      // ignore: use_build_context_synchronously
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -148,6 +147,52 @@ class AuthenticationRepository {
       return user.uid;
     }
     return null;
+  }
+
+  Future<void> signInWithApple(
+      BuildContext context, UserInfoProvider userInfoProvider) async {
+    final GraphQLClient client = GraphQLProvider.of(context).value;
+    try {
+      final AuthorizationCredentialAppleID appleCredential =
+          await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+
+      final OAuthCredential credential = OAuthProvider('apple.com').credential(
+        idToken: appleCredential.identityToken,
+        accessToken: appleCredential.authorizationCode,
+      );
+
+      await FirebaseAuth.instance.signInWithCredential(credential);
+      // 로딩 대화상자 표시
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return const AlertDialog(
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(width: 10),
+                Text("로딩 중..."),
+              ],
+            ),
+          );
+        },
+      );
+
+      final uid = await getUserUid();
+      print(uid);
+
+      await GetUserInfo().checkingUser(client, userInfoProvider, uid!);
+    } catch (e) {
+      print(e);
+      return;
+    }
   }
 
   Future<void> signInWithGoogle(
@@ -347,7 +392,7 @@ class AuthenticationRepository {
             TextEditingController passwordController = TextEditingController();
             String email = '';
             String password = '';
-            // ignore: use_build_context_synchronously
+
             showDialog(
               context: context,
               builder: (context) => AlertDialog(
@@ -387,6 +432,19 @@ class AuthenticationRepository {
                 EmailAuthProvider.credential(email: email, password: password);
             break;
 
+          case 'apple.com':
+            final AuthorizationCredentialAppleID appleCredential =
+                await SignInWithApple.getAppleIDCredential(
+              scopes: [
+                AppleIDAuthorizationScopes.email,
+                AppleIDAuthorizationScopes.fullName,
+              ],
+            );
+
+            credential = OAuthProvider('apple.com').credential(
+              idToken: appleCredential.identityToken,
+              accessToken: appleCredential.authorizationCode,
+            );
           // 기타 다른 로그인 방법에 대한 재인증 로직 추가
         }
 

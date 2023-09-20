@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hanasaku/auth/login_form_screen.dart';
-import 'package:hanasaku/auth/mail_screen.dart';
 import 'package:hanasaku/auth/repos/authentication_repository.dart';
 import 'package:hanasaku/auth/sign_up_screen.dart';
 import 'package:hanasaku/constants/sizes.dart';
@@ -53,6 +52,15 @@ class AuthButton extends StatelessWidget {
         return;
         // ScaffoldMessenger.of(context)
         //     .showSnackBar(const SnackBar(content: Text('Google 로그인에 실패했습니다.')));
+      }
+    } else if (loginType == "apple") {
+      try {
+        await AuthenticationRepository()
+            .signInWithApple(context, userInfoProvider);
+      } catch (e) {
+        // Handle any login errors here.
+        print(e);
+        return;
       }
     } else {
       Navigator.of(context)

@@ -35,7 +35,9 @@ class _MyPostScreenState extends State<MyPostScreen> {
     final GraphQLClient client = GraphQLProvider.of(context).value;
 
     final QueryOptions options = QueryOptions(
-        document: myPostQuery, fetchPolicy: FetchPolicy.cacheAndNetwork);
+        document: myPostQuery,
+        fetchPolicy: FetchPolicy.cacheAndNetwork,
+        cacheRereadPolicy: CacheRereadPolicy.ignoreAll);
 
     final QueryResult result = await client.query(options);
 

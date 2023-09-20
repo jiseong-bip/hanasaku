@@ -34,7 +34,10 @@ class _LikedPostScreenState extends State<LikedPostScreen> {
     final GraphQLClient client = GraphQLProvider.of(context).value;
 
     final QueryOptions options = QueryOptions(
-        document: likedPostQuery, fetchPolicy: FetchPolicy.cacheAndNetwork);
+      document: likedPostQuery,
+      fetchPolicy: FetchPolicy.cacheAndNetwork,
+      cacheRereadPolicy: CacheRereadPolicy.ignoreAll,
+    );
 
     final QueryResult result = await client.query(options);
 

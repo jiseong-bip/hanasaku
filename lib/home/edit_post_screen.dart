@@ -136,179 +136,187 @@ class _EditPostScreenState extends State<EditPostScreen> {
         TextEditingController(text: widget.title);
     TextEditingController contentController =
         TextEditingController(text: widget.contents);
-    final size = MediaQuery.of(context).size;
-    return Scaffold(
-      appBar: AppBar(actions: [
-        Padding(
-          padding: const EdgeInsets.symmetric(
-              horizontal: Sizes.size16, vertical: Sizes.size10),
-          child: GestureDetector(
-            onTap: () {
-              //_toggleSubmit(context);
-              if (_formKey.currentState != null) {
-                if (_formKey.currentState!.validate()) {
-                  _formKey.currentState!.save();
-                  _toggleSubmit(context);
-                  Navigator.pop(context);
-                }
-              }
-            },
-            child: Container(
-              width: 85,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  border: Border.all(width: 0.3),
-                  color: Colors.grey.shade300),
-              child: Transform.translate(
-                offset: const Offset(0, 8),
-                child: const Text(
-                  'Submit',
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
+
+    final deviceHeight = MediaQuery.of(context).size.height;
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        appBar: AppBar(),
+        body: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
-        )
-      ]),
-      body: Stack(
-        children: [
-          Form(
-              key: _formKey,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Sizes.size10),
-                child: Column(
-                  children: [
-                    TextFormField(
-                      controller: titleController,
-                      textInputAction: TextInputAction.newline,
-                      minLines: null,
-                      maxLines: null,
-                      decoration: InputDecoration(
-                        hintText: 'Title',
-                        hintStyle: const TextStyle(
-                            fontSize: Sizes.size20,
-                            fontWeight: FontWeight.w600),
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.grey.shade200,
-                          ),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.grey.shade200,
-                          ),
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value != null && value.isEmpty) {
-                          return "Plase write your Title";
-                        }
-                        return null;
-                      },
-                      onSaved: (newValue) {
-                        if (newValue != null) {
-                          formData['title'] = newValue;
-                        }
-                      },
-                    ),
-                    TextFormField(
-                      controller: contentController,
-                      textInputAction: TextInputAction.newline,
-                      minLines: null,
-                      maxLines: null,
-                      decoration: const InputDecoration(
-                        hintText: 'Contents',
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.white,
-                          ),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      validator: (value) {
-                        return null;
-                      },
-                      onSaved: (newValue) {
-                        formData['contents'] = newValue ?? " ";
-                      },
-                    ),
-                    SizedBox(
-                      height: 210.0, // Adjusted for slightly larger container
-                      width: 310.0, // Adjusted for slightly larger container
-                      child: _images.isEmpty
-                          ? const Center(child: Text('No images selected'))
-                          : ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: _images.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return SizedBox(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Stack(
-                                      children: [
-                                        Align(
-                                          alignment: Alignment.center,
-                                          child: Image.file(
-                                              File(_images[index].path)),
-                                        ),
-                                        const Positioned(
-                                          top: 0,
-                                          right: 0,
-                                          child: Icon(Icons.cancel_rounded,
-                                              color: Color(0xFFF9C7C7)),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
+          child: Stack(
+            children: [
+              Form(
+                  key: _formKey,
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: Sizes.size10),
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: titleController,
+                          textInputAction: TextInputAction.newline,
+                          minLines: null,
+                          maxLines: null,
+                          decoration: InputDecoration(
+                            hintText: 'Title',
+                            hintStyle: const TextStyle(
+                                fontSize: Sizes.size20,
+                                fontWeight: FontWeight.w600),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.grey.shade200,
+                              ),
                             ),
-                    )
-                  ],
-                ),
-              )),
-          Positioned(
-              bottom: 0,
-              width: size.width,
-              child: BottomAppBar(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: Sizes.size5,
-                    vertical: Sizes.size10,
-                  ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.grey.shade200,
+                              ),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value != null && value.isEmpty) {
+                              return "Plase write your Title";
+                            }
+                            return null;
+                          },
+                          onSaved: (newValue) {
+                            if (newValue != null) {
+                              formData['title'] = newValue;
+                            }
+                          },
+                        ),
+                        TextFormField(
+                          controller: contentController,
+                          textInputAction: TextInputAction.newline,
+                          minLines: null,
+                          maxLines: null,
+                          decoration: const InputDecoration(
+                            hintText: 'Contents',
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.white,
+                              ),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          validator: (value) {
+                            return null;
+                          },
+                          onSaved: (newValue) {
+                            formData['contents'] = newValue ?? " ";
+                          },
+                        ),
+                        SizedBox(
+                          height: deviceHeight /
+                              3, // Adjusted for slightly larger container
+                          width:
+                              310.0, // Adjusted for slightly larger container
+                          child: _images.isEmpty
+                              ? const Center(child: Text('No images selected'))
+                              : ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: _images.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return SizedBox(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Stack(
+                                          children: [
+                                            Align(
+                                              alignment: Alignment.center,
+                                              child: Image.file(
+                                                  File(_images[index].path)),
+                                            ),
+                                            const Positioned(
+                                              top: 0,
+                                              right: 0,
+                                              child: Icon(Icons.cancel_rounded,
+                                                  color: Color(0xFFF9C7C7)),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                        )
+                      ],
+                    ),
+                  )),
+            ],
+          ),
+        ),
+        bottomSheet: BottomAppBar(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: Sizes.size5,
+              vertical: Sizes.size10,
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                    child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: Sizes.size14),
                   child: Row(
                     children: [
-                      Expanded(
-                          child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: Sizes.size14),
-                        child: Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                getImages(ImageSource.gallery);
-                              },
-                              child: const FaIcon(FontAwesomeIcons.photoFilm),
+                      GestureDetector(
+                        onTap: () {
+                          getImages(ImageSource.gallery);
+                        },
+                        child: const FaIcon(FontAwesomeIcons.photoFilm),
+                      ),
+                      Gaps.h20,
+                      // GestureDetector(
+                      //   onTap: () {
+                      //     getImages(ImageSource.camera);
+                      //   },
+                      //   child: const FaIcon(FontAwesomeIcons.camera),
+                      // )
+                      GestureDetector(
+                        onTap: () {
+                          //_toggleSubmit(context);
+                          if (_formKey.currentState != null) {
+                            if (_formKey.currentState!.validate()) {
+                              _formKey.currentState!.save();
+                              _toggleSubmit(context);
+                              Navigator.pop(context);
+                            }
+                          }
+                        },
+                        child: Container(
+                          height: 45,
+                          width: 100,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              color: Theme.of(context).primaryColor),
+                          child: const Center(
+                            child: Text(
+                              'Submit',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white),
                             ),
-                            Gaps.h20,
-                            GestureDetector(
-                              onTap: () {
-                                getImages(ImageSource.camera);
-                              },
-                              child: const FaIcon(FontAwesomeIcons.camera),
-                            )
-                          ],
+                          ),
                         ),
-                      )),
+                      )
                     ],
                   ),
-                ),
-              ))
-        ],
+                )),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

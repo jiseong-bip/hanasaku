@@ -99,6 +99,7 @@ final chatRoomsQuery = gql("""
   viewChatRooms {
     isReadRoom
     user {
+      id
       userName
       avatar
     }

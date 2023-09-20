@@ -33,8 +33,10 @@ class _CommentPostScreenState extends State<CommentPostScreen> {
   Future<void> _fetchMyPosts(FetchPolicy fetchPolicy) async {
     final GraphQLClient client = GraphQLProvider.of(context).value;
 
-    final QueryOptions options =
-        QueryOptions(document: myCommentQuery, fetchPolicy: fetchPolicy);
+    final QueryOptions options = QueryOptions(
+        document: myCommentQuery,
+        fetchPolicy: fetchPolicy,
+        cacheRereadPolicy: CacheRereadPolicy.ignoreAll);
     try {
       final QueryResult result = await client.query(options);
 

@@ -200,6 +200,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                           : () {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => ChatRoom(
+                                        userId: _chatList[index]['user']['id'],
                                         userName: _chatList[index]['user']
                                             ['userName'],
                                         roomId: _chatList[index]['id'],

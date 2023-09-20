@@ -192,7 +192,7 @@ class _BottomTextBarState extends State<BottomTextBar> {
                           if (_isWriting)
                             GestureDetector(
                               onTap: () {
-                                print('roomId : ${widget.userId}');
+                                print('roomId : ${widget.roomId}');
                                 _stopWriting();
                                 toggleChatSend(context,
                                     widget.commentController.text, roomId);
