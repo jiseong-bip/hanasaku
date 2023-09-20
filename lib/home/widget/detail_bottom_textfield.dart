@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_print
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -8,20 +10,24 @@ import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/home/provider/postinfo_provider.dart';
 
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 class BottomTextBar extends StatefulWidget {
-  final TextEditingController commentController;
-  final bool isContent;
+  final String comment;
 
+  final bool recommentMode;
+
+  final bool isContent;
   final Function(bool isSendPost) onCommentChanged;
 
   final int postId;
   const BottomTextBar({
     super.key,
-    required this.commentController,
     required this.postId,
     required this.onCommentChanged,
+    required this.recommentMode,
+    required this.comment,
     required this.isContent,
   });
 
@@ -34,6 +40,21 @@ class _BottomTextBarState extends State<BottomTextBar> {
   bool _isWriting = false;
   bool _isSend = false;
   bool? _isContent;
+  File? _profileImage;
+
+  TextEditingController commentController = TextEditingController();
+
+  Future<void> _loadSavedImage() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final imagePath = '${directory.path}/profile_image.jpg';
+    final savedImage = File(imagePath);
+
+    if (savedImage.existsSync()) {
+      setState(() {
+        _profileImage = savedImage;
+      });
+    }
+  }
 
   Future<void> toggleCommentSend(
       BuildContext context, int postId, String comment) async {
@@ -85,7 +106,7 @@ class _BottomTextBarState extends State<BottomTextBar> {
               ? resultData['createContentComment']['ok']
               : resultData['createComment']['ok'];
           if (isLikeSuccessful) {
-            widget.commentController.clear();
+            commentController.clear();
             setState(() {
               _isSend = !_isSend;
             });
@@ -144,7 +165,7 @@ class _BottomTextBarState extends State<BottomTextBar> {
         if (resultData != null && resultData['createRecomment'] != null) {
           final bool isLikeSuccessful = resultData['createRecomment']['ok'];
           if (isLikeSuccessful) {
-            widget.commentController.clear();
+            commentController.clear();
             setState(() {
               _isSend = !_isSend;
             });
@@ -188,6 +209,13 @@ class _BottomTextBarState extends State<BottomTextBar> {
     super.initState();
     _isContent = widget.isContent;
     initName();
+    _loadSavedImage();
+  }
+
+  @override
+  void dispose() {
+    commentController.dispose();
+    super.dispose();
   }
 
   Future initName() async {
@@ -209,25 +237,20 @@ class _BottomTextBarState extends State<BottomTextBar> {
           children: [
             CircleAvatar(
               radius: 18,
-              backgroundColor: Colors.grey.shade500,
-              foregroundColor: Colors.white,
-              child: Text(
-                nickName ?? ' ',
-                style: const TextStyle(fontSize: Sizes.size14),
-              ),
+              backgroundImage: FileImage(_profileImage!),
             ),
             Gaps.h10,
             Expanded(
               child: TextField(
                 onTap: _onStartWriting,
-                controller: widget.commentController,
+                controller: commentController,
                 minLines: null,
                 maxLines: null,
                 textInputAction: TextInputAction.newline,
                 cursorColor: Theme.of(context).primaryColor,
                 decoration: InputDecoration(
-                    hintText: postInfo.getRecommentMode()
-                        ? "Add ${postInfo.getComment()} recomment"
+                    hintText: widget.recommentMode
+                        ? "Add ${widget.comment} recomment"
                         : "Add comment...",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(
@@ -250,13 +273,13 @@ class _BottomTextBarState extends State<BottomTextBar> {
                             GestureDetector(
                               onTap: () {
                                 _stopWriting();
-                                postInfo.getRecommentMode()
+                                widget.recommentMode
                                     ? toggleRecommentSend(
                                         context,
                                         postInfo.getCommentId(),
-                                        widget.commentController.text)
+                                        commentController.text)
                                     : toggleCommentSend(context, widget.postId,
-                                        widget.commentController.text);
+                                        commentController.text);
                               },
                               child: FaIcon(
                                 FontAwesomeIcons.circleArrowUp,

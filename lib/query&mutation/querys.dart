@@ -13,6 +13,7 @@ final viewPostsQuery = gql("""
           user {
             id
             userName
+            avatar
           }
           likeCount
           isLiked
@@ -70,6 +71,7 @@ final postQuery = gql("""
       user {
         id
         userName
+        avatar
       }
       recomments {
         user {
@@ -98,6 +100,7 @@ final chatRoomsQuery = gql("""
     isReadRoom
     user {
       userName
+      avatar
     }
     updateAt
     lastMessage {
@@ -132,6 +135,7 @@ final chatQuery = gql("""
 final myPostQuery = gql("""
       query Me {
         me {
+          avatar
           posts {
             id
             title
@@ -167,6 +171,9 @@ final myCommentQuery = gql("""
       query Me {
         me {
     postComments {
+      user {
+        avatar
+      }
       comment
       createDate
       post {
@@ -232,6 +239,7 @@ query ViewContent(\$contentId: Int!) {
     user {
       id
       userName
+      avatar
     }
     viewCount
     key
@@ -243,6 +251,9 @@ final viewContansQuery = gql("""query ViewContents {
     title
     key
     id
+    user {
+      avatar
+    }
   }
 }""");
 

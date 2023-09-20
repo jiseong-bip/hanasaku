@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
@@ -185,8 +187,6 @@ class _MyPageScreenState extends State<MyPageScreen> {
         } else {
           print('There is no item with key 3 in the _medal list.');
         }
-
-        print(_medal);
       });
     } else {
       print(result.exception);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hanasaku/setup/aws_s3.dart';
 
 class PostInfo with ChangeNotifier {
   int? _commentId;
@@ -8,6 +9,7 @@ class PostInfo with ChangeNotifier {
   final List _commentsLikesCount = [];
   final List<bool> _isRecommentShowed = [];
   final List<bool> _isLikedList = [];
+  List<Object?> avatarImagekey = [];
 
   void setRecommentShowed(int index) {
     _isRecommentShowed[index] = !_isRecommentShowed[index];
@@ -30,6 +32,21 @@ class PostInfo with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> setCommentUserAvatar() async {
+    for (var comment in _comments) {
+      if (comment['user']['avatar'] != null) {
+        avatarImagekey.add(
+            {'__typename': 'userAvator', 'avatar': comment['user']['avatar']});
+      }
+    }
+    await getImage(avatarImagekey);
+    print('set avator done');
+  }
+
+  void clearAvatorKey() {
+    avatarImagekey.clear();
+  }
+
   void setRecommentMode(bool recommentMode) {
     _recommentMode = recommentMode;
     notifyListeners();
@@ -47,7 +64,6 @@ class PostInfo with ChangeNotifier {
     _commentsLikesCount.clear();
     _comments = commentList;
     for (var comment in _comments) {
-      print(comment);
       if (comment['likes'] != null) {
         _commentsLikesCount.add(comment['likes'].length);
         _isLikedList.add(comment['isLiked']);

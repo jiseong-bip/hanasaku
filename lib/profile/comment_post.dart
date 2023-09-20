@@ -166,6 +166,7 @@ class _CommentPostScreenState extends State<CommentPostScreen> {
                                 builder: (context) => DetailScreen(
                                       postId: post?['post']['id'],
                                       isContent: false,
+                                      avatorKey: post?['user']['avatar'],
                                     )));
                       },
                       child: Card(

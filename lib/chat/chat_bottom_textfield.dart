@@ -1,11 +1,14 @@
 // ignore_for_file: avoid_print
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 class BottomTextBar extends StatefulWidget {
@@ -31,6 +34,7 @@ class _BottomTextBarState extends State<BottomTextBar> {
   int? roomId;
   bool _isWriting = false;
   bool _isSend = false;
+  File? _profileImage;
 
   Future<void> toggleChatSend(
       BuildContext context, String chat, int? roomId) async {
@@ -94,6 +98,18 @@ class _BottomTextBarState extends State<BottomTextBar> {
     }
   }
 
+  Future<void> _loadSavedImage() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final imagePath = '${directory.path}/profile_image.jpg';
+    final savedImage = File(imagePath);
+
+    if (savedImage.existsSync()) {
+      setState(() {
+        _profileImage = savedImage;
+      });
+    }
+  }
+
   void _stopWriting() {
     FocusScope.of(context).unfocus();
     setState(() {
@@ -112,6 +128,7 @@ class _BottomTextBarState extends State<BottomTextBar> {
     super.initState();
     initName();
     roomId = widget.roomId;
+    _loadSavedImage();
   }
 
   Future initName() async {
@@ -132,12 +149,7 @@ class _BottomTextBarState extends State<BottomTextBar> {
           children: [
             CircleAvatar(
               radius: 18,
-              backgroundColor: Colors.grey.shade500,
-              foregroundColor: Colors.white,
-              child: Text(
-                nickName ?? ' ',
-                style: const TextStyle(fontSize: Sizes.size14),
-              ),
+              backgroundImage: FileImage(_profileImage!),
             ),
             Gaps.h10,
             Expanded(

@@ -19,10 +19,17 @@ Future getImage(List<Object?> images) async {
   final cacheManager = DefaultCacheManager();
 
   for (var image in images) {
-    String imageKey = (image as Map<String, dynamic>)['url'];
+    String? imageKey;
+    if ((image as Map<String, dynamic>).containsKey('url')) {
+      imageKey = (image)['url'];
+    } else if ((image).containsKey('avatar')) {
+      imageKey = (image)['avatar'];
+    } else {
+      // Handle the case where neither key is present
+    }
     // Check if image data already exists
 
-    if (await cacheManager.getFileFromCache(imageKey) != null) {
+    if (await cacheManager.getFileFromCache(imageKey!) != null) {
       print('not access');
       continue; // Image data already downloaded, no need to fetch again
     }

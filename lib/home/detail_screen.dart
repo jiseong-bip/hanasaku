@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -13,10 +15,12 @@ import 'package:hanasaku/home/comment_listview.dart';
 import 'package:hanasaku/home/provider/postinfo_provider.dart';
 import 'package:hanasaku/home/widget/detail_bottom_textfield.dart';
 import 'package:hanasaku/home/widget/detail_dotMethod.dart';
+import 'package:hanasaku/home/widget/user_bottom_modal.dart';
 import 'package:hanasaku/query&mutation/querys.dart';
+import 'package:hanasaku/setup/aws_s3.dart';
 import 'package:hanasaku/setup/cached_image.dart';
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
-import 'package:image_picker/image_picker.dart';
+
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -24,6 +28,7 @@ class DetailScreen extends StatefulWidget {
   final int postId;
   final String? videoKey;
   final bool isContent;
+  final String? avatorKey;
 
   final Function(bool isLiked)? onLikeChanged;
   final Function(int liksCount)? onLikeCountChanged;
@@ -35,7 +40,8 @@ class DetailScreen extends StatefulWidget {
       required this.isContent,
       this.onLikeChanged,
       this.onLikeCountChanged,
-      this.onCommentsCountChanged});
+      this.onCommentsCountChanged,
+      required this.avatorKey});
 
   @override
   State<DetailScreen> createState() => _DetailScreenState();
@@ -48,6 +54,7 @@ class _DetailScreenState extends State<DetailScreen> {
   int currentPage = 0;
   String? nickName;
   bool? isContent;
+  List<Object?> avatarImagekey = [];
 
   Map<String, dynamic>? post;
 
@@ -55,14 +62,17 @@ class _DetailScreenState extends State<DetailScreen> {
 
   final ScrollController scrollController = ScrollController();
 
-  final TextEditingController _commentController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
     isContent = widget.isContent;
 
     Future.delayed(Duration.zero, () async {
+      if (widget.avatorKey != null) {
+        avatarImagekey
+            .add({'__typename': 'userAvator', 'avatar': widget.avatorKey});
+      }
+      await getImage(avatarImagekey);
       await _fetchPost(FetchPolicy.networkOnly);
     });
 
@@ -73,7 +83,7 @@ class _DetailScreenState extends State<DetailScreen> {
   void dispose() {
     _pageController.dispose();
     scrollController.dispose();
-    _commentController.dispose();
+
     super.dispose();
   }
 
@@ -118,6 +128,8 @@ class _DetailScreenState extends State<DetailScreen> {
         postLikeCounts = post!['likeCount'];
         commentsCount = post!['comments'].length;
       });
+      print(post?['user']['id']);
+      postInfo.setCommentUserAvatar();
     } else {
       print(result.exception);
     }
@@ -226,6 +238,7 @@ class _DetailScreenState extends State<DetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final postInfo = Provider.of<PostInfo>(context, listen: true);
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
     double videoHeight = screenHeight / 4;
@@ -237,8 +250,10 @@ class _DetailScreenState extends State<DetailScreen> {
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
+        postInfo.setRecommentMode(false);
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(actions: [
           IconButton(
               onPressed: () {
@@ -284,13 +299,14 @@ class _DetailScreenState extends State<DetailScreen> {
         ),
         bottomSheet: BottomTextBar(
           isContent: widget.isContent,
-          commentController: _commentController,
           postId: widget.postId,
           onCommentChanged: (isSendPost) async {
             if (isSendPost) {
               _fetchPost(FetchPolicy.networkOnly);
             }
           },
+          recommentMode: postInfo.getRecommentMode(),
+          comment: postInfo.getComment(),
         ),
       ),
     );
@@ -325,30 +341,41 @@ class _DetailScreenState extends State<DetailScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 12,
-                        child: SvgPicture.asset(
-                          'assets/user.svg',
+                  GestureDetector(
+                    onTap: () {
+                      showMyBottomSheet(
+                          context, post?['user']['id'], widget.avatorKey);
+                    },
+                    child: Row(
+                      children: [
+                        widget.avatorKey != null
+                            ? CircleAvatar(
+                                radius: 12,
+                                child: CachedImage(url: widget.avatorKey!),
+                              )
+                            : CircleAvatar(
+                                radius: 12,
+                                child: SvgPicture.asset(
+                                  'assets/user.svg',
+                                ),
+                              ),
+                        Gaps.h10,
+                        Text(
+                          '$userName',
+                          style: const TextStyle(
+                            fontSize: Sizes.size14,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                      Gaps.h10,
-                      Text(
-                        '$userName',
-                        style: const TextStyle(
-                          fontSize: Sizes.size14,
-                          fontWeight: FontWeight.w600,
+                        Gaps.h10,
+                        Text(
+                          createDate != null ? getTime(createDate) : '',
+                          style: const TextStyle(
+                            fontSize: Sizes.size10,
+                          ),
                         ),
-                      ),
-                      Gaps.h10,
-                      Text(
-                        createDate != null ? getTime(createDate) : '',
-                        style: const TextStyle(
-                          fontSize: Sizes.size10,
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   Gaps.v10,
                   SizedBox(

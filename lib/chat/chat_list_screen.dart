@@ -2,12 +2,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/chat/chat_room_screen.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/query&mutation/querys.dart';
+import 'package:hanasaku/setup/aws_s3.dart';
+import 'package:hanasaku/setup/cached_image.dart';
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
 import 'package:provider/provider.dart';
 
@@ -24,6 +26,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   bool _isSelectMode = false;
   List<bool> _isSelected = [];
   final List _selectedChatIds = [];
+  List<Object?> avatarImagekey = [];
 
   @override
   void initState() {
@@ -75,8 +78,17 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       setState(() {
         _chatList.clear();
         _chatList.addAll(result.data!['viewChatRooms']);
+        for (var user in _chatList) {
+          user['user']['avatar'] != null
+              ? avatarImagekey.add({
+                  '__typename': 'userAvator',
+                  'avatar': user['user']['avatar']
+                })
+              : null;
+        }
         _isSelected = List<bool>.filled(_chatList.length, false);
       });
+      await getImage(avatarImagekey);
     } else {
       print(result.exception);
     }
@@ -199,14 +211,20 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            CircleAvatar(
-                              radius: 20,
-                              child: SvgPicture.asset(
-                                'assets/user.svg',
-                                width: 40,
-                                height: 40,
-                              ),
-                            ),
+                            _chatList[index]['user']['avatar'] != null
+                                ? CircleAvatar(
+                                    radius: 20,
+                                    child: CachedImage(
+                                        url: _chatList[index]['user']
+                                            ['avatar']))
+                                : CircleAvatar(
+                                    radius: 20,
+                                    child: SvgPicture.asset(
+                                      'assets/user.svg',
+                                      width: 40,
+                                      height: 40,
+                                    ),
+                                  ),
                             Gaps.h14,
                             Expanded(
                               child: Stack(

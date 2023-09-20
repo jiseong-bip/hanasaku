@@ -84,7 +84,7 @@ class _CreateScreenState extends State<CreateScreen> {
         filename: '${DateTime.now().second}.jpg',
         contentType: MediaType("image", "jpg"),
       );
-      print(multipartFile);
+
       listMultipartFile.add(multipartFile);
     }
 
@@ -139,7 +139,7 @@ class _CreateScreenState extends State<CreateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    //final size = MediaQuery.of(context).size;
     final userInfoProvider =
         Provider.of<UserInfoProvider>(context, listen: false);
     final selectedCategory = userInfoProvider.getSelectedCategory();

@@ -27,6 +27,8 @@ class _PostState extends State<Post> {
   int commentCount = 0;
   int currentPage = 0;
   bool imagesLoaded = false;
+  List<Object?> postImagekey = [];
+  List<Object?> avatarImagekey = [];
   List<Object?> imagekey = [];
 
   final PageController _pageController = PageController();
@@ -103,7 +105,7 @@ class _PostState extends State<Post> {
             commentCount = updateCountComment;
           });
         },
-        isContent: false,
+        isContent: false, avatorKey: widget.post['user']['avatar'],
       ),
     ));
   }
@@ -113,7 +115,18 @@ class _PostState extends State<Post> {
     super.initState();
     counts = widget.post['likeCount'];
     Future.delayed(Duration.zero, () async {
-      imagekey = widget.post['images'];
+      postImagekey = widget.post['images'];
+
+      imagekey.addAll(postImagekey);
+
+      if (widget.post['user']['avatar'] != null) {
+        avatarImagekey.add({
+          '__typename': 'userAvator',
+          'avatar': widget.post['user']['avatar']
+        });
+        imagekey.addAll(avatarImagekey);
+      }
+
       isLiked = widget.post['isLiked'];
       await getImage(imagekey);
       setState(() {
@@ -183,16 +196,23 @@ class _PostState extends State<Post> {
             children: [
               GestureDetector(
                 onTap: () {
-                  showMyBottomSheet(context, widget.post['user']['id']);
+                  showMyBottomSheet(context, widget.post['user']['id'],
+                      widget.post['user']['avatar']);
                 },
                 child: Row(
                   children: [
-                    CircleAvatar(
-                      radius: 12,
-                      child: SvgPicture.asset(
-                        'assets/user.svg',
-                      ),
-                    ),
+                    widget.post['user']['avatar'] != null
+                        ? CircleAvatar(
+                            radius: 12,
+                            child:
+                                CachedImage(url: widget.post['user']['avatar']),
+                          )
+                        : CircleAvatar(
+                            radius: 12,
+                            child: SvgPicture.asset(
+                              'assets/user.svg',
+                            ),
+                          ),
                     Gaps.h10,
                     Text(
                       '$userName',
@@ -242,14 +262,14 @@ class _PostState extends State<Post> {
                         ),
                       ),
                       Gaps.v10,
-                      if (imagekey.isNotEmpty && imagesLoaded)
+                      if (postImagekey.isNotEmpty && imagesLoaded)
                         Column(
                           children: [
                             SizedBox(
                               height: 150,
                               child: PageView.builder(
                                 controller: _pageController,
-                                itemCount: imagekey.length,
+                                itemCount: postImagekey.length,
                                 itemBuilder: (context, index) {
                                   return Center(
                                     child: Container(
@@ -258,7 +278,7 @@ class _PostState extends State<Post> {
                                           borderRadius:
                                               BorderRadius.circular(10)),
                                       child: CachedImage(
-                                          url: (imagekey[index]
+                                          url: (postImagekey[index]
                                               as Map<String, dynamic>)['url']),
                                     ),
                                   );
@@ -273,7 +293,7 @@ class _PostState extends State<Post> {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: DotsIndicator(
-                                dotsCount: imagekey.length,
+                                dotsCount: postImagekey.length,
                                 position: currentPage,
                                 decorator: DotsDecorator(
                                   size: const Size(5, 5),
