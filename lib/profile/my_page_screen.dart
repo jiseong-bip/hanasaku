@@ -3,6 +3,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/auth/logout_screen.dart';
@@ -12,6 +13,7 @@ import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/profile/comment_post.dart';
 import 'package:hanasaku/profile/liked_post.dart';
 import 'package:hanasaku/profile/my_post.dart';
+import 'package:hanasaku/profile/withdrawal.dart';
 import 'package:hanasaku/query&mutation/querys.dart';
 import 'package:hanasaku/setup/navigator.dart';
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
@@ -262,6 +264,13 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                       backgroundImage: _profileImage != null
                                           ? FileImage(_profileImage!)
                                           : null,
+                                      child: _profileImage != null
+                                          ? null
+                                          : SvgPicture.asset(
+                                              'assets/user.svg',
+                                              width: 70,
+                                              height: 70,
+                                            ),
                                     ),
                             ),
                             Gaps.v14,
@@ -608,22 +617,29 @@ class _MyPageScreenState extends State<MyPageScreen> {
                             ),
                           ),
                         ),
-                        Container(
-                          width: screenWidth,
-                          decoration: BoxDecoration(
-                            border: Border(
-                                bottom: BorderSide(
-                                    width: 0.6, color: Colors.grey.shade300)),
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            vertical: Sizes.size12,
-                            horizontal: Sizes.size24,
-                          ),
-                          child: const Text(
-                            '脱退する', //탈퇴하기
-                            style: TextStyle(
-                                fontSize: Sizes.size20,
-                                fontFamily: MyFontFamily.lineSeedJP),
+                        GestureDetector(
+                          onTap: () {
+                            navigatorKey.currentState!.push(MaterialPageRoute(
+                                builder: (context) =>
+                                    const DeleteAccountPage()));
+                          },
+                          child: Container(
+                            width: screenWidth,
+                            decoration: BoxDecoration(
+                              border: Border(
+                                  bottom: BorderSide(
+                                      width: 0.6, color: Colors.grey.shade300)),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: Sizes.size12,
+                              horizontal: Sizes.size24,
+                            ),
+                            child: const Text(
+                              '脱退する', //탈퇴하기
+                              style: TextStyle(
+                                  fontSize: Sizes.size20,
+                                  fontFamily: MyFontFamily.lineSeedJP),
+                            ),
                           ),
                         ),
                       ],

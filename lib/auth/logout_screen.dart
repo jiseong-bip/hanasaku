@@ -16,7 +16,7 @@ class _LogOutScreenState extends State<LogOutScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("로그아웃")),
+      appBar: AppBar(title: const Text("LogOut")),
       body: Center(
         child: ElevatedButton(
           onPressed: _handleLogOut,
