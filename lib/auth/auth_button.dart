@@ -13,20 +13,19 @@ import 'package:provider/provider.dart';
 class AuthButton extends StatelessWidget {
   final String text;
   final FaIcon icon;
-  final String loginType, type;
+  final String loginType;
 
   const AuthButton({
     super.key,
     required this.text,
     required this.icon,
     required this.loginType,
-    required this.type,
   });
 
   Future<void> _onAuthButtonTap(BuildContext context) async {
     final userInfoProvider =
         Provider.of<UserInfoProvider>(context, listen: false);
-    if (type == 'signUp' && loginType == "google") {
+    if (loginType == "google") {
       try {
         await AuthenticationRepository()
             .signInWithGoogle(context, userInfoProvider);
@@ -35,7 +34,7 @@ class AuthButton extends StatelessWidget {
         print(e);
         return;
       }
-    } else if (type == 'signUp' && loginType == "line") {
+    } else if (loginType == "line") {
       try {
         await AuthenticationRepository()
             .loginWithLine(context, userInfoProvider);
@@ -44,7 +43,7 @@ class AuthButton extends StatelessWidget {
         print(e);
         return;
       }
-    } else if (type == 'signUp' && loginType == "twitter") {
+    } else if (loginType == "twitter") {
       try {
         await AuthenticationRepository()
             .signInWithTwitter(context, userInfoProvider);
@@ -62,20 +61,11 @@ class AuthButton extends StatelessWidget {
   }
 
   Widget _page() {
-    if (type == 'signUp') {
-      switch (loginType) {
-        case "email":
-          return const EmailScreen();
-        default:
-          return const SignUpScreen();
-      }
-    } else {
-      switch (loginType) {
-        case "email":
-          return const LoginFormScreen();
-        default:
-          return const SignUpScreen();
-      }
+    switch (loginType) {
+      case "email":
+        return const LoginFormScreen();
+      default:
+        return const SignUpScreen();
     }
   }
 

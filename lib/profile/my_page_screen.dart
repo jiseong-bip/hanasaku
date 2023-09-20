@@ -147,7 +147,8 @@ class _MyPageScreenState extends State<MyPageScreen> {
     final GraphQLClient client = GraphQLProvider.of(context).value;
 
     final QueryOptions options = QueryOptions(
-        document: getMyInfoQuery, fetchPolicy: FetchPolicy.cacheAndNetwork);
+        document: getMyInfoQuery,
+        cacheRereadPolicy: CacheRereadPolicy.ignoreAll);
 
     final QueryResult result = await client.query(options);
 
@@ -352,7 +353,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                         color: Color(0xFFECC12A)),
                                   ),
                                   Gaps.h5,
-                                  Text('$lengthOfKey1'),
+                                  Text('${lengthOfKey1 ?? 0}'),
                                   Gaps.h5,
                                   Container(
                                     width: 10,
@@ -362,7 +363,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                         color: Color(0xFFC8C8C8)),
                                   ),
                                   Gaps.h5,
-                                  Text('$lengthOfKey2'),
+                                  Text('${lengthOfKey2 ?? 0}'),
                                   Gaps.h5,
                                   Container(
                                     width: 10,
@@ -372,7 +373,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                         color: Color(0xFF946125)),
                                   ),
                                   Gaps.h5,
-                                  Text('$lengthOfKey3'),
+                                  Text('${lengthOfKey3 ?? 0}'),
                                 ],
                               )
                             ],

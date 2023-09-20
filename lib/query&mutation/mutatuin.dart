@@ -1,10 +1,11 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 var signUp = gql('''
-        mutation SignUp(\$userName: String!, \$age: Int!, \$sex: String!, \$fbId: String!) {
-          signUp(userName: \$userName, age: \$age, sex: \$sex, fbId: \$fbId) {
+        mutation SignUp(\$fbId: String!) {
+          signUp(fbId: \$fbId) {
             ok
             token
+            userName
             error
           }
         }
@@ -15,6 +16,7 @@ var checkUser = gql('''
   checkUser(id: \$checkUserId) {
     ok
     token
+    userName
   }
 }
       ''');

@@ -1,19 +1,23 @@
 // ignore_for_file: avoid_print, use_build_context_synchronously
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/auth/form_button.dart';
+import 'package:hanasaku/auth/login_form_screen.dart';
 import 'package:hanasaku/auth/repos/authentication_repository.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/setup/check_user.dart';
+import 'package:hanasaku/setup/navigator.dart';
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
 import 'package:provider/provider.dart';
 
 class PasswordScreen extends StatefulWidget {
-  final String email;
-  const PasswordScreen({super.key, required this.email});
+  const PasswordScreen({
+    super.key,
+  });
 
   @override
   State<PasswordScreen> createState() => _PasswordScreenState();
@@ -24,9 +28,11 @@ class _PasswordScreenState extends State<PasswordScreen> {
   //widget을 controll하기 위해 controller를 따로 만들어줘야함
   //controller 생성 -> Controller 위젝에 넘겨주기 -> 리스너 생성 -> 변화감지
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   bool _hasSubmittedOnce = false;
 
   String _password = "";
+  String _email = "";
 
   bool _obscureText = true;
 
@@ -36,6 +42,11 @@ class _PasswordScreenState extends State<PasswordScreen> {
     _passwordController.addListener(() {
       setState(() {
         _password = _passwordController.text;
+      });
+    });
+    _emailController.addListener(() {
+      setState(() {
+        _email = _emailController.text;
       });
     });
   }
@@ -61,44 +72,80 @@ class _PasswordScreenState extends State<PasswordScreen> {
     final GraphQLClient client = GraphQLProvider.of(context).value;
     final userInfoProvider =
         Provider.of<UserInfoProvider>(context, listen: false);
+    bool isGetError = false;
+    // 로딩 대화상자 표시
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const AlertDialog(
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(width: 10),
+              Text("로딩 중..."),
+            ],
+          ),
+        );
+      },
+    );
+
     if (!_hasSubmittedOnce) {
       try {
-        // On first press, sign up the user and send verification email
-        await authRepo.signUpWithEmailAndPassword(widget.email, _password);
+        await authRepo.signUpWithEmailAndPassword(context, _email, _password);
         await authRepo.sendVerificationEmail();
         _hasSubmittedOnce = true;
+        isGetError = false;
         setState(() {});
-      } catch (e) {
-        // Handle the exception (e.g., show a Snackbar with an error message)
+      } catch (error) {
+        print(error);
+        isGetError = true;
+        return;
+        // 로딩 대화상자 닫기
+        // 에러 메시지 처리
+        //Navigator.of(context).pop(); // 로딩 대화상자 닫기
       }
     }
-    print(await authRepo.isEmailVerified());
-    // Check if the email is verified
-    if (await authRepo.isEmailVerified()) {
-      // If verified, navigate to SetProfile
-      final uid = await authRepo.getUserUid();
-      print(uid);
+    if (!isGetError) {
+      if (await authRepo.isEmailVerified()) {
+        final uid = await authRepo.getUserUid();
 
-      await GetUserInfo().checkingUser(client, userInfoProvider, uid!);
-    } else {
-      // If not verified, show the dialog to verify email
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Verify Your Email'),
-          content: const Text('Please verify your email before proceeding.'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                // Close the dialog
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        ),
-      );
+        await GetUserInfo().checkingUser(client, userInfoProvider, uid!);
+      } else {
+        Navigator.of(context).pop(); // 로딩 대화상자 닫기
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            content: const FittedBox(
+                child: Center(child: Text('続行する前に、電子メールを確認してください。'))),
+            actions: <Widget>[
+              Center(
+                child: CupertinoButton(
+                  borderRadius: BorderRadius.circular(16.0),
+                  color: Theme.of(context).primaryColor,
+                  child: const Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      }
     }
+  }
+
+  String? _isEmailValid() {
+    if (_email.isEmpty) return null;
+    final regExp = RegExp(
+        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+    if (!regExp.hasMatch(_email)) {
+      return "Email no valid";
+    }
+
+    return null;
   }
 
   void _onClearTap() {
@@ -120,91 +167,153 @@ class _PasswordScreenState extends State<PasswordScreen> {
             "Sign up",
           ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: Sizes.size36,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Gaps.v40,
-              const Text(
-                "Password",
-                style: TextStyle(
-                  fontSize: Sizes.size24,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              Gaps.v16,
-              TextField(
-                controller: _passwordController,
-                autocorrect: false,
-                keyboardType: TextInputType.emailAddress,
-                onEditingComplete: _onSubmit,
-                obscureText: _obscureText,
-                decoration: InputDecoration(
-                  //텍스트 필드에 이모티콘 추가
-                  suffix: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      GestureDetector(
-                        onTap: _onClearTap,
-                        child: FaIcon(
-                          FontAwesomeIcons.solidCircleXmark,
-                          color: Colors.grey.shade400,
-                          size: Sizes.size20,
-                        ),
-                      ),
-                      Gaps.h14,
-                      GestureDetector(
-                        onTap: _toggleObscureText,
-                        child: FaIcon(
-                          _obscureText
-                              ? FontAwesomeIcons.eye
-                              : FontAwesomeIcons.eyeSlash,
-                          color: Colors.grey.shade400,
-                          size: Sizes.size20,
-                        ),
-                      ),
-                    ],
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: Sizes.size36,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Gaps.v40,
+                const Text(
+                  "what is your Email?",
+                  style: TextStyle(
+                    fontSize: Sizes.size24,
+                    fontWeight: FontWeight.w700,
                   ),
+                ),
+                Gaps.v16,
+                TextField(
+                  controller: _emailController,
+                  autocorrect: false,
+                  keyboardType: TextInputType.emailAddress,
+                  onEditingComplete: _onSubmit,
+                  decoration: InputDecoration(
+                    hintText: "Email",
+                    errorText: _isEmailValid(),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey.shade400,
+                      ),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey.shade400,
+                      ),
+                    ),
+                  ),
+                  cursorColor: Theme.of(context).primaryColor,
+                ),
+                Gaps.v16,
+                const Text(
+                  "Password",
+                  style: TextStyle(
+                    fontSize: Sizes.size24,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                Gaps.v16,
+                TextField(
+                  controller: _passwordController,
+                  autocorrect: false,
+                  keyboardType: TextInputType.emailAddress,
+                  onEditingComplete: _onSubmit,
+                  obscureText: _obscureText,
+                  decoration: InputDecoration(
+                    //텍스트 필드에 이모티콘 추가
+                    suffix: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        GestureDetector(
+                          onTap: _onClearTap,
+                          child: FaIcon(
+                            FontAwesomeIcons.solidCircleXmark,
+                            color: Colors.grey.shade400,
+                            size: Sizes.size20,
+                          ),
+                        ),
+                        Gaps.h14,
+                        GestureDetector(
+                          onTap: _toggleObscureText,
+                          child: FaIcon(
+                            _obscureText
+                                ? FontAwesomeIcons.eye
+                                : FontAwesomeIcons.eyeSlash,
+                            color: Colors.grey.shade400,
+                            size: Sizes.size20,
+                          ),
+                        ),
+                      ],
+                    ),
 
-                  hintText: "Make it Strong",
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade400,
+                    hintText: "Make it Strong",
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey.shade400,
+                      ),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.grey.shade400,
+                      ),
                     ),
                   ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade400,
-                    ),
-                  ),
+                  cursorColor: Theme.of(context).primaryColor,
                 ),
-                cursorColor: Theme.of(context).primaryColor,
-              ),
-              Gaps.v10,
-              const Text(
-                'Your password must have :',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              Row(
-                children: [
-                  FaIcon(FontAwesomeIcons.circleCheck,
-                      size: Sizes.size20,
-                      color: _isPasswordValid()
-                          ? Colors.green
-                          : Colors.grey.shade400),
-                  Gaps.h5,
-                  const Text('8 to 20 charactres')
-                ],
-              ),
-              Gaps.v28,
-              FormButton(
-                disabled: !_isPasswordValid(),
-                onTap: _onSubmit,
-              ),
-            ],
+                Gaps.v10,
+                const Text(
+                  'Your password must have :',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Row(
+                  children: [
+                    FaIcon(FontAwesomeIcons.circleCheck,
+                        size: Sizes.size20,
+                        color: _isPasswordValid()
+                            ? Colors.green
+                            : Colors.grey.shade400),
+                    Gaps.h5,
+                    const Text('8 to 20 charactres')
+                  ],
+                ),
+                Gaps.v28,
+                FormButton(
+                  disabled: !_isPasswordValid() || _isEmailValid() != null,
+                  onTap: _onSubmit,
+                ),
+                Gaps.v16,
+                Center(
+                    child: Column(
+                  children: [
+                    Text(
+                      'すでにIDがありますか',
+                      style: TextStyle(
+                          fontSize: Sizes.size12, color: Colors.grey.shade400),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        navigatorKey.currentState!.pushReplacement(
+                            MaterialPageRoute(
+                                builder: (context) => const LoginFormScreen()));
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                                    color: Theme.of(context).primaryColor))),
+                        child: Text(
+                          'Login',
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    )
+                  ],
+                ))
+              ],
+            ),
           ),
         ),
       ),

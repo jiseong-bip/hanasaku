@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hanasaku/auth/auth_button.dart';
-import 'package:hanasaku/auth/login_screen.dart';
+import 'package:hanasaku/auth/mail_screen.dart';
+import 'package:hanasaku/auth/password_screen.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
 
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({super.key});
 
-  void _onLoginTap(BuildContext context) {
+  void _onEmailTap(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => const LoginScreen(),
+        builder: (context) => const PasswordScreen(),
       ),
     );
   }
@@ -45,18 +46,12 @@ class SignUpScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               Gaps.v40,
-              AuthButton(
-                icon: FaIcon(FontAwesomeIcons.user),
-                text: 'Use Email & Password',
-                loginType: 'email',
-                type: 'signUp',
-              ),
               Gaps.v16,
               AuthButton(
-                  icon: FaIcon(FontAwesomeIcons.apple),
-                  text: 'Continue with Apple',
-                  loginType: 'apple',
-                  type: 'signUp'),
+                icon: FaIcon(FontAwesomeIcons.apple),
+                text: 'Continue with Apple',
+                loginType: 'apple',
+              ),
               Gaps.v16,
               AuthButton(
                 icon: FaIcon(
@@ -65,7 +60,6 @@ class SignUpScreen extends StatelessWidget {
                 ),
                 text: 'Continue with Google',
                 loginType: 'google',
-                type: 'signUp',
               ),
               Gaps.v16,
               AuthButton(
@@ -75,14 +69,12 @@ class SignUpScreen extends StatelessWidget {
                 ),
                 text: 'Continue with Line',
                 loginType: 'line',
-                type: 'signUp',
               ),
               Gaps.v16,
               AuthButton(
                 icon: FaIcon(FontAwesomeIcons.twitter, color: Colors.blue),
                 text: 'Continue with twitter',
                 loginType: 'twitter',
-                type: 'signUp',
               ),
             ],
           ),
@@ -98,16 +90,22 @@ class SignUpScreen extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text('Already have an account?'),
-              Gaps.h5,
-              GestureDetector(
-                onTap: () => _onLoginTap(context),
-                child: Text(
-                  'Login',
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.w600,
-                  ),
+              FittedBox(
+                child: Column(
+                  children: [
+                    const Text('Already have an account?'),
+                    Gaps.h5,
+                    GestureDetector(
+                      onTap: () => _onEmailTap(context),
+                      child: Text(
+                        'Start with Email',
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],

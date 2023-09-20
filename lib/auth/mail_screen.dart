@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hanasaku/auth/form_button.dart';
+import 'package:hanasaku/auth/login_form_screen.dart';
 import 'package:hanasaku/auth/password_screen.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
+import 'package:hanasaku/setup/navigator.dart';
 
 class EmailScreen extends StatefulWidget {
   const EmailScreen({super.key});
@@ -57,7 +59,7 @@ class _EmailScreenState extends State<EmailScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => PasswordScreen(email: _email),
+        builder: (context) => const PasswordScreen(),
       ),
     );
   }
@@ -110,12 +112,40 @@ class _EmailScreenState extends State<EmailScreen> {
                 cursorColor: Theme.of(context).primaryColor,
               ),
               Gaps.v16,
-              GestureDetector(
-                  onTap: _onSubmit,
-                  child: FormButton(
-                    disabled: _email.isEmpty || _isEmailValid() != null,
-                    onTap: _onSubmit,
-                  )),
+              FormButton(
+                disabled: _email.isEmpty || _isEmailValid() != null,
+                onTap: _onSubmit,
+              ),
+              Gaps.v16,
+              Center(
+                  child: Column(
+                children: [
+                  Text(
+                    'すでにIDがありますか',
+                    style: TextStyle(
+                        fontSize: Sizes.size12, color: Colors.grey.shade400),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      navigatorKey.currentState!.pushReplacement(
+                          MaterialPageRoute(
+                              builder: (context) => const LoginFormScreen()));
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(
+                                  color: Theme.of(context).primaryColor))),
+                      child: Text(
+                        'Login',
+                        style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  )
+                ],
+              ))
             ],
           ),
         ),

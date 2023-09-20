@@ -1,6 +1,8 @@
 // ignore_for_file: avoid_print
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_line_sdk/flutter_line_sdk.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -19,25 +21,93 @@ class AuthenticationRepository {
   bool get isLoggedIn => user != null;
   User? get user => _firebaseAuth.currentUser;
 
-  Future<void> signUpWithEmailAndPassword(String email, String password) async {
+  Future<void> signUpWithEmailAndPassword(
+      BuildContext context, String email, String password) async {
     try {
       await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
       FirebaseAuth.instance.currentUser?.sendEmailVerification();
-    } on FirebaseAuthException {
+    } on FirebaseAuthException catch (error) {
+      String? errorCode;
+      switch (error.code) {
+        case "email-already-in-use":
+          errorCode = "使用中のEメールアドレス";
+          break;
+        case "invalid-email":
+          errorCode = "Eメールが無効です";
+          break;
+        case "weak-password":
+          errorCode = "強力なパスワードを作成してください";
+          break;
+        case "正しくないアプローチです":
+          errorCode = error.code;
+          break;
+        default:
+          errorCode = null;
+      }
+
+      // ignore: use_build_context_synchronously
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          content: FittedBox(
+            child: Center(
+              child: Text('$errorCode'),
+            ),
+          ),
+          actions: <Widget>[
+            Center(
+              child: CupertinoButton(
+                borderRadius: BorderRadius.circular(16.0),
+                color: Theme.of(context).primaryColor,
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          ],
+        ),
+      );
       rethrow;
     }
   }
 
-  Future<void> signInWithEmailAndPassword(String email, String password) async {
+  Future<void> signInWithEmailAndPassword(
+      BuildContext context, String email, String password) async {
     try {
       await _firebaseAuth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-    } on FirebaseAuthException {
+    } on FirebaseAuthException catch (error) {
+      // ignore: use_build_context_synchronously
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          content: FittedBox(
+            child: Center(
+              child: Text(error.code),
+            ),
+          ),
+          actions: <Widget>[
+            Center(
+              child: CupertinoButton(
+                borderRadius: BorderRadius.circular(16.0),
+                color: Theme.of(context).primaryColor,
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          ],
+        ),
+      );
+
       rethrow;
     }
   }

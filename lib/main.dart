@@ -145,7 +145,6 @@ class MyApp extends StatelessWidget {
                   if (tokenSnapshot.connectionState == ConnectionState.done) {
                     final token = tokenSnapshot.data;
                     if (user != null && (token != null && token.isNotEmpty)) {
-                      //category가 비워져있지 않을때
                       return const MainNav();
                     } else {
                       return const SignUpScreen();
