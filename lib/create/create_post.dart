@@ -3,6 +3,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -34,16 +35,23 @@ class _CreateScreenState extends State<CreateScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Error'),
-          content: Text(message),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
+          content: FittedBox(
+              child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(message),
+              Gaps.v10,
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text(
+                  'OK',
+                  style: TextStyle(color: Colors.blue),
+                ),
+              ),
+            ],
+          )),
         );
       },
     );
@@ -358,7 +366,7 @@ class _CreateScreenState extends State<CreateScreen> {
                             } else {
                               // If the category is not selected, show an AlertDialog
                               if (categoryId == null) {
-                                _showDialog(context, "카테고리를 선택해주세요");
+                                _showDialog(context, "Roomを選択してください。");
                               }
                             }
                           }

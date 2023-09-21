@@ -146,7 +146,7 @@ void showMyBottomSheet(BuildContext context, int userId, String? avatarKey) {
                                       height: 10,
                                       decoration: const BoxDecoration(
                                           shape: BoxShape.circle,
-                                          color: Color(0xFFECC12A)),
+                                          color: Color(0xFF946125)),
                                     ),
                                     Gaps.h5,
                                     Text('${lengthOfKey1 ?? 0}'),
@@ -166,7 +166,7 @@ void showMyBottomSheet(BuildContext context, int userId, String? avatarKey) {
                                       height: 10,
                                       decoration: const BoxDecoration(
                                           shape: BoxShape.circle,
-                                          color: Color(0xFF946125)),
+                                          color: Color(0xFFECC12A)),
                                     ),
                                     Gaps.h5,
                                     Text('${lengthOfKey3 ?? 0}'),

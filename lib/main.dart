@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_line_sdk/flutter_line_sdk.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/auth/repos/authentication_repository.dart';
 import 'package:hanasaku/auth/sign_up_screen.dart';
@@ -21,6 +22,8 @@ import 'package:provider/provider.dart';
 
 void main() async {
   final tokenManager = UserInfoProvider();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   await initHiveForFlutter();
 
@@ -70,6 +73,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    FlutterNativeSplash.remove();
     final tokenManager = Provider.of<UserInfoProvider>(context, listen: false);
 
     final HttpLink httpLink =

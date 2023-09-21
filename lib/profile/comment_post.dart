@@ -191,7 +191,7 @@ class _CommentPostScreenState extends State<CommentPostScreen> {
                               Row(
                                 children: [
                                   FaIcon(
-                                    FontAwesomeIcons.solidHeart,
+                                    FontAwesomeIcons.heart,
                                     color: Theme.of(context).primaryColor,
                                     size: Sizes.size16,
                                   ),

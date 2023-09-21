@@ -193,7 +193,7 @@ class _MyPostScreenState extends State<MyPostScreen> {
                               Row(
                                 children: [
                                   FaIcon(
-                                    FontAwesomeIcons.solidHeart,
+                                    FontAwesomeIcons.heart,
                                     color: Theme.of(context).primaryColor,
                                     size: Sizes.size16,
                                   ),

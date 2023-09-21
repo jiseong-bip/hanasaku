@@ -2,6 +2,7 @@
 
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_aws_s3_client/flutter_aws_s3_client.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -10,6 +11,7 @@ import 'package:hanasaku/constants/font.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/contents_tab/video_widget/custom_video_player.dart';
+import 'package:hanasaku/contents_tab/video_widget/custom_video_player_1.dart';
 import 'package:hanasaku/home/comment_listview.dart';
 
 import 'package:hanasaku/home/provider/postinfo_provider.dart';
@@ -55,6 +57,7 @@ class _DetailScreenState extends State<DetailScreen> {
   String? nickName;
   bool? isContent;
   List<Object?> avatarImagekey = [];
+  SignedRequestParams? signedParams;
 
   Map<String, dynamic>? post;
 
@@ -77,6 +80,9 @@ class _DetailScreenState extends State<DetailScreen> {
     });
 
     initName();
+    if (widget.videoKey != null) {
+      signedParams = awsS3Client.buildSignedGetParams(key: widget.videoKey!);
+    }
   }
 
   @override
@@ -317,6 +323,21 @@ class _DetailScreenState extends State<DetailScreen> {
     return Column(
       children: [
         if (isContent!)
+          // SizedBox(
+          //   width: screenWidth,
+          //   height: videoHeight,
+          //   child: VideoPlayerWidget(
+          //     widgetSize: Size(screenWidth, videoHeight),
+          //     placeHolder: const Center(
+          //       child: CircularProgressIndicator(),
+          //     ),
+          //     videoOption: VideoOption.full,
+          //     videoController: CustomVideoController(
+          //         videoUrl: signedParams!.uri,
+          //         aspectRatio: 16 / 9,
+          //         httpHeader: signedParams!.headers),
+          //   ),
+          // ),
           SizedBox(
             width: screenWidth,
             height: videoHeight,

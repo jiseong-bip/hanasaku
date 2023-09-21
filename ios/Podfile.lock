@@ -57,6 +57,8 @@ PODS:
   - flutter_line_sdk (2.3.4):
     - Flutter
     - LineSDKSwift (~> 5.3)
+  - flutter_native_splash (0.0.1):
+    - Flutter
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
@@ -122,6 +124,7 @@ DEPENDENCIES:
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - Flutter (from `Flutter`)
   - flutter_line_sdk (from `.symlinks/plugins/flutter_line_sdk/ios`)
+  - flutter_native_splash (from `.symlinks/plugins/flutter_native_splash/ios`)
   - google_sign_in_ios (from `.symlinks/plugins/google_sign_in_ios/ios`)
   - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
@@ -169,6 +172,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_line_sdk:
     :path: ".symlinks/plugins/flutter_line_sdk/ios"
+  flutter_native_splash:
+    :path: ".symlinks/plugins/flutter_native_splash/ios"
   google_sign_in_ios:
     :path: ".symlinks/plugins/google_sign_in_ios/ios"
   image_cropper:
@@ -208,6 +213,7 @@ SPEC CHECKSUMS:
   FirebaseSharedSwift: 0eec812f08b6ec9e03196fc27635739781513028
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_line_sdk: 80c8103ad610e10047a5a3587e17e032a083a1a5
+  flutter_native_splash: 52501b97d1c0a5f898d687f1646226c1f93c56ef
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   google_sign_in_ios: 1256ff9d941db546373826966720b0c24804bcdd
   GoogleSignIn: 5651ce3a61e56ca864160e79b484cd9ed3f49b7a
