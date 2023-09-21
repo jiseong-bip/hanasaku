@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hanasaku/setup/aws_s3.dart';
 import 'package:video_player/video_player.dart';
 
@@ -47,14 +48,24 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
   }
 
   void _toggleFullScreen() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Scaffold(
-          body: Center(child: _buildVideoPlayer()),
-        ),
-      ),
-    );
+    if (MediaQuery.of(context).orientation == Orientation.portrait) {
+      // 가로 모드로 화면 방향 변경
+      SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeRight])
+          .then((_) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                CustomVideoFullScreen(playerState: this), // 현재 상태를 전달
+          ),
+        ).then((_) {
+          // 전체 화면 모드를 종료하면 세로 모드로 다시 변경
+          SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+        });
+      });
+    } else {
+      Navigator.pop(context);
+    }
   }
 
   Widget _buildVideoPlayer() {
@@ -171,5 +182,18 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
   @override
   Widget build(BuildContext context) {
     return _buildVideoPlayer();
+  }
+}
+
+class CustomVideoFullScreen extends StatelessWidget {
+  final _CustomVideoPlayerState playerState;
+
+  const CustomVideoFullScreen({super.key, required this.playerState});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(child: playerState._buildVideoPlayer()),
+    );
   }
 }
