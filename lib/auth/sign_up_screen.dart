@@ -35,17 +35,7 @@ class SignUpScreen extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              Gaps.v20,
-              Text(
-                "Create a profile, follow other accounts, make your own videos, and more.",
-                style: TextStyle(
-                  fontSize: Sizes.size16,
-                  color: Colors.black45,
-                ),
-                textAlign: TextAlign.center,
-              ),
               Gaps.v40,
-              Gaps.v16,
               AuthButton(
                 icon: FaIcon(FontAwesomeIcons.apple),
                 text: 'Continue with Apple',

@@ -155,7 +155,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
                         await deleteAccount(context);
                       }
                     : null,
-                child: const Text('탈퇴하기'),
+                child: const Text('脱退する'),
               ),
             ),
           ],

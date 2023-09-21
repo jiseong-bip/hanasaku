@@ -179,7 +179,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           padding: const EdgeInsets.symmetric(
               horizontal: Sizes.size12, vertical: Sizes.size10),
           child: _chatList.isEmpty
-              ? const Center(child: Text('대화를 걸어보세요'))
+              ? const Center(child: Text('会話をかけてみてください'))
               : ListView.separated(
                   separatorBuilder: (context, index) => Gaps.v14,
                   itemCount: _chatList.length,

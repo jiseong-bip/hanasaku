@@ -49,7 +49,7 @@
 				<string></string>
 				<key>CFBundleURLSchemes</key>
 				<array>
-					<string>hanasaku://</string>
+					<string>hanasaku</string>
 				</array>
 			</dict>
 		</array>
@@ -93,5 +93,6 @@
 		</dict>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<key>ITSAppUsesNonExemptEncryption</key> <false/>
 	</dict>
 </plist>
