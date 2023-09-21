@@ -90,13 +90,13 @@ flutter_native_splash:
   #image_dark_web: assets/splash-invert-web.gif
   #background_image_android: "assets/background-android.png"
   #background_image_dark_android: "assets/dark-background-android.png"
-  background_image_ios: "assets/splash_2.png"
+  #background_image_ios: "assets/splash_2.png"
   #background_image_dark_ios: "assets/dark-background-ios.png"
   #background_image_web: "assets/background-web.png"
   #background_image_dark_web: "assets/dark-background-web.png"
   #branding_android: assets/brand-android.png
   #branding_dark_android: assets/dart_dark-android.png
-  branding_ios: assets/splash_2.png
+  #branding_ios: assets/splash_2.png
   #branding_dark_ios: assets/dart_dark-ios.gif
 
   # The position of the splash image can be set with android_gravity, ios_content_mode, and
