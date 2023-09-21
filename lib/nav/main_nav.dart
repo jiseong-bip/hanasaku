@@ -63,7 +63,6 @@ class _MainNavState extends State<MainNav> {
 
   @override
   Widget build(BuildContext context) {
-    print(context);
     final GraphQLClient client = GraphQLProvider.of(context).value;
     logLikeStream = client.subscribe(SubscriptionOptions(
       document: likeSubscription,
@@ -131,8 +130,8 @@ class _MainNavState extends State<MainNav> {
               NavTab(
                 //text: "Contents",
                 isSelected: _selectedIndex == 1,
-                icon: FontAwesomeIcons.compass,
-                selectedIcon: FontAwesomeIcons.solidCompass,
+                icon: FontAwesomeIcons.podcast,
+                selectedIcon: FontAwesomeIcons.podcast,
                 onTap: () => _onTap(1),
               ),
               NavTab(

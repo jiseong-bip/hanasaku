@@ -31,6 +31,7 @@ class _ChatRoomState extends State<ChatRoom> {
   List<bool> _isSelected = [];
   List<int> selectedMessageIds = [];
   int? _roomId;
+  ValueNotifier<int?> setRoomId = ValueNotifier<int?>(null);
 
   final TextEditingController commentController = TextEditingController();
 
@@ -409,17 +410,23 @@ class _ChatRoomState extends State<ChatRoom> {
                   ),
                 ],
               ),
-            BottomTextBar(
-              commentController: commentController,
-              roomId: widget.roomId == null ? null : widget.roomId!,
-              userId: userId,
-              onMessageChanged: (isSendPost, roomId) {
-                setState(() {
-                  _roomId = roomId;
-                  _fetchChatList(FetchPolicy.networkOnly, _roomId);
-                });
-              },
-            ),
+            ValueListenableBuilder<int?>(
+                valueListenable: setRoomId,
+                builder: (context, roomIdValue, child) {
+                  return BottomTextBar(
+                    commentController: commentController,
+                    roomId:
+                        widget.roomId == null ? roomIdValue : widget.roomId!,
+                    userId: userId,
+                    onMessageChanged: (isSendPost, roomId) {
+                      setState(() {
+                        _roomId = roomId;
+                        setRoomId.value = roomId;
+                        _fetchChatList(FetchPolicy.networkOnly, _roomId);
+                      });
+                    },
+                  );
+                }),
           ],
         ),
       ),

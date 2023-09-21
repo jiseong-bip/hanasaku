@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hanasaku/auth/auth_button.dart';
-import 'package:hanasaku/auth/mail_screen.dart';
 import 'package:hanasaku/auth/password_screen.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';

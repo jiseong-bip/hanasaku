@@ -7,7 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:hanasaku/auth/logout_screen.dart';
+import 'package:hanasaku/auth/repos/authentication_repository.dart';
+import 'package:hanasaku/auth/sign_up_screen.dart';
 import 'package:hanasaku/constants/font.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
@@ -15,7 +16,10 @@ import 'package:hanasaku/home/widget/user_bottom_modal.dart';
 import 'package:hanasaku/profile/comment_post.dart';
 import 'package:hanasaku/profile/liked_post.dart';
 import 'package:hanasaku/profile/my_post.dart';
-import 'package:hanasaku/profile/withdrawal.dart';
+import 'package:hanasaku/profile/screen/notice_screen.dart';
+import 'package:hanasaku/profile/screen/private_policiy_screen.dart';
+import 'package:hanasaku/profile/screen/service_screen.dart';
+import 'package:hanasaku/profile/screen/withdrawal_screen.dart';
 import 'package:hanasaku/query&mutation/querys.dart';
 import 'package:hanasaku/setup/navigator.dart';
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
@@ -133,7 +137,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
     );
     try {
       final QueryResult result = await client.mutate(editUser);
-      print(result);
+
       if (result.data != null) {
         if (result.data!['editProfile']['ok']) {
           _editMode = false;
@@ -238,6 +242,22 @@ class _MyPageScreenState extends State<MyPageScreen> {
     nickName = await Provider.of<UserInfoProvider>(context, listen: false)
         .getNickName();
     setState(() {});
+  }
+
+  Future<void> _handleLogOut() async {
+    // Firebase 로그아웃
+    final auth = Provider.of<AuthenticationRepository>(context, listen: false);
+    await auth.signOut();
+
+    // Hive에서 사용자 정보 삭제
+    final userInfoProvider =
+        Provider.of<UserInfoProvider>(context, listen: false);
+    await userInfoProvider.clearUserInfo();
+
+    // 로그인 화면 또는 홈 화면으로 이동 (또는 원하는 다른 화면으로)
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => const SignUpScreen()),
+        (route) => false);
   }
 
   @override
@@ -408,7 +428,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                           color: Color(0xFFECC12A)),
                                     ),
                                     Gaps.h5,
-                                    Text('${lengthOfKey1 ?? 0}'),
+                                    Text('${lengthOfKey3 ?? 0}'),
                                     Gaps.h5,
                                     Container(
                                       width: 10,
@@ -428,7 +448,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                           color: Color(0xFF946125)),
                                     ),
                                     Gaps.h5,
-                                    Text('${lengthOfKey3 ?? 0}'),
+                                    Text('${lengthOfKey1 ?? 0}'),
                                   ],
                                 )
                               ],
@@ -555,58 +575,94 @@ class _MyPageScreenState extends State<MyPageScreen> {
                     ),
                     Column(
                       children: [
-                        Container(
-                          width: screenWidth,
-                          decoration: BoxDecoration(
-                            border: Border(
-                                bottom: BorderSide(
-                                    width: 0.6, color: Colors.grey.shade300)),
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            vertical: Sizes.size12,
-                            horizontal: Sizes.size24,
-                          ),
-                          child: const Text(
-                            '公知事項', //공지사항
-                            style: TextStyle(
-                                fontSize: Sizes.size20,
-                                fontFamily: MyFontFamily.lineSeedJP),
-                          ),
-                        ),
-                        Container(
-                          width: screenWidth,
-                          decoration: BoxDecoration(
-                            border: Border(
-                                bottom: BorderSide(
-                                    width: 0.6, color: Colors.grey.shade300)),
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            vertical: Sizes.size12,
-                            horizontal: Sizes.size24,
-                          ),
-                          child: const Text(
-                            'キャッシュデータを削除する', //캐시데티어 삭제
-                            style: TextStyle(
-                                fontSize: Sizes.size20,
-                                fontFamily: MyFontFamily.lineSeedJP),
+                        GestureDetector(
+                          onTap: () {
+                            navigatorKey.currentState!.push(MaterialPageRoute(
+                                builder: (context) => const NoticeScreen()));
+                          },
+                          child: Container(
+                            width: screenWidth,
+                            decoration: BoxDecoration(
+                              border: Border(
+                                  bottom: BorderSide(
+                                      width: 0.6, color: Colors.grey.shade300)),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: Sizes.size12,
+                              horizontal: Sizes.size24,
+                            ),
+                            child: const Text(
+                              '公知事項', //공지사항
+                              style: TextStyle(
+                                  fontSize: Sizes.size20,
+                                  fontFamily: MyFontFamily.lineSeedJP),
+                            ),
                           ),
                         ),
-                        Container(
-                          width: screenWidth,
-                          decoration: BoxDecoration(
-                            border: Border(
-                                bottom: BorderSide(
-                                    width: 0.6, color: Colors.grey.shade300)),
+                        // Container(
+                        //   width: screenWidth,
+                        //   decoration: BoxDecoration(
+                        //     border: Border(
+                        //         bottom: BorderSide(
+                        //             width: 0.6, color: Colors.grey.shade300)),
+                        //   ),
+                        //   padding: const EdgeInsets.symmetric(
+                        //     vertical: Sizes.size12,
+                        //     horizontal: Sizes.size24,
+                        //   ),
+                        //   child: const Text(
+                        //     'キャッシュデータを削除する', //캐시데티어 삭제
+                        //     style: TextStyle(
+                        //         fontSize: Sizes.size20,
+                        //         fontFamily: MyFontFamily.lineSeedJP),
+                        //   ),
+                        // ),
+                        GestureDetector(
+                          onTap: () {
+                            navigatorKey.currentState!.push(MaterialPageRoute(
+                                builder: (context) => const PolicyScreen()));
+                          },
+                          child: Container(
+                            width: screenWidth,
+                            decoration: BoxDecoration(
+                              border: Border(
+                                  bottom: BorderSide(
+                                      width: 0.6, color: Colors.grey.shade300)),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: Sizes.size12,
+                              horizontal: Sizes.size24,
+                            ),
+                            child: const Text(
+                              '個人情報処理方針', //개인정보처리 이용약관
+                              style: TextStyle(
+                                  fontSize: Sizes.size20,
+                                  fontFamily: MyFontFamily.lineSeedJP),
+                            ),
                           ),
-                          padding: const EdgeInsets.symmetric(
-                            vertical: Sizes.size12,
-                            horizontal: Sizes.size24,
-                          ),
-                          child: const Text(
-                            'サービス利用薬科', //서비스 이용약관
-                            style: TextStyle(
-                                fontSize: Sizes.size20,
-                                fontFamily: MyFontFamily.lineSeedJP),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            navigatorKey.currentState!.push(MaterialPageRoute(
+                                builder: (context) => const ServiceScreen()));
+                          },
+                          child: Container(
+                            width: screenWidth,
+                            decoration: BoxDecoration(
+                              border: Border(
+                                  bottom: BorderSide(
+                                      width: 0.6, color: Colors.grey.shade300)),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: Sizes.size12,
+                              horizontal: Sizes.size24,
+                            ),
+                            child: const Text(
+                              'サービス利用薬科', //서비스 이용약관
+                              style: TextStyle(
+                                  fontSize: Sizes.size20,
+                                  fontFamily: MyFontFamily.lineSeedJP),
+                            ),
                           ),
                         ),
                         Container(
@@ -641,9 +697,59 @@ class _MyPageScreenState extends State<MyPageScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            navigatorKey.currentState!.push(MaterialPageRoute(
-                                builder: (rootContext) =>
-                                    const LogOutScreen()));
+                            showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  contentTextStyle: const TextStyle(
+                                      fontSize: Sizes.size32,
+                                      color: Colors.black),
+                                  content: FittedBox(
+                                    child: Center(
+                                        child: Column(
+                                      children: [
+                                        const Text('ログアウトしますか'),
+                                        Gaps.v16,
+                                        FittedBox(
+                                          child: Row(
+                                            children: [
+                                              CupertinoButton(
+                                                color: Theme.of(context)
+                                                    .primaryColor,
+                                                child: const Text(
+                                                  'はい。',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                onPressed: () {
+                                                  _handleLogOut();
+                                                },
+                                              ),
+                                              Gaps.h10,
+                                              CupertinoButton(
+                                                color: Colors.grey.shade400,
+                                                child: const Text(
+                                                  'いいえ。',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                onPressed: () {
+                                                  navigatorKey.currentState!
+                                                      .pop(context);
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    )),
+                                  ),
+                                );
+                              },
+                            );
                           },
                           child: Container(
                             width: screenWidth,

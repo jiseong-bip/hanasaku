@@ -41,7 +41,7 @@ void showMyBottomSheet(BuildContext context, int userId, String? avatarKey) {
         options: QueryOptions(
             document: gql(readRepositories),
             variables: {"userId": userId},
-            fetchPolicy: FetchPolicy.cacheAndNetwork),
+            fetchPolicy: FetchPolicy.networkOnly),
         builder: (
           QueryResult result, {
           Refetch? refetch,
@@ -55,7 +55,7 @@ void showMyBottomSheet(BuildContext context, int userId, String? avatarKey) {
             return const CircularProgressIndicator();
           }
           Map<String, dynamic> user = result.data?['viewUser'];
-          print(user);
+
           Map<int, List<String>> groupedMedals = {};
           final List<Map<int, dynamic>> medal = [];
           int? lengthOfKey1;
@@ -78,20 +78,14 @@ void showMyBottomSheet(BuildContext context, int userId, String? avatarKey) {
 
           if (itemsWithKey1.isNotEmpty) {
             lengthOfKey1 = itemsWithKey1.first[1].length;
-          } else {
-            print('There is no item with key 1 in the _medal list.');
           }
 
           if (itemsWithKey2.isNotEmpty) {
             lengthOfKey2 = itemsWithKey2.first[2].length;
-          } else {
-            print('There is no item with key 2 in the _medal list.');
           }
 
           if (itemsWithKey3.isNotEmpty) {
             lengthOfKey3 = itemsWithKey3.first[3].length;
-          } else {
-            print('There is no item with key 3 in the _medal list.');
           }
 
           double screenHeight = MediaQuery.of(context).size.height;
@@ -146,10 +140,10 @@ void showMyBottomSheet(BuildContext context, int userId, String? avatarKey) {
                                       height: 10,
                                       decoration: const BoxDecoration(
                                           shape: BoxShape.circle,
-                                          color: Color(0xFF946125)),
+                                          color: Color(0xFFECC12A)),
                                     ),
                                     Gaps.h5,
-                                    Text('${lengthOfKey1 ?? 0}'),
+                                    Text('${lengthOfKey3 ?? 0}'),
                                     Gaps.h5,
                                     Container(
                                       width: 10,
@@ -166,10 +160,10 @@ void showMyBottomSheet(BuildContext context, int userId, String? avatarKey) {
                                       height: 10,
                                       decoration: const BoxDecoration(
                                           shape: BoxShape.circle,
-                                          color: Color(0xFFECC12A)),
+                                          color: Color(0xFF946125)),
                                     ),
                                     Gaps.h5,
-                                    Text('${lengthOfKey3 ?? 0}'),
+                                    Text('${lengthOfKey1 ?? 0}'),
                                   ],
                                 )
                               ],
