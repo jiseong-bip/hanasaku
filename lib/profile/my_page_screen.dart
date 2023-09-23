@@ -140,6 +140,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
 
       if (result.data != null) {
         if (result.data!['editProfile']['ok']) {
+          print(result.data!['editProfile']['ok']);
           _editMode = false;
           if (userName.isNotEmpty) {
             await Provider.of<UserInfoProvider>(context, listen: false)
@@ -148,6 +149,8 @@ class _MyPageScreenState extends State<MyPageScreen> {
               nickName = userName;
             });
           }
+        } else {
+          print('not');
         }
       } else {
         // ignore: use_build_context_synchronously

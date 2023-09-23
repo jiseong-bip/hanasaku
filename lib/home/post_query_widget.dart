@@ -68,6 +68,7 @@ class _PostsQueryState extends State<PostsQuery> {
         'offset': _offset,
       },
       fetchPolicy: fetchPolicy,
+      cacheRereadPolicy: CacheRereadPolicy.ignoreAll,
     );
 
     final QueryResult result = await client.query(options);

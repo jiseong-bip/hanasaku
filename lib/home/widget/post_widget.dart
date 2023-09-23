@@ -1,7 +1,10 @@
 // ignore_for_file: avoid_print
 
+import 'dart:io';
+
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -30,6 +33,7 @@ class _PostState extends State<Post> {
   List<Object?> postImagekey = [];
   List<Object?> avatarImagekey = [];
   List<Object?> imagekey = [];
+  late Future<File> _cachedFile;
 
   final PageController _pageController = PageController();
 
@@ -129,6 +133,8 @@ class _PostState extends State<Post> {
 
       isLiked = widget.post['isLiked'];
       await getImage(imagekey);
+      _cachedFile =
+          DefaultCacheManager().getSingleFile(widget.post['user']['avatar']);
       setState(() {
         imagesLoaded = true;
       });
@@ -202,11 +208,14 @@ class _PostState extends State<Post> {
                 child: Row(
                   children: [
                     widget.post['user']['avatar'] != null
-                        ? CircleAvatar(
-                            radius: 12,
-                            child:
-                                CachedImage(url: widget.post['user']['avatar']),
-                          )
+                        ? FutureBuilder(
+                            future: _cachedFile,
+                            builder: (context, snapshot) {
+                              final file = snapshot.data as File;
+                              return CircleAvatar(
+                                  radius: 12,
+                                  backgroundImage: Image.file(file).image);
+                            })
                         : CircleAvatar(
                             radius: 12,
                             child: SvgPicture.asset(

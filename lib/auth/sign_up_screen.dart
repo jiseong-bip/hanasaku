@@ -19,30 +19,57 @@ class SignUpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: const SafeArea(
+      body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
             horizontal: Sizes.size40,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Gaps.v80,
-              Text(
-                "Sign up for Hanasaku",
-                style: TextStyle(
-                  fontSize: Sizes.size24,
-                  fontWeight: FontWeight.w700,
+              Center(
+                child: Column(
+                  children: [
+                    const Text(
+                      "Welcome",
+                      style: TextStyle(
+                        fontSize: Sizes.size24,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const Text(
+                      "to",
+                      style: TextStyle(
+                        fontSize: Sizes.size16,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    Text(
+                      "HANASAKU",
+                      style: TextStyle(
+                          fontSize: Sizes.size32,
+                          fontWeight: FontWeight.w700,
+                          color: Theme.of(context).primaryColor),
+                    ),
+                    Text(
+                      "僕らのアイドル物語",
+                      style: TextStyle(
+                          fontSize: Sizes.size16,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.grey.shade300),
+                    ),
+                  ],
                 ),
               ),
               Gaps.v40,
-              AuthButton(
+              const AuthButton(
                 icon: FaIcon(FontAwesomeIcons.apple),
                 text: 'Continue with Apple',
                 loginType: 'apple',
               ),
               Gaps.v16,
-              AuthButton(
+              const AuthButton(
                 icon: FaIcon(
                   FontAwesomeIcons.google,
                   color: Colors.red,
@@ -51,7 +78,7 @@ class SignUpScreen extends StatelessWidget {
                 loginType: 'google',
               ),
               Gaps.v16,
-              AuthButton(
+              const AuthButton(
                 icon: FaIcon(
                   FontAwesomeIcons.line,
                   color: Colors.green,
@@ -60,7 +87,7 @@ class SignUpScreen extends StatelessWidget {
                 loginType: 'line',
               ),
               Gaps.v16,
-              AuthButton(
+              const AuthButton(
                 icon: FaIcon(FontAwesomeIcons.twitter, color: Colors.blue),
                 text: 'Continue with twitter',
                 loginType: 'twitter',
@@ -69,7 +96,7 @@ class SignUpScreen extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
+      bottomSheet: BottomAppBar(
         color: Colors.grey.shade50,
         elevation: 2,
         child: Padding(

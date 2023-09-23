@@ -1,7 +1,9 @@
 // ignore_for_file: avoid_print
 
+import 'dart:io';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -9,7 +11,6 @@ import 'package:hanasaku/chat/chat_room_screen.dart';
 import 'package:hanasaku/constants/font.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
-import 'package:hanasaku/setup/cached_image.dart';
 
 void showMyBottomSheet(BuildContext context, int userId, String? avatarKey) {
   showModalBottomSheet(
@@ -58,6 +59,7 @@ void showMyBottomSheet(BuildContext context, int userId, String? avatarKey) {
 
           Map<int, List<String>> groupedMedals = {};
           final List<Map<int, dynamic>> medal = [];
+          late Future<File> cachedFile;
           int? lengthOfKey1;
           int? lengthOfKey2;
           int? lengthOfKey3;
@@ -87,6 +89,9 @@ void showMyBottomSheet(BuildContext context, int userId, String? avatarKey) {
           if (itemsWithKey3.isNotEmpty) {
             lengthOfKey3 = itemsWithKey3.first[3].length;
           }
+          if (avatarKey != null) {
+            cachedFile = DefaultCacheManager().getSingleFile(avatarKey);
+          }
 
           double screenHeight = MediaQuery.of(context).size.height;
           double screenWidth = MediaQuery.of(context).size.width;
@@ -110,9 +115,15 @@ void showMyBottomSheet(BuildContext context, int userId, String? avatarKey) {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             avatarKey != null
-                                ? CircleAvatar(
-                                    radius: 40,
-                                    child: CachedImage(url: avatarKey))
+                                ? FutureBuilder(
+                                    future: cachedFile,
+                                    builder: (context, snapshot) {
+                                      final file = snapshot.data as File;
+                                      return CircleAvatar(
+                                          radius: 40,
+                                          backgroundImage:
+                                              Image.file(file).image);
+                                    })
                                 : CircleAvatar(
                                     radius: 40,
                                     child: SvgPicture.asset(
