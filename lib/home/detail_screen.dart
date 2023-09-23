@@ -10,7 +10,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/constants/font.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
-import 'package:hanasaku/contents_tab/video_widget/custom_video_player_1.dart';
+import 'package:hanasaku/contents/video_widget/custom_video_player_1.dart';
 import 'package:hanasaku/home/comment_listview.dart';
 
 import 'package:hanasaku/home/provider/postinfo_provider.dart';

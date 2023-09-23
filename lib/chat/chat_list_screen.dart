@@ -1,6 +1,9 @@
 // ignore_for_file: avoid_print
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -9,7 +12,6 @@ import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/query&mutation/querys.dart';
 import 'package:hanasaku/setup/aws_s3.dart';
-import 'package:hanasaku/setup/cached_image.dart';
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
 import 'package:provider/provider.dart';
 
@@ -27,6 +29,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   List<bool> _isSelected = [];
   final List _selectedChatIds = [];
   List<Object?> avatarImagekey = [];
+  late Future<File> _cachedFile;
 
   @override
   void initState() {
@@ -184,6 +187,11 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                   separatorBuilder: (context, index) => Gaps.v14,
                   itemCount: _chatList.length,
                   itemBuilder: (context, index) {
+                    if (_chatList[index]['user']['avatar'] != null) {
+                      _cachedFile = DefaultCacheManager()
+                          .getSingleFile(_chatList[index]['user']['avatar']);
+                    }
+
                     return InkWell(
                       onTap: _isSelectMode
                           ? () {
@@ -213,11 +221,34 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             _chatList[index]['user']['avatar'] != null
-                                ? CircleAvatar(
-                                    radius: 20,
-                                    child: CachedImage(
-                                        url: _chatList[index]['user']
-                                            ['avatar']))
+                                ? FutureBuilder(
+                                    future: _cachedFile,
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.done) {
+                                        if (snapshot.hasError) {
+                                          // 에러 처리
+                                          return Text(
+                                              'Error: ${snapshot.error}');
+                                        }
+
+                                        if (snapshot.hasData) {
+                                          final file = snapshot.data as File;
+
+                                          // 파일을 이미지로 변환하여 CircleAvatar의 backgroundImage로 설정
+                                          return CircleAvatar(
+                                            radius: 20,
+                                            backgroundImage:
+                                                Image.file(file).image,
+                                          );
+                                        } else {
+                                          return const Text(
+                                              'No data'); // 데이터 없음 처리
+                                        }
+                                      } else {
+                                        return const CircularProgressIndicator(); // 로딩 중 처리
+                                      }
+                                    })
                                 : CircleAvatar(
                                     radius: 20,
                                     child: SvgPicture.asset(

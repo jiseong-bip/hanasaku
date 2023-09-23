@@ -118,11 +118,30 @@ void showMyBottomSheet(BuildContext context, int userId, String? avatarKey) {
                                 ? FutureBuilder(
                                     future: cachedFile,
                                     builder: (context, snapshot) {
-                                      final file = snapshot.data as File;
-                                      return CircleAvatar(
-                                          radius: 40,
-                                          backgroundImage:
-                                              Image.file(file).image);
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.done) {
+                                        if (snapshot.hasError) {
+                                          // 에러 처리
+                                          return Text(
+                                              'Error: ${snapshot.error}');
+                                        }
+
+                                        if (snapshot.hasData) {
+                                          final file = snapshot.data as File;
+
+                                          // 파일을 이미지로 변환하여 CircleAvatar의 backgroundImage로 설정
+                                          return CircleAvatar(
+                                            radius: 20,
+                                            backgroundImage:
+                                                Image.file(file).image,
+                                          );
+                                        } else {
+                                          return const Text(
+                                              'No data'); // 데이터 없음 처리
+                                        }
+                                      } else {
+                                        return const CircularProgressIndicator(); // 로딩 중 처리
+                                      }
                                     })
                                 : CircleAvatar(
                                     radius: 40,

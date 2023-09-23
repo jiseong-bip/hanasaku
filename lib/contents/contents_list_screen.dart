@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/home/detail_screen.dart';
 import 'package:hanasaku/query&mutation/querys.dart';
+import 'package:hanasaku/setup/aws_s3.dart';
 import 'package:hanasaku/setup/navigator.dart';
 
 class ContentsScreen extends StatefulWidget {
@@ -14,6 +18,27 @@ class ContentsScreen extends StatefulWidget {
 }
 
 class _ContentsScreenState extends State<ContentsScreen> {
+  Future<File>? _cachedFile;
+  Future<void> fetchAvatarImages(List contents) async {
+    for (var content in contents) {
+      if (content['user']['avatar'] != null) {
+        avatarImagekey.add(
+            {'__typename': 'userAvator', 'avatar': content['user']['avatar']});
+        await getImage(
+            avatarImagekey); // Assuming this method fetches the image
+        _cachedFile =
+            DefaultCacheManager().getSingleFile(content['user']['avatar']);
+      }
+    }
+    setState(() {}); // Rebuild the widget after fetching all images
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  List<Object?> avatarImagekey = [];
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -37,6 +62,9 @@ class _ContentsScreenState extends State<ContentsScreen> {
           }
 
           List? contents = result.data?['viewContents'];
+          if (contents != null) {
+            fetchAvatarImages(contents);
+          }
 
           if (contents == null) {
             return const Center(
@@ -95,14 +123,67 @@ class _ContentsScreenState extends State<ContentsScreen> {
                             children: [
                               Row(
                                 children: [
-                                  Container(
-                                    height: screenWidth / 8,
-                                    width: screenWidth / 8,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        border: Border.all(width: 0.2),
-                                        color: Colors.grey),
-                                  ),
+                                  FutureBuilder(
+                                      future: _cachedFile,
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.done) {
+                                          if (snapshot.hasError) {
+                                            // 에러 처리
+                                            return Container(
+                                              height: screenWidth / 8,
+                                              width: screenWidth / 8,
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  border:
+                                                      Border.all(width: 0.2),
+                                                  color: Colors.grey),
+                                            );
+                                          }
+
+                                          if (snapshot.hasData) {
+                                            final file = snapshot.data as File;
+
+                                            // 파일을 이미지로 변환하여 CircleAvatar의 backgroundImage로 설정
+                                            return Container(
+                                              height: screenWidth / 8,
+                                              width: screenWidth / 8,
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  border:
+                                                      Border.all(width: 0.2),
+                                                  color: Colors.grey,
+                                                  image: DecorationImage(
+                                                    image:
+                                                        Image.file(file).image,
+                                                  )),
+                                            );
+                                          } else {
+                                            return Container(
+                                              height: screenWidth / 8,
+                                              width: screenWidth / 8,
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  border:
+                                                      Border.all(width: 0.2),
+                                                  color: Colors.grey),
+                                            ); // 데이터 없음 처리
+                                          }
+                                        } else {
+                                          return Container(
+                                            height: screenWidth / 8,
+                                            width: screenWidth / 8,
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                border: Border.all(width: 0.2),
+                                                color: Colors.grey),
+                                          ); // 로딩 중 처리
+                                        }
+                                      }),
                                   Gaps.h10,
                                   Column(
                                     crossAxisAlignment:
@@ -126,7 +207,7 @@ class _ContentsScreenState extends State<ContentsScreen> {
                                         '${content['title']}',
                                         style: const TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            fontSize: Sizes.size16),
+                                            fontSize: Sizes.size14),
                                       )
                                     ],
                                   ),
