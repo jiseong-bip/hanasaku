@@ -145,6 +145,9 @@ final myPostQuery = gql("""
             id
           }
           categoryId
+          user {
+            avatar
+          }
         }
       }
     }
@@ -161,6 +164,9 @@ final likedPostQuery = gql("""
             categoryId
             comments {
               id
+            }
+            user {
+              avatar
             }
           }
         }

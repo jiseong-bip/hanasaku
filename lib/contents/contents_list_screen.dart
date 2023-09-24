@@ -24,13 +24,12 @@ class _ContentsScreenState extends State<ContentsScreen> {
       if (content['user']['avatar'] != null) {
         avatarImagekey.add(
             {'__typename': 'userAvator', 'avatar': content['user']['avatar']});
-        await getImage(
+        await getListImage(
             avatarImagekey); // Assuming this method fetches the image
         _cachedFile =
             DefaultCacheManager().getSingleFile(content['user']['avatar']);
       }
-    }
-    setState(() {}); // Rebuild the widget after fetching all images
+    } // Rebuild the widget after fetching all images
   }
 
   @override
@@ -44,7 +43,7 @@ class _ContentsScreenState extends State<ContentsScreen> {
     double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Shorts'),
+        title: const Center(child: Text('Shorts')),
       ),
       body: Query(
         options: QueryOptions(

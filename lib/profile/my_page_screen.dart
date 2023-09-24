@@ -140,7 +140,10 @@ class _MyPageScreenState extends State<MyPageScreen> {
       if (result.data != null) {
         if (result.data!['editProfile']['ok']) {
           print(result.data!['editProfile']['ok']);
-          _editMode = false;
+
+          setState(() {
+            _editMode = false;
+          });
           if (userName.isNotEmpty) {
             await Provider.of<UserInfoProvider>(context, listen: false)
                 .setNickName(userName);
@@ -300,7 +303,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                     child: GestureDetector(
                       onTap: () {
                         showMyBottomSheet(
-                            context, myInfo['id'], myInfo['avatar']);
+                            context, myInfo['id'], nickName!, myInfo['avatar']);
                       },
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,

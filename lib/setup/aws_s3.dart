@@ -2,8 +2,11 @@
 
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_aws_s3_client/flutter_aws_s3_client.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:hanasaku/constants/sizes.dart';
 
 const region = "ap-northeast-2";
 const bucketId = "jeon-jue";
@@ -15,7 +18,7 @@ final AwsS3Client awsS3Client = AwsS3Client(
     accessKey: "AKIAXRQ2ICJ2X3COJJ6N",
     secretKey: "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");
 
-Future getImage(List<Object?> images) async {
+Future getListImage(List<Object?> images) async {
   final cacheManager = DefaultCacheManager();
 
   for (var image in images) {
@@ -49,6 +52,59 @@ Future getImage(List<Object?> images) async {
       print("Image download failed: $response");
     }
   }
+}
+
+Future<File?> getImage(BuildContext context, String? imageKey) async {
+  final cacheManager = DefaultCacheManager();
+
+  if (await cacheManager.getFileFromCache(imageKey!) != null) {
+    print('not access');
+    return DefaultCacheManager().getSingleFile(
+        imageKey); // Image data already downloaded, no need to fetch again
+  }
+
+  final response = await awsS3Client.getObject(imageKey);
+
+  if (response.statusCode == 200) {
+    await cacheManager.putFile(
+      imageKey,
+      response.bodyBytes,
+      fileExtension: 'jpg', // Set the file extension if necessary
+    );
+
+    print('access : $imageKey');
+    return DefaultCacheManager().getSingleFile(imageKey);
+  } else {
+    // Handle the case where image download failed
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: const FittedBox(
+          child: Center(
+            child: Text(
+              "ネットワークを確認してください",
+            ),
+          ),
+        ),
+        contentTextStyle:
+            const TextStyle(fontSize: Sizes.size10, color: Colors.black),
+        actions: <Widget>[
+          Center(
+            child: CupertinoButton(
+              borderRadius: BorderRadius.circular(16.0),
+              color: Theme.of(context).primaryColor,
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  return null;
 }
 
 Future<String> getCachedImagePath(String imageUrl) async {

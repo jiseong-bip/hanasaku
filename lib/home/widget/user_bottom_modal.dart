@@ -3,7 +3,6 @@
 import 'dart:io';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -11,8 +10,10 @@ import 'package:hanasaku/chat/chat_room_screen.dart';
 import 'package:hanasaku/constants/font.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
+import 'package:hanasaku/setup/aws_s3.dart';
 
-void showMyBottomSheet(BuildContext context, int userId, String? avatarKey) {
+void showMyBottomSheet(
+    BuildContext context, int userId, String userName, String? avatarKey) {
   showModalBottomSheet(
     isScrollControlled: true,
     constraints: const BoxConstraints(maxHeight: 370, minHeight: 100),
@@ -55,11 +56,12 @@ void showMyBottomSheet(BuildContext context, int userId, String? avatarKey) {
           if (result.isLoading) {
             return const CircularProgressIndicator();
           }
+
           Map<String, dynamic> user = result.data?['viewUser'];
 
           Map<int, List<String>> groupedMedals = {};
           final List<Map<int, dynamic>> medal = [];
-          late Future<File> cachedFile;
+
           int? lengthOfKey1;
           int? lengthOfKey2;
           int? lengthOfKey3;
@@ -89,9 +91,6 @@ void showMyBottomSheet(BuildContext context, int userId, String? avatarKey) {
           if (itemsWithKey3.isNotEmpty) {
             lengthOfKey3 = itemsWithKey3.first[3].length;
           }
-          if (avatarKey != null) {
-            cachedFile = DefaultCacheManager().getSingleFile(avatarKey);
-          }
 
           double screenHeight = MediaQuery.of(context).size.height;
           double screenWidth = MediaQuery.of(context).size.width;
@@ -116,14 +115,20 @@ void showMyBottomSheet(BuildContext context, int userId, String? avatarKey) {
                           children: [
                             avatarKey != null
                                 ? FutureBuilder(
-                                    future: cachedFile,
+                                    future: getImage(context, avatarKey),
                                     builder: (context, snapshot) {
                                       if (snapshot.connectionState ==
                                           ConnectionState.done) {
                                         if (snapshot.hasError) {
                                           // 에러 처리
-                                          return Text(
-                                              'Error: ${snapshot.error}');
+                                          return CircleAvatar(
+                                            radius: 40,
+                                            child: SvgPicture.asset(
+                                              'assets/user.svg',
+                                              width: 80,
+                                              height: 80,
+                                            ),
+                                          );
                                         }
 
                                         if (snapshot.hasData) {
@@ -441,55 +446,57 @@ void showMyBottomSheet(BuildContext context, int userId, String? avatarKey) {
                       ),
               ],
             ),
-            bottomSheet: BottomAppBar(
-                child: Padding(
-              padding: const EdgeInsets.only(
-                bottom: Sizes.size40,
-                top: Sizes.size16,
-                left: Sizes.size24,
-                right: Sizes.size24,
-              ),
-              child: GestureDetector(
-                onTap: () {
-                  user['isChat'] == null
-                      ? Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ChatRoom(
-                              userName: user['userName'],
-                              userId: user['id'],
-                            ),
-                          ),
-                        )
-                      : Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ChatRoom(
-                                    userName: user['userName'],
-                                    roomId: user['isChat'],
-                                    userId: user['id'],
-                                  )));
-                },
-                child: Container(
-                  width: screenHeight,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: Sizes.size16,
-                  ),
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
-                      borderRadius: BorderRadius.circular(15)),
-                  child: const Text(
-                    'メッセージ送信',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: Sizes.size16,
+            bottomSheet: user['userName'] != userName
+                ? BottomAppBar(
+                    child: Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: Sizes.size40,
+                      top: Sizes.size16,
+                      left: Sizes.size24,
+                      right: Sizes.size24,
                     ),
-                  ),
-                ),
-              ),
-            )),
+                    child: GestureDetector(
+                      onTap: () {
+                        user['isChat'] == null
+                            ? Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ChatRoom(
+                                    userName: user['userName'],
+                                    userId: user['id'],
+                                  ),
+                                ),
+                              )
+                            : Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ChatRoom(
+                                          userName: user['userName'],
+                                          roomId: user['isChat'],
+                                          userId: user['id'],
+                                        )));
+                      },
+                      child: Container(
+                        width: screenHeight,
+                        padding: const EdgeInsets.symmetric(
+                          vertical: Sizes.size16,
+                        ),
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColor,
+                            borderRadius: BorderRadius.circular(15)),
+                        child: const Text(
+                          'メッセージ送信',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: Sizes.size16,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ))
+                : null,
           );
         },
       );

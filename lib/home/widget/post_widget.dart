@@ -131,7 +131,7 @@ class _PostState extends State<Post> {
       }
 
       isLiked = widget.post['isLiked'];
-      await getImage(imagekey);
+      await getListImage(imagekey);
       if (widget.post['user']['avatar'] != null) {
         _cachedFile =
             DefaultCacheManager().getSingleFile(widget.post['user']['avatar']);
@@ -204,7 +204,10 @@ class _PostState extends State<Post> {
             children: [
               GestureDetector(
                 onTap: () {
-                  showMyBottomSheet(context, widget.post['user']['id'],
+                  showMyBottomSheet(
+                      context,
+                      widget.post['user']['id'],
+                      widget.post['user']['userName'],
                       widget.post['user']['avatar']);
                 },
                 child: Row(

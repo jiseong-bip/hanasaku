@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_print
 
+import 'dart:io';
+
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_aws_s3_client/flutter_aws_s3_client.dart';
@@ -41,7 +43,7 @@ class DetailScreen extends StatefulWidget {
       this.onLikeChanged,
       this.onLikeCountChanged,
       this.onCommentsCountChanged,
-      required this.avatorKey});
+      this.avatorKey});
 
   @override
   State<DetailScreen> createState() => _DetailScreenState();
@@ -72,8 +74,9 @@ class _DetailScreenState extends State<DetailScreen> {
       if (widget.avatorKey != null) {
         avatarImagekey
             .add({'__typename': 'userAvator', 'avatar': widget.avatorKey});
+        await getListImage(avatarImagekey);
       }
-      await getImage(avatarImagekey);
+
       await _fetchPost(FetchPolicy.networkOnly);
     });
 
@@ -347,16 +350,44 @@ class _DetailScreenState extends State<DetailScreen> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      showMyBottomSheet(
-                          context, post?['user']['id'], widget.avatorKey);
+                      showMyBottomSheet(context, post?['user']['id'],
+                          post?['user']['userName'], widget.avatorKey);
                     },
                     child: Row(
                       children: [
                         widget.avatorKey != null
-                            ? CircleAvatar(
-                                radius: 12,
-                                child: CachedImage(url: widget.avatorKey!),
-                              )
+                            ? FutureBuilder(
+                                future: getImage(context, widget.avatorKey),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.done) {
+                                    if (snapshot.hasError) {
+                                      // 에러 처리
+                                      return CircleAvatar(
+                                        radius: 12,
+                                        child: SvgPicture.asset(
+                                          'assets/user.svg',
+                                          width: 80,
+                                          height: 80,
+                                        ),
+                                      );
+                                    }
+
+                                    if (snapshot.hasData) {
+                                      final file = snapshot.data as File;
+
+                                      // 파일을 이미지로 변환하여 CircleAvatar의 backgroundImage로 설정
+                                      return CircleAvatar(
+                                        radius: 12,
+                                        backgroundImage: Image.file(file).image,
+                                      );
+                                    } else {
+                                      return const Text('No data'); // 데이터 없음 처리
+                                    }
+                                  } else {
+                                    return const CircularProgressIndicator(); // 로딩 중 처리
+                                  }
+                                })
                             : CircleAvatar(
                                 radius: 12,
                                 child: SvgPicture.asset(

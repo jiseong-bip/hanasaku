@@ -41,7 +41,7 @@ class PostInfo with ChangeNotifier {
             {'__typename': 'userAvator', 'avatar': comment['user']['avatar']});
       }
     }
-    await getImage(avatarImagekey);
+    await getListImage(avatarImagekey);
     print('set avator done');
   }
 

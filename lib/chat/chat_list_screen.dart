@@ -91,7 +91,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         }
         _isSelected = List<bool>.filled(_chatList.length, false);
       });
-      await getImage(avatarImagekey);
+      await getListImage(avatarImagekey);
     } else {
       print(result.exception);
     }

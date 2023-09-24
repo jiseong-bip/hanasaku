@@ -114,6 +114,8 @@ class _CommentsQueryState extends State<CommentsQuery> {
                                 context,
                                 postInfo.getComments()![index1]['user']['id'],
                                 postInfo.getComments()![index1]['user']
+                                    ['userName'],
+                                postInfo.getComments()![index1]['user']
                                     ['avatar']);
                           },
                           child: Row(
