@@ -8,7 +8,7 @@ class CachedImage extends StatefulWidget {
   const CachedImage({Key? key, required this.url}) : super(key: key);
 
   @override
-  _CachedImageState createState() => _CachedImageState();
+  State<CachedImage> createState() => _CachedImageState();
 }
 
 class _CachedImageState extends State<CachedImage> {

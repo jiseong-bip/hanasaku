@@ -9,7 +9,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/auth/repos/authentication_repository.dart';
 import 'package:hanasaku/auth/sign_up_screen.dart';
-import 'package:hanasaku/constants/font.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/home/widget/user_bottom_modal.dart';
@@ -320,9 +319,8 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                         child: const Text(
                                           '写真編集',
                                           style: TextStyle(
-                                              color: Colors.black,
-                                              fontFamily:
-                                                  MyFontFamily.lineSeedJP),
+                                            color: Colors.black,
+                                          ),
                                         ),
                                       )
                                     : CircleAvatar(
@@ -380,8 +378,6 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                             "$nickName",
                                             style: const TextStyle(
                                               fontSize: Sizes.size20,
-                                              fontFamily:
-                                                  MyFontFamily.lineSeedJP,
                                               fontWeight: FontWeight.w500,
                                             ),
                                           ),
@@ -497,8 +493,8 @@ class _MyPageScreenState extends State<MyPageScreen> {
                             Text(
                               '私が書いた掲示物', //작성한 게시물
                               style: TextStyle(
-                                  fontSize: Sizes.size20,
-                                  fontFamily: MyFontFamily.lineSeedJP),
+                                fontSize: Sizes.size20,
+                              ),
                             )
                           ],
                         ),
@@ -531,8 +527,8 @@ class _MyPageScreenState extends State<MyPageScreen> {
                             const Text(
                               'いいねを押した掲示物', //좋아요 누른 게시물
                               style: TextStyle(
-                                  fontSize: Sizes.size20,
-                                  fontFamily: MyFontFamily.lineSeedJP),
+                                fontSize: Sizes.size20,
+                              ),
                             )
                           ],
                         ),
@@ -569,8 +565,8 @@ class _MyPageScreenState extends State<MyPageScreen> {
                             Text(
                               'コメント欄の掲示物',
                               style: TextStyle(
-                                  fontSize: Sizes.size20,
-                                  fontFamily: MyFontFamily.lineSeedJP),
+                                fontSize: Sizes.size20,
+                              ),
                             )
                           ],
                         ),
@@ -597,8 +593,8 @@ class _MyPageScreenState extends State<MyPageScreen> {
                             child: const Text(
                               '公知事項', //공지사항
                               style: TextStyle(
-                                  fontSize: Sizes.size20,
-                                  fontFamily: MyFontFamily.lineSeedJP),
+                                fontSize: Sizes.size20,
+                              ),
                             ),
                           ),
                         ),
@@ -639,8 +635,8 @@ class _MyPageScreenState extends State<MyPageScreen> {
                             child: const Text(
                               '個人情報処理方針', //개인정보처리 이용약관
                               style: TextStyle(
-                                  fontSize: Sizes.size20,
-                                  fontFamily: MyFontFamily.lineSeedJP),
+                                fontSize: Sizes.size20,
+                              ),
                             ),
                           ),
                         ),
@@ -663,8 +659,8 @@ class _MyPageScreenState extends State<MyPageScreen> {
                             child: const Text(
                               'サービス利用薬科', //서비스 이용약관
                               style: TextStyle(
-                                  fontSize: Sizes.size20,
-                                  fontFamily: MyFontFamily.lineSeedJP),
+                                fontSize: Sizes.size20,
+                              ),
                             ),
                           ),
                         ),
@@ -685,15 +681,15 @@ class _MyPageScreenState extends State<MyPageScreen> {
                               Text(
                                 'うはか ん', //버전관리
                                 style: TextStyle(
-                                    fontSize: Sizes.size20,
-                                    fontFamily: MyFontFamily.lineSeedJP),
+                                  fontSize: Sizes.size20,
+                                ),
                               ),
                               Gaps.h3,
                               Text(
                                 'さいしんバージョン: 23.32.1', //업데이트 날짜
                                 style: TextStyle(
-                                    fontSize: Sizes.size12,
-                                    fontFamily: MyFontFamily.lineSeedJP),
+                                  fontSize: Sizes.size12,
+                                ),
                               ),
                             ],
                           ),
@@ -768,8 +764,8 @@ class _MyPageScreenState extends State<MyPageScreen> {
                             child: const Text(
                               'LogOut',
                               style: TextStyle(
-                                  fontSize: Sizes.size20,
-                                  fontFamily: MyFontFamily.lineSeedJP),
+                                fontSize: Sizes.size20,
+                              ),
                             ),
                           ),
                         ),
@@ -793,8 +789,8 @@ class _MyPageScreenState extends State<MyPageScreen> {
                             child: const Text(
                               '脱退する', //탈퇴하기
                               style: TextStyle(
-                                  fontSize: Sizes.size20,
-                                  fontFamily: MyFontFamily.lineSeedJP),
+                                fontSize: Sizes.size20,
+                              ),
                             ),
                           ),
                         ),

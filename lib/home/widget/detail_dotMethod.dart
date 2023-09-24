@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:hanasaku/constants/font.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/home/edit_post_screen.dart';
 import 'package:hanasaku/home/graphql/function_mutaion.dart';
@@ -89,10 +88,10 @@ Future<dynamic> dotMethod(
                                 child: Center(
                                   child: Text('修正する',
                                       style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: Sizes.size24,
-                                          fontWeight: FontWeight.w400,
-                                          fontFamily: MyFontFamily.lineSeedJP)),
+                                        color: Colors.white,
+                                        fontSize: Sizes.size24,
+                                        fontWeight: FontWeight.w400,
+                                      )),
                                 ),
                               )
                             ],
@@ -109,9 +108,7 @@ Future<dynamic> dotMethod(
                                     children: <Widget>[
                                       Text(
                                         '本当に削除しますか',
-                                        style: TextStyle(
-                                            fontFamily:
-                                                MyFontFamily.lineSeedJP),
+                                        style: TextStyle(),
                                       ),
                                     ],
                                   ),
@@ -147,8 +144,6 @@ Future<dynamic> dotMethod(
                                               style: TextStyle(
                                                   fontSize: Sizes.size16,
                                                   color: Colors.white,
-                                                  fontFamily:
-                                                      MyFontFamily.lineSeedJP,
                                                   fontWeight: FontWeight.w600),
                                             ),
                                           ),
@@ -172,8 +167,6 @@ Future<dynamic> dotMethod(
                                               'いいえ。',
                                               style: TextStyle(
                                                   fontSize: Sizes.size16,
-                                                  fontFamily:
-                                                      MyFontFamily.lineSeedJP,
                                                   fontWeight: FontWeight.w600),
                                             ),
                                           ),
@@ -209,12 +202,14 @@ Future<dynamic> dotMethod(
                                 padding: EdgeInsets.symmetric(
                                     vertical: Sizes.size12),
                                 child: Center(
-                                  child: Text('削除する',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: Sizes.size24,
-                                          fontWeight: FontWeight.w400,
-                                          fontFamily: MyFontFamily.lineSeedJP)),
+                                  child: Text(
+                                    '削除する',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: Sizes.size24,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
                                 ),
                               )
                             ],
@@ -239,8 +234,7 @@ Future<dynamic> dotMethod(
                                   children: <Widget>[
                                     Text(
                                       '本当に申告しますか',
-                                      style: TextStyle(
-                                          fontFamily: MyFontFamily.lineSeedJP),
+                                      style: TextStyle(),
                                     ),
                                   ],
                                 ),
@@ -271,8 +265,6 @@ Future<dynamic> dotMethod(
                                             style: TextStyle(
                                                 fontSize: Sizes.size16,
                                                 color: Colors.white,
-                                                fontFamily:
-                                                    MyFontFamily.lineSeedJP,
                                                 fontWeight: FontWeight.w600),
                                           ),
                                         ),
@@ -296,8 +288,6 @@ Future<dynamic> dotMethod(
                                             'いいえ。',
                                             style: TextStyle(
                                                 fontSize: Sizes.size16,
-                                                fontFamily:
-                                                    MyFontFamily.lineSeedJP,
                                                 fontWeight: FontWeight.w600),
                                           ),
                                         ),
@@ -324,9 +314,9 @@ Future<dynamic> dotMethod(
                           Center(
                             child: Text('届け出る',
                                 style: TextStyle(
-                                    fontSize: Sizes.size24,
-                                    fontWeight: FontWeight.w400,
-                                    fontFamily: MyFontFamily.lineSeedJP)),
+                                  fontSize: Sizes.size24,
+                                  fontWeight: FontWeight.w400,
+                                )),
                           )
                         ],
                       ),
@@ -366,8 +356,7 @@ Future<dynamic> commentDotMethod(
                                 children: <Widget>[
                                   Text(
                                     '本当に削除しますか', //삭제하시겠습니까
-                                    style: TextStyle(
-                                        fontFamily: MyFontFamily.lineSeedJP),
+                                    style: TextStyle(),
                                   ),
                                 ],
                               ),
@@ -399,8 +388,6 @@ Future<dynamic> commentDotMethod(
                                           style: TextStyle(
                                               fontSize: Sizes.size16,
                                               color: Colors.white,
-                                              fontFamily:
-                                                  MyFontFamily.lineSeedJP,
                                               fontWeight: FontWeight.w600),
                                         ),
                                       ),
@@ -424,8 +411,6 @@ Future<dynamic> commentDotMethod(
                                           'いいえ。',
                                           style: TextStyle(
                                               fontSize: Sizes.size16,
-                                              fontFamily:
-                                                  MyFontFamily.lineSeedJP,
                                               fontWeight: FontWeight.w600),
                                         ),
                                       ),
@@ -441,8 +426,7 @@ Future<dynamic> commentDotMethod(
                                 children: <Widget>[
                                   Text(
                                     '通報しますか', //신고하시겠습니까
-                                    style: TextStyle(
-                                        fontFamily: MyFontFamily.lineSeedJP),
+                                    style: TextStyle(),
                                   ),
                                 ],
                               ),
@@ -473,8 +457,6 @@ Future<dynamic> commentDotMethod(
                                           style: TextStyle(
                                               fontSize: Sizes.size16,
                                               color: Colors.white,
-                                              fontFamily:
-                                                  MyFontFamily.lineSeedJP,
                                               fontWeight: FontWeight.w600),
                                         ),
                                       ),
@@ -498,8 +480,6 @@ Future<dynamic> commentDotMethod(
                                           'いいえ。',
                                           style: TextStyle(
                                               fontSize: Sizes.size16,
-                                              fontFamily:
-                                                  MyFontFamily.lineSeedJP,
                                               fontWeight: FontWeight.w600),
                                         ),
                                       ),

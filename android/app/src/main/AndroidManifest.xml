@@ -23,7 +23,10 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
+                <data android:scheme="example"
+                    android:host="gizmos" />
             </intent-filter>
+
         </activity>
         <activity
             android:name="com.aboutyou.dart_packages.sign_in_with_apple.SignInWithAppleCallback"
@@ -43,9 +46,5 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-        <meta-data
-            android:name="flutterEmbedding"
-            android:value="2"
-        />
     </application>
 </manifest>

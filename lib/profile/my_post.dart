@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:hanasaku/constants/font.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/idol_data.dart';
 import 'package:hanasaku/constants/sizes.dart';
@@ -60,14 +59,14 @@ class _MyPostScreenState extends State<MyPostScreen> {
         appBar: AppBar(
           title: const Text(
             '私が書いた掲示物',
-            style: TextStyle(fontFamily: MyFontFamily.lineSeedJP),
+            style: TextStyle(),
           ),
         ),
         body: const Center(
           child: Center(
             child: Text(
               '掲示物を作成してみてください',
-              style: TextStyle(fontFamily: MyFontFamily.lineSeedJP),
+              style: TextStyle(),
             ),
           ), // or Text("Loading...")
         ),
@@ -87,7 +86,8 @@ class _MyPostScreenState extends State<MyPostScreen> {
         title: const Text(
           '私が書いた掲示物',
           style: TextStyle(
-              fontFamily: MyFontFamily.lineSeedJP, fontWeight: FontWeight.w400),
+            fontWeight: FontWeight.w400,
+          ),
         ),
       ),
       body: CustomScrollView(
@@ -129,7 +129,6 @@ class _MyPostScreenState extends State<MyPostScreen> {
                             "${idolData.singleWhere((idol) => idol["id"] == categoryId)["type"]} Room",
                             style: const TextStyle(
                                 fontSize: Sizes.size20,
-                                fontFamily: MyFontFamily.lineSeedJP,
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600),
                           ),
@@ -186,7 +185,6 @@ class _MyPostScreenState extends State<MyPostScreen> {
                                 "${post?['title']}",
                                 style: const TextStyle(
                                     fontSize: Sizes.size16,
-                                    fontFamily: MyFontFamily.lineSeedJP,
                                     fontWeight: FontWeight.bold),
                               ),
                               Gaps.v10,
@@ -201,8 +199,8 @@ class _MyPostScreenState extends State<MyPostScreen> {
                                   Text(
                                     '${post?['likeCount']}',
                                     style: const TextStyle(
-                                        fontSize: Sizes.size12,
-                                        fontFamily: MyFontFamily.lineSeedJP),
+                                      fontSize: Sizes.size12,
+                                    ),
                                   ),
                                   Gaps.h10,
                                   FaIcon(
@@ -214,8 +212,8 @@ class _MyPostScreenState extends State<MyPostScreen> {
                                   Text(
                                     '${post?['comments'].length}',
                                     style: const TextStyle(
-                                        fontSize: Sizes.size12,
-                                        fontFamily: MyFontFamily.lineSeedJP),
+                                      fontSize: Sizes.size12,
+                                    ),
                                   ),
                                 ],
                               ),

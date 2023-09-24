@@ -105,12 +105,18 @@ flutter:
   # example:
 
   fonts:
-    - family: LINESeedJP
+    - family: LINESeedJP_IOS
       fonts:
         - asset: fonts/LINESeedJP_A_TTF_Bd.ttf
         - asset: fonts/LINESeedJP_A_TTF_Eb.ttf
         - asset: fonts/LINESeedJP_A_TTF_Rg.ttf
         - asset: fonts/LINESeedJP_A_TTF_Th.ttf
+    - family: LINESeedJP_AND
+      fonts:
+        - asset: fonts/LINESeedJP_A_OTF_Bd.otf
+        - asset: fonts/LINESeedJP_A_OTF_Eb.otf
+        - asset: fonts/LINESeedJP_A_OTF_Rg.otf
+        - asset: fonts/LINESeedJP_A_OTF_Th.otf
     - family: LINESeedSans
       fonts:
         - asset: fonts/LINESeedSans_A_Bd.ttf

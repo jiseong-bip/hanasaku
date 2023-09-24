@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hanasaku/constants/font.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/home/graphql/function_mutaion.dart';
@@ -164,8 +163,7 @@ class _RecommentWidgetState extends State<RecommentWidget> {
                                   children: <Widget>[
                                     Text(
                                       '本当に削除しますか', //삭제하시겠습니까
-                                      style: TextStyle(
-                                          fontFamily: MyFontFamily.lineSeedJP),
+                                      style: TextStyle(),
                                     ),
                                   ],
                                 ),
@@ -196,8 +194,6 @@ class _RecommentWidgetState extends State<RecommentWidget> {
                                             style: TextStyle(
                                                 fontSize: Sizes.size16,
                                                 color: Colors.white,
-                                                fontFamily:
-                                                    MyFontFamily.lineSeedJP,
                                                 fontWeight: FontWeight.w600),
                                           ),
                                         ),
@@ -221,8 +217,6 @@ class _RecommentWidgetState extends State<RecommentWidget> {
                                             'いいえ。',
                                             style: TextStyle(
                                                 fontSize: Sizes.size16,
-                                                fontFamily:
-                                                    MyFontFamily.lineSeedJP,
                                                 fontWeight: FontWeight.w600),
                                           ),
                                         ),
@@ -238,8 +232,7 @@ class _RecommentWidgetState extends State<RecommentWidget> {
                                   children: <Widget>[
                                     Text(
                                       '通報しますか', //신고하시겠습니까
-                                      style: TextStyle(
-                                          fontFamily: MyFontFamily.lineSeedJP),
+                                      style: TextStyle(),
                                     ),
                                   ],
                                 ),
@@ -270,8 +263,6 @@ class _RecommentWidgetState extends State<RecommentWidget> {
                                             style: TextStyle(
                                                 fontSize: Sizes.size16,
                                                 color: Colors.white,
-                                                fontFamily:
-                                                    MyFontFamily.lineSeedJP,
                                                 fontWeight: FontWeight.w600),
                                           ),
                                         ),
@@ -295,8 +286,6 @@ class _RecommentWidgetState extends State<RecommentWidget> {
                                             'いいえ。',
                                             style: TextStyle(
                                                 fontSize: Sizes.size16,
-                                                fontFamily:
-                                                    MyFontFamily.lineSeedJP,
                                                 fontWeight: FontWeight.w600),
                                           ),
                                         ),

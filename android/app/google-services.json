@@ -7,17 +7,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1056608488794:android:5b379eee1f86590c147763",
+        "mobilesdk_app_id": "1:1056608488794:android:a85e1f605d7f5cd4147763",
         "android_client_info": {
-          "package_name": "com.example.hanasaku"
+          "package_name": "com.hana.hanasaku"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1056608488794-9lu7pgj6apjbfikdb16q31lpecaighfn.apps.googleusercontent.com",
+          "client_id": "1056608488794-i3o2koa8d56058tcj91gn3f48lhs6797.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.hanasaku",
+            "package_name": "com.hana.hanasaku",
             "certificate_hash": "160931b0922e17d1d1456c3f55a4654587106278"
           }
         },

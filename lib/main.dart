@@ -10,6 +10,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/auth/repos/authentication_repository.dart';
 import 'package:hanasaku/auth/sign_up_screen.dart';
 import 'package:hanasaku/constants/font.dart';
+import 'dart:io' show Platform;
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/firebase_options.dart';
 import 'package:hanasaku/home/provider/postinfo_provider.dart';
@@ -124,19 +125,22 @@ class MyApp extends StatelessWidget {
         navigatorKey: navigatorKey,
         title: 'social_community',
         theme: ThemeData(
-            scaffoldBackgroundColor: Colors.white,
-            primaryColor: const Color(0xFFF4BECF),
-            appBarTheme: const AppBarTheme(
-              foregroundColor: Colors.black,
-              backgroundColor: Colors.white,
-              elevation: 1,
-              titleTextStyle: TextStyle(
-                color: Colors.black,
-                fontSize: Sizes.size20,
-                fontWeight: FontWeight.w600,
-              ),
+          scaffoldBackgroundColor: Colors.white,
+          primaryColor: const Color(0xFFF4BECF),
+          appBarTheme: const AppBarTheme(
+            foregroundColor: Colors.black,
+            backgroundColor: Colors.white,
+            elevation: 1,
+            titleTextStyle: TextStyle(
+              color: Colors.black,
+              fontSize: Sizes.size20,
+              fontWeight: FontWeight.w600,
             ),
-            fontFamily: MyFontFamily.lineSeedJP),
+          ),
+          fontFamily: Platform.isIOS
+              ? MyFontFamily.lineSeedJPIos
+              : MyFontFamily.lineSeedJPAnd,
+        ),
         home: StreamBuilder<User?>(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {

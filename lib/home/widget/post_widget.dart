@@ -8,7 +8,6 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:hanasaku/constants/font.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/home/detail_screen.dart';
@@ -120,7 +119,7 @@ class _PostState extends State<Post> {
     counts = widget.post['likeCount'];
     Future.delayed(Duration.zero, () async {
       postImagekey = widget.post['images'];
-
+      print('postImageKey: $postImagekey');
       imagekey.addAll(postImagekey);
 
       if (widget.post['user']['avatar'] != null) {
@@ -133,8 +132,11 @@ class _PostState extends State<Post> {
 
       isLiked = widget.post['isLiked'];
       await getImage(imagekey);
-      _cachedFile =
-          DefaultCacheManager().getSingleFile(widget.post['user']['avatar']);
+      if (widget.post['user']['avatar'] != null) {
+        _cachedFile =
+            DefaultCacheManager().getSingleFile(widget.post['user']['avatar']);
+      }
+
       setState(() {
         imagesLoaded = true;
       });
@@ -248,7 +250,6 @@ class _PostState extends State<Post> {
                     Text(
                       '$userName',
                       style: const TextStyle(
-                        fontFamily: MyFontFamily.lineSeedJP,
                         fontSize: Sizes.size14,
                         fontWeight: FontWeight.w600,
                       ),
@@ -257,7 +258,6 @@ class _PostState extends State<Post> {
                     Text(
                       getTime(createDate),
                       style: const TextStyle(
-                        fontFamily: MyFontFamily.lineSeedJP,
                         fontSize: Sizes.size10,
                       ),
                     ),
@@ -278,7 +278,6 @@ class _PostState extends State<Post> {
                         '$title',
                         style: const TextStyle(
                           fontSize: Sizes.size20,
-                          fontFamily: MyFontFamily.lineSeedJP,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -288,12 +287,11 @@ class _PostState extends State<Post> {
                             ? content!.substring(0, 50) + '...'
                             : content ?? '',
                         style: const TextStyle(
-                          fontFamily: MyFontFamily.lineSeedJP,
                           fontSize: Sizes.size14,
                         ),
                       ),
                       Gaps.v10,
-                      if (postImagekey.isNotEmpty && imagesLoaded)
+                      if (postImagekey.isNotEmpty)
                         Column(
                           children: [
                             SizedBox(
@@ -368,7 +366,6 @@ class _PostState extends State<Post> {
                               '$counts',
                               style: const TextStyle(
                                 fontSize: Sizes.size12,
-                                fontFamily: MyFontFamily.lineSeedJP,
                               ),
                             ),
                           ],
@@ -391,7 +388,6 @@ class _PostState extends State<Post> {
                               '$commentCount',
                               style: const TextStyle(
                                 fontSize: Sizes.size12,
-                                fontFamily: MyFontFamily.lineSeedJP,
                               ),
                             ),
                           ],

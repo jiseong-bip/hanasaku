@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:hanasaku/constants/font.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/idol_data.dart';
 import 'package:hanasaku/constants/sizes.dart';
@@ -127,7 +126,6 @@ class _CommentPostScreenState extends State<CommentPostScreen> {
                             "${idolData.singleWhere((idol) => idol["id"] == categoryId)["type"]} Room",
                             style: const TextStyle(
                                 fontSize: Sizes.size20,
-                                fontFamily: MyFontFamily.lineSeedJP,
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600),
                           ),
@@ -184,7 +182,6 @@ class _CommentPostScreenState extends State<CommentPostScreen> {
                                 "${post?['post']['title']}",
                                 style: const TextStyle(
                                     fontSize: Sizes.size16,
-                                    fontFamily: MyFontFamily.lineSeedJP,
                                     fontWeight: FontWeight.bold),
                               ),
                               Gaps.v10,
@@ -199,8 +196,8 @@ class _CommentPostScreenState extends State<CommentPostScreen> {
                                   Text(
                                     '${post?['post']['likeCount']}',
                                     style: const TextStyle(
-                                        fontSize: Sizes.size12,
-                                        fontFamily: MyFontFamily.lineSeedJP),
+                                      fontSize: Sizes.size12,
+                                    ),
                                   ),
                                   Gaps.h10,
                                   FaIcon(
@@ -212,8 +209,8 @@ class _CommentPostScreenState extends State<CommentPostScreen> {
                                   Text(
                                     '${post?['post']['comments'].length}',
                                     style: const TextStyle(
-                                        fontSize: Sizes.size12,
-                                        fontFamily: MyFontFamily.lineSeedJP),
+                                      fontSize: Sizes.size12,
+                                    ),
                                   ),
                                 ],
                               ),

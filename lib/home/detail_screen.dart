@@ -7,7 +7,6 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:hanasaku/constants/font.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/contents/video_widget/custom_video_player_1.dart';
@@ -322,21 +321,6 @@ class _DetailScreenState extends State<DetailScreen> {
     return Column(
       children: [
         if (isContent!)
-          // SizedBox(
-          //   width: screenWidth,
-          //   height: videoHeight,
-          //   child: VideoPlayerWidget(
-          //     widgetSize: Size(screenWidth, videoHeight),
-          //     placeHolder: const Center(
-          //       child: CircularProgressIndicator(),
-          //     ),
-          //     videoOption: VideoOption.full,
-          //     videoController: CustomVideoController(
-          //         videoUrl: signedParams!.uri,
-          //         aspectRatio: 16 / 9,
-          //         httpHeader: signedParams!.headers),
-          //   ),
-          // ),
           SizedBox(
             width: screenWidth,
             height: videoHeight,
@@ -406,9 +390,9 @@ class _DetailScreenState extends State<DetailScreen> {
                         Text(
                           '$title',
                           style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: MyFontFamily.lineSeedJP),
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         Gaps.v10,
                         if (content != null)
@@ -419,8 +403,8 @@ class _DetailScreenState extends State<DetailScreen> {
                                     ? content!
                                     : content ?? '',
                                 style: const TextStyle(
-                                    fontSize: Sizes.size14,
-                                    fontFamily: MyFontFamily.lineSeedJP),
+                                  fontSize: Sizes.size14,
+                                ),
                               ),
                               Gaps.v10,
                             ],
@@ -574,7 +558,6 @@ class _DetailScreenState extends State<DetailScreen> {
                                   '$postLikeCounts',
                                   style: const TextStyle(
                                     fontSize: Sizes.size12,
-                                    fontFamily: MyFontFamily.lineSeedJP,
                                   ),
                                 ),
                               ],
@@ -593,7 +576,6 @@ class _DetailScreenState extends State<DetailScreen> {
                                 '$commentsCount',
                                 style: const TextStyle(
                                   fontSize: Sizes.size12,
-                                  fontFamily: MyFontFamily.lineSeedJP,
                                 ),
                               ),
                             ],
