@@ -1,8 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/home/graphql/function_mutaion.dart';
+import 'package:hanasaku/home/widget/detail_dotMethod.dart';
+import 'package:hanasaku/setup/aws_s3.dart';
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
 import 'package:provider/provider.dart';
 
@@ -58,6 +63,7 @@ class _RecommentWidgetState extends State<RecommentWidget> {
         shrinkWrap: true,
         itemCount: widget._posts.length,
         itemBuilder: (context, index) {
+          print('${widget._posts[index]['user']}');
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: Sizes.size16),
             child: Container(
@@ -73,18 +79,57 @@ class _RecommentWidgetState extends State<RecommentWidget> {
                 padding: const EdgeInsets.symmetric(
                     horizontal: Sizes.size10, vertical: Sizes.size10),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CircleAvatar(
-                      radius: 14,
-                      child: Text(
-                        widget._posts[index]['user']['userName'],
-                        style: TextStyle(
-                          fontSize: Sizes.size10,
-                          color: Colors.grey.shade500,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
+                    widget._posts[index]['user']['avatar'] != null
+                        ? FutureBuilder(
+                            future: getImage(context,
+                                widget._posts[index]['user']['avatar']),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.done) {
+                                if (snapshot.hasError) {
+                                  // 에러 처리
+                                  return CircleAvatar(
+                                    radius: 12,
+                                    child: SvgPicture.asset(
+                                      'assets/user.svg',
+                                      width: 80,
+                                      height: 80,
+                                    ),
+                                  );
+                                }
+
+                                if (snapshot.hasData) {
+                                  final file = snapshot.data as File;
+
+                                  // 파일을 이미지로 변환하여 CircleAvatar의 backgroundImage로 설정
+                                  return CircleAvatar(
+                                    radius: 12,
+                                    backgroundImage: Image.file(file).image,
+                                  );
+                                } else {
+                                  return CircleAvatar(
+                                    radius: 12,
+                                    child: SvgPicture.asset(
+                                      'assets/user.svg',
+                                      width: 80,
+                                      height: 80,
+                                    ),
+                                  ); // 데이터 없음 처리
+                                }
+                              } else {
+                                return const CircularProgressIndicator(); // 로딩 중 처리
+                              }
+                            })
+                        : CircleAvatar(
+                            radius: 12,
+                            child: SvgPicture.asset(
+                              'assets/user.svg',
+                              width: 32,
+                              height: 32,
+                            ),
+                          ),
                     Gaps.h10,
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,7 +153,7 @@ class _RecommentWidgetState extends State<RecommentWidget> {
                             Gaps.h10,
                             GestureDetector(
                               onTap: () {
-                                dotMethod(
+                                reCommenDotMethod(
                                     context, widget._posts[index], nickName);
                               },
                               child: const FaIcon(

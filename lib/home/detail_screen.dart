@@ -382,7 +382,14 @@ class _DetailScreenState extends State<DetailScreen> {
                                         backgroundImage: Image.file(file).image,
                                       );
                                     } else {
-                                      return const Text('No data'); // 데이터 없음 처리
+                                      return CircleAvatar(
+                                        radius: 12,
+                                        child: SvgPicture.asset(
+                                          'assets/user.svg',
+                                          width: 80,
+                                          height: 80,
+                                        ),
+                                      ); // 데이터 없음 처리
                                     }
                                   } else {
                                     return const CircularProgressIndicator(); // 로딩 중 처리
@@ -489,9 +496,9 @@ class _DetailScreenState extends State<DetailScreen> {
                                                           var xImage =
                                                               XFile(image.path);
                                                           await Share
-                                                              .shareXFiles([
-                                                            xImage
-                                                          ], text: '멋진 사진입니다');
+                                                              .shareXFiles(
+                                                                  [xImage],
+                                                                  text: '');
                                                         } catch (e) {
                                                           print(
                                                               "공유 중 오류 발생: $e");

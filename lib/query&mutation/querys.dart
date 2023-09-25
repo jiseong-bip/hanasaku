@@ -74,7 +74,9 @@ final postQuery = gql("""
         avatar
       }
       recomments {
+        id
         user {
+          avatar
           userName
         }
         comment

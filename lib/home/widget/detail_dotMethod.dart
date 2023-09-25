@@ -74,14 +74,6 @@ Future<dynamic> dotMethod(
                               borderRadius: BorderRadius.circular(10)),
                           child: const Stack(
                             children: [
-                              // Padding(
-                              //     padding: EdgeInsets.symmetric(
-                              //       vertical: Sizes.size16,
-                              //     ),
-                              //     child: FaIcon(
-                              //       FontAwesomeIcons.penToSquare,
-                              //       color: Colors.white,
-                              //     )),
                               Padding(
                                 padding: EdgeInsets.symmetric(
                                     vertical: Sizes.size12),
@@ -328,7 +320,7 @@ Future<dynamic> dotMethod(
 }
 
 Future<dynamic> commentDotMethod(
-    BuildContext context, Map<String, dynamic> post, String? userName) {
+    BuildContext context, Map<String, dynamic> comment, String? userName) {
   return showModalBottomSheet(
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -348,7 +340,7 @@ Future<dynamic> commentDotMethod(
                 top: Sizes.size16),
             child: GestureDetector(
               onTap: () {
-                post['user']['userName'] == userName
+                comment['user']['userName'] == userName
                     ? showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
@@ -368,7 +360,198 @@ Future<dynamic> commentDotMethod(
                                   GestureDetector(
                                     //deletPost
                                     onTap: () {
-                                      deleteComment(context, post['id']);
+                                      deleteComment(context, comment['id']);
+                                      Navigator.pop(context);
+                                      Navigator.pop(context);
+                                      //postInfo의 comments UPDATE해야함
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          color:
+                                              Theme.of(context).primaryColor),
+                                      child: const Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: Sizes.size10,
+                                          vertical: Sizes.size5,
+                                        ),
+                                        child: Text(
+                                          'はい。',
+                                          style: TextStyle(
+                                              fontSize: Sizes.size16,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      Navigator.pop(context);
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          color: Colors.grey.shade300),
+                                      child: const Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: Sizes.size10,
+                                          vertical: Sizes.size5,
+                                        ),
+                                        child: Text(
+                                          'いいえ。',
+                                          style: TextStyle(
+                                              fontSize: Sizes.size16,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ))
+                    : showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                              title: const Column(
+                                children: <Widget>[
+                                  Text(
+                                    '通報しますか', //신고하시겠습니까
+                                    style: TextStyle(),
+                                  ),
+                                ],
+                              ),
+                              // content: Text('Of course not!'),
+                              content: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  GestureDetector(
+                                    //deletPost
+                                    onTap: () {
+                                      reportComment(context, comment['id']);
+                                      Navigator.pop(context);
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          color:
+                                              Theme.of(context).primaryColor),
+                                      child: const Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: Sizes.size10,
+                                          vertical: Sizes.size5,
+                                        ),
+                                        child: Text(
+                                          'はい。',
+                                          style: TextStyle(
+                                              fontSize: Sizes.size16,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      Navigator.pop(context);
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          color: Colors.grey.shade300),
+                                      child: const Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: Sizes.size10,
+                                          vertical: Sizes.size5,
+                                        ),
+                                        child: Text(
+                                          'いいえ。',
+                                          style: TextStyle(
+                                              fontSize: Sizes.size16,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ));
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: Sizes.size24),
+                decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(10)),
+                child: Stack(
+                  children: [
+                    Center(
+                      child: Text(
+                          comment['user']['userName'] == userName
+                              ? '修正する'
+                              : '届け出る',
+                          style: const TextStyle(
+                              fontSize: Sizes.size24,
+                              fontWeight: FontWeight.w400)),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      });
+}
+
+Future<dynamic> reCommenDotMethod(
+    BuildContext context, Map<String, dynamic> recomment, String? userName) {
+  return showModalBottomSheet(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(10.0),
+          topRight: Radius.circular(10.0),
+        ),
+      ),
+      context: context,
+      builder: (BuildContext context) {
+        return SizedBox(
+          height: 150,
+          child: Padding(
+            padding: const EdgeInsets.only(
+                left: Sizes.size32,
+                right: Sizes.size32,
+                bottom: Sizes.size72 + Sizes.size2,
+                top: Sizes.size16),
+            child: GestureDetector(
+              onTap: () {
+                recomment['user']['userName'] == userName
+                    ? showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                              title: const Column(
+                                children: <Widget>[
+                                  Text(
+                                    '本当に削除しますか', //삭제하시겠습니까
+                                    style: TextStyle(),
+                                  ),
+                                ],
+                              ),
+                              // content: Text('Of course not!'),
+                              content: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  GestureDetector(
+                                    //deletPost
+                                    onTap: () {
+                                      deleteComment(context, recomment['id']);
+                                      Navigator.pop(context);
                                       Navigator.pop(context);
                                       //postInfo의 comments UPDATE해야함
                                     },
@@ -438,7 +621,8 @@ Future<dynamic> commentDotMethod(
                                   GestureDetector(
                                     //deletPost
                                     onTap: () {
-                                      reportComment(context, post['id']);
+                                      reportComment(context, recomment['id']);
+                                      Navigator.pop(context);
                                       Navigator.pop(context);
                                     },
                                     child: Container(
@@ -464,6 +648,7 @@ Future<dynamic> commentDotMethod(
                                   ),
                                   GestureDetector(
                                     onTap: () {
+                                      Navigator.pop(context);
                                       Navigator.pop(context);
                                     },
                                     child: Container(
@@ -496,16 +681,9 @@ Future<dynamic> commentDotMethod(
                     borderRadius: BorderRadius.circular(10)),
                 child: Stack(
                   children: [
-                    // Padding(
-                    //     padding: const EdgeInsets.symmetric(
-                    //       vertical: Sizes.size16,
-                    //     ),
-                    //     child: FaIcon(post['user']['userName'] == userName
-                    //         ? FontAwesomeIcons.solidTrashCan
-                    //         : FontAwesomeIcons.solidFlag)),
                     Center(
                       child: Text(
-                          post['user']['userName'] == userName
+                          recomment['user']['userName'] == userName
                               ? '修正する'
                               : '届け出る',
                           style: const TextStyle(

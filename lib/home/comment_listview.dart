@@ -1,18 +1,18 @@
 // ignore_for_file: avoid_print
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/home/provider/postinfo_provider.dart';
-
 import 'package:hanasaku/home/graphql/function_mutaion.dart';
 import 'package:hanasaku/home/recomment_widget.dart';
 import 'package:hanasaku/home/widget/detail_dotMethod.dart';
 import 'package:hanasaku/home/widget/user_bottom_modal.dart';
-import 'package:hanasaku/setup/cached_image.dart';
-
+import 'package:hanasaku/setup/aws_s3.dart';
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
 import 'package:provider/provider.dart';
 
@@ -124,12 +124,49 @@ class _CommentsQueryState extends State<CommentsQuery> {
                               postInfo.getComments()![index1]['user']
                                           ['avatar'] !=
                                       null
-                                  ? CircleAvatar(
-                                      radius: 12,
-                                      child: CachedImage(
-                                          url: postInfo.getComments()![index1]
+                                  ? FutureBuilder(
+                                      future: getImage(
+                                          context,
+                                          postInfo.getComments()![index1]
                                               ['user']['avatar']),
-                                    )
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.done) {
+                                          if (snapshot.hasError) {
+                                            // 에러 처리
+                                            return CircleAvatar(
+                                              radius: 12,
+                                              child: SvgPicture.asset(
+                                                'assets/user.svg',
+                                                width: 80,
+                                                height: 80,
+                                              ),
+                                            );
+                                          }
+
+                                          if (snapshot.hasData) {
+                                            final file = snapshot.data as File;
+
+                                            // 파일을 이미지로 변환하여 CircleAvatar의 backgroundImage로 설정
+                                            return CircleAvatar(
+                                              radius: 12,
+                                              backgroundImage:
+                                                  Image.file(file).image,
+                                            );
+                                          } else {
+                                            return CircleAvatar(
+                                              radius: 12,
+                                              child: SvgPicture.asset(
+                                                'assets/user.svg',
+                                                width: 80,
+                                                height: 80,
+                                              ),
+                                            ); // 데이터 없음 처리
+                                          }
+                                        } else {
+                                          return const CircularProgressIndicator(); // 로딩 중 처리
+                                        }
+                                      })
                                   : CircleAvatar(
                                       radius: 12,
                                       child: SvgPicture.asset(
