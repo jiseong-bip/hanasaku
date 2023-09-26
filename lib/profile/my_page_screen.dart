@@ -103,6 +103,16 @@ class _MyPageScreenState extends State<MyPageScreen> {
     }
   }
 
+  Future<void> _clearImage() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final imagePath = '${directory.path}/profile_image.jpg';
+
+    final file = File(imagePath);
+    if (await file.exists()) {
+      await file.delete();
+    }
+  }
+
   Future<void> setProfile(String? userName, File? profileImage) async {
     final GraphQLClient client = GraphQLProvider.of(context).value;
     MultipartFile? listMultipartFile;
@@ -258,6 +268,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
     final userInfoProvider =
         Provider.of<UserInfoProvider>(context, listen: false);
     await userInfoProvider.clearUserInfo();
+    await _clearImage();
 
     // 로그인 화면 또는 홈 화면으로 이동 (또는 원하는 다른 화면으로)
     Navigator.of(context).pushAndRemoveUntil(

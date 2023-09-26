@@ -238,8 +238,8 @@ Future<dynamic> dotMethod(
                                     GestureDetector(
                                       //reportPost
                                       onTap: () {
-                                        reportPost(context, postId);
                                         Navigator.pop(context);
+                                        reportPost(context, postId);
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(
@@ -264,6 +264,7 @@ Future<dynamic> dotMethod(
                                     ),
                                     GestureDetector(
                                       onTap: () {
+                                        Navigator.pop(context);
                                         Navigator.pop(context);
                                       },
                                       child: Container(

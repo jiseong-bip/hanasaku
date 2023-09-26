@@ -1,7 +1,8 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:hanasaku/constants/sizes.dart';
 
 Future<void> deletePost(BuildContext context, int postId) async {
   final GraphQLClient client = GraphQLProvider.of(context).value;
@@ -81,6 +82,50 @@ Future<void> reportPost(BuildContext context, int postId) async {
       if (resultData != null && resultData['reportPost'] != null) {
         final bool isLikeSuccessful = resultData['reportPost']['ok'];
         if (isLikeSuccessful) {
+          // ignore: use_build_context_synchronously
+          showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                    title: const Column(
+                      children: <Widget>[
+                        Text(
+                          '申告が完了しました',
+                          style: TextStyle(),
+                        ),
+                      ],
+                    ),
+                    // content: Text('Of course not!'),
+                    content: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        GestureDetector(
+                          //reportPost
+                          onTap: () {
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: Theme.of(context).primaryColor),
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: Sizes.size10,
+                                vertical: Sizes.size5,
+                              ),
+                              child: Text(
+                                'はい。',
+                                style: TextStyle(
+                                    fontSize: Sizes.size16,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ));
         } else {
           // Handle the case where the like operation was not successful
           print("Like operation was not successful.");
@@ -166,6 +211,49 @@ Future<void> reportComment(BuildContext context, int commentId) async {
       final dynamic resultData = result.data;
 
       if (resultData != null && resultData['reportComment'] != null) {
+        showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                  title: const Column(
+                    children: <Widget>[
+                      Text(
+                        '申告が完了しました',
+                        style: TextStyle(),
+                      ),
+                    ],
+                  ),
+                  // content: Text('Of course not!'),
+                  content: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      GestureDetector(
+                        //reportPost
+                        onTap: () {
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: Theme.of(context).primaryColor),
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: Sizes.size10,
+                              vertical: Sizes.size5,
+                            ),
+                            child: Text(
+                              'はい。',
+                              style: TextStyle(
+                                  fontSize: Sizes.size16,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ));
       } else {
         // Handle the case where data is null
         print("Data is null.");
@@ -337,6 +425,49 @@ Future<void> reportReComment(BuildContext context, int reCommentId) async {
       final dynamic resultData = result.data;
 
       if (resultData != null && resultData['reportComment'] != null) {
+        showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                  title: const Column(
+                    children: <Widget>[
+                      Text(
+                        '申告が完了しました',
+                        style: TextStyle(),
+                      ),
+                    ],
+                  ),
+                  // content: Text('Of course not!'),
+                  content: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      GestureDetector(
+                        //reportPost
+                        onTap: () {
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: Theme.of(context).primaryColor),
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: Sizes.size10,
+                              vertical: Sizes.size5,
+                            ),
+                            child: Text(
+                              'はい。',
+                              style: TextStyle(
+                                  fontSize: Sizes.size16,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ));
       } else {
         // Handle the case where data is null
         print("Data is null.");

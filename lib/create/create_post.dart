@@ -25,6 +25,11 @@ class CreateScreen extends StatefulWidget {
 class _CreateScreenState extends State<CreateScreen> {
   int? categoryId;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String content = """Contents
+
+• 相手に不快感を与えるコンテンツは
+  制裁を受ける可能性があります
+""";
 
   Map<String, dynamic> formData = {};
   final ImagePicker picker = ImagePicker();
@@ -257,14 +262,16 @@ class _CreateScreenState extends State<CreateScreen> {
                           textInputAction: TextInputAction.newline,
                           minLines: null,
                           maxLines: null,
-                          decoration: const InputDecoration(
-                            hintText: 'Contents',
-                            enabledBorder: UnderlineInputBorder(
+                          decoration: InputDecoration(
+                            // helperText:
+                            //     '不適切または不快感を与える可能性のあるコンテンツは\n制裁を受ける可能性があります',
+                            hintText: content,
+                            enabledBorder: const UnderlineInputBorder(
                               borderSide: BorderSide(
                                 color: Colors.white,
                               ),
                             ),
-                            focusedBorder: UnderlineInputBorder(
+                            focusedBorder: const UnderlineInputBorder(
                               borderSide: BorderSide(
                                 color: Colors.white,
                               ),
