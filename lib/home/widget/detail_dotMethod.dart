@@ -78,7 +78,7 @@ Future<dynamic> dotMethod(
                                 padding: EdgeInsets.symmetric(
                                     vertical: Sizes.size12),
                                 child: Center(
-                                  child: Text('修正する',
+                                  child: Text('修正する', //수정하기
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: Sizes.size24,
@@ -500,7 +500,7 @@ Future<dynamic> commentDotMethod(
                     Center(
                       child: Text(
                           comment['user']['userName'] == userName
-                              ? '修正する'
+                              ? '削除する'
                               : '届け出る',
                           style: const TextStyle(
                               fontSize: Sizes.size24,
@@ -689,7 +689,7 @@ Future<dynamic> reCommenDotMethod(
                     Center(
                       child: Text(
                           recomment['user']['userName'] == userName
-                              ? '修正する'
+                              ? '削除する'
                               : '届け出る',
                           style: const TextStyle(
                               fontSize: Sizes.size24,
