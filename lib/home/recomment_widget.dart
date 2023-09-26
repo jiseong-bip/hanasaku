@@ -153,6 +153,7 @@ class _RecommentWidgetState extends State<RecommentWidget> {
                             Gaps.h10,
                             GestureDetector(
                               onTap: () {
+                                print(widget._posts[index]);
                                 reCommenDotMethod(
                                     context, widget._posts[index], nickName);
                               },

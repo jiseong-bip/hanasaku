@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
 
 Future<void> deletePost(BuildContext context, int postId) async {
@@ -89,7 +90,7 @@ Future<void> reportPost(BuildContext context, int postId) async {
                     title: const Column(
                       children: <Widget>[
                         Text(
-                          '申告が完了しました',
+                          '通報が寄せられました。\n申告した内容はこれ以上表示されません。',
                           style: TextStyle(),
                         ),
                       ],
@@ -101,7 +102,6 @@ Future<void> reportPost(BuildContext context, int postId) async {
                         GestureDetector(
                           //reportPost
                           onTap: () {
-                            Navigator.pop(context);
                             Navigator.pop(context);
                           },
                           child: Container(
@@ -190,7 +190,7 @@ Future<void> reportComment(BuildContext context, int commentId) async {
   final MutationOptions options = MutationOptions(
     document: gql('''
         mutation Mutation(\$commentId: Int!) {
-          likeComment(commentId: \$commentId) {
+          reportComment(commentId: \$commentId) {
             ok
           }
         }
@@ -217,41 +217,49 @@ Future<void> reportComment(BuildContext context, int commentId) async {
                   title: const Column(
                     children: <Widget>[
                       Text(
-                        '申告が完了しました',
-                        style: TextStyle(),
+                        '通報が寄せられました。',
                       ),
                     ],
                   ),
                   // content: Text('Of course not!'),
-                  content: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      GestureDetector(
-                        //reportPost
-                        onTap: () {
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              color: Theme.of(context).primaryColor),
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: Sizes.size10,
-                              vertical: Sizes.size5,
+                  content: FittedBox(
+                    child: Column(
+                      children: [
+                        const Text('申告した内容はこれ以上表示されません。'),
+                        Gaps.v24,
+                        Gaps.v2,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            GestureDetector(
+                              //reportPost
+                              onTap: () {
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: Theme.of(context).primaryColor),
+                                child: const Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: Sizes.size10,
+                                    vertical: Sizes.size5,
+                                  ),
+                                  child: Text(
+                                    'はい。',
+                                    style: TextStyle(
+                                        fontSize: Sizes.size16,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                              ),
                             ),
-                            child: Text(
-                              'はい。',
-                              style: TextStyle(
-                                  fontSize: Sizes.size16,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600),
-                            ),
-                          ),
+                          ],
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ));
       } else {
@@ -431,39 +439,46 @@ Future<void> reportReComment(BuildContext context, int reCommentId) async {
                   title: const Column(
                     children: <Widget>[
                       Text(
-                        '申告が完了しました',
+                        '通報が寄せられました。',
                         style: TextStyle(),
                       ),
                     ],
                   ),
                   // content: Text('Of course not!'),
-                  content: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  content: Column(
                     children: [
-                      GestureDetector(
-                        //reportPost
-                        onTap: () {
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              color: Theme.of(context).primaryColor),
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: Sizes.size10,
-                              vertical: Sizes.size5,
-                            ),
-                            child: Text(
-                              'はい。',
-                              style: TextStyle(
-                                  fontSize: Sizes.size16,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600),
+                      const Text('申告した内容はこれ以上表示されません。'),
+                      Gaps.v24,
+                      Gaps.v2,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          GestureDetector(
+                            //reportPost
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Theme.of(context).primaryColor),
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: Sizes.size10,
+                                  vertical: Sizes.size5,
+                                ),
+                                child: Text(
+                                  'はい。',
+                                  style: TextStyle(
+                                      fontSize: Sizes.size16,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                        ],
                       ),
                     ],
                   ),

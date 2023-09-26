@@ -25,6 +25,16 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
     super.dispose();
   }
 
+  Future<void> _clearImage() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final imagePath = '${directory.path}/profile_image.jpg';
+
+    final file = File(imagePath);
+    if (await file.exists()) {
+      await file.delete();
+    }
+  }
+
   Future<void> _deleteImage() async {
     final directory = await getApplicationDocumentsDirectory();
     final imagePath = '${directory.path}/profile_image.jpg';
@@ -151,7 +161,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
                 onPressed: _selectedReason != null
                     ? () async {
                         // TODO: 탈퇴 로직 추가
-
+                        await _clearImage();
                         await deleteAccount(context);
                       }
                     : null,

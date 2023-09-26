@@ -238,7 +238,12 @@ Future<dynamic> dotMethod(
                                     GestureDetector(
                                       //reportPost
                                       onTap: () {
-                                        Navigator.pop(context);
+                                        Navigator.pushAndRemoveUntil(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const MainNav()),
+                                            (route) => false);
                                         reportPost(context, postId);
                                       },
                                       child: Container(
@@ -623,7 +628,6 @@ Future<dynamic> reCommenDotMethod(
                                     //deletPost
                                     onTap: () {
                                       reportComment(context, recomment['id']);
-                                      Navigator.pop(context);
                                       Navigator.pop(context);
                                     },
                                     child: Container(
