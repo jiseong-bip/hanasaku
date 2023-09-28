@@ -58,14 +58,14 @@ class CategoryWidget extends StatelessWidget {
             children: [
               if (isJoined)
                 Positioned(
-                  left: -25,
+                  left: -15,
                   top: 0,
                   bottom: 0,
                   child: Align(
                       alignment: Alignment.centerLeft,
                       child: Container(
-                        width: 50,
-                        height: 50,
+                        width: 30,
+                        height: 30,
                         decoration: const BoxDecoration(
                             shape: BoxShape.circle, color: Colors.white),
                       )),

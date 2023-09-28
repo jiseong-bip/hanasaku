@@ -128,7 +128,6 @@ Future<void> reportPost(BuildContext context, int postId) async {
         } else {
           // Handle the case where the like operation was not successful
           print("Like operation was not successful.");
-          // You can also display a message to the user if needed
         }
       } else {
         // Handle the case where data is null
@@ -674,6 +673,323 @@ Future<void> unBlockUser(
           print("Like operation was not successful.");
           // You can also display a message to the user if needed
         }
+      } else {
+        // Handle the case where data is null
+        print("Data is null.");
+        // You can also display a message to the user if needed
+      }
+    }
+  } catch (e) {
+    // Handle exceptions
+    print("Error occurred: $e");
+    // You can also display an error message to the user if needed
+  }
+}
+
+Future<void> reportContent(BuildContext context, int contentId) async {
+  final GraphQLClient client = GraphQLProvider.of(context).value;
+
+  final MutationOptions options = MutationOptions(
+    document: gql('''
+        mutation ReportContent(\$reportContentContentId2: Int!) {
+          reportContent(contentId: \$reportContentContentId2) {
+            ok
+          }
+        }
+      '''),
+    variables: <String, dynamic>{
+      'reportContentContentId2': contentId,
+    },
+    update: (cache, result) => result,
+  );
+
+  try {
+    final QueryResult result = await client.mutate(options);
+
+    if (result.hasException) {
+      // Handle errors
+      print("Error occurred: ${result.exception.toString()}");
+      // You can also display an error message to the user if needed
+    } else {
+      final dynamic resultData = result.data;
+
+      if (resultData != null && resultData['reportContent'] != null) {
+        final bool isLikeSuccessful = resultData['reportContent']['ok'];
+        if (isLikeSuccessful) {
+          showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                    title: const Column(
+                      children: <Widget>[
+                        Center(
+                          child: Text(
+                            '通報が寄せられました。\n 上記の投稿はもう表示されません。',
+                            style: TextStyle(),
+                          ),
+                        ),
+                      ],
+                    ),
+                    // content: Text('Of course not!'),
+                    content: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        GestureDetector(
+                          //reportPost
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: Theme.of(context).primaryColor),
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: Sizes.size10,
+                                vertical: Sizes.size5,
+                              ),
+                              child: Text(
+                                'はい。',
+                                style: TextStyle(
+                                    fontSize: Sizes.size16,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ));
+        } else {
+          // Handle the case where the like operation was not successful
+          print("Like operation was not successful.");
+          // You can also display a message to the user if needed
+        }
+      } else {
+        // Handle the case where data is null
+        print("Data is null.");
+        // You can also display a message to the user if needed
+      }
+    }
+  } catch (e) {
+    // Handle exceptions
+    print("Error occurred: $e");
+    // You can also display an error message to the user if needed
+  }
+}
+
+Future<void> deleteContentComment(BuildContext context, int commentId) async {
+  final GraphQLClient client = GraphQLProvider.of(context).value;
+
+  final MutationOptions options = MutationOptions(
+    document: gql('''
+        mutation DeleteContentComment(\$commentId: Int!) {
+          deleteContentComment(commentId: \$commentId) {
+            ok
+          }
+        }
+      '''),
+    variables: <String, dynamic>{
+      "commentId": commentId,
+    },
+  );
+
+  try {
+    final QueryResult result = await client.mutate(options);
+
+    if (result.hasException) {
+      // Handle errors
+      print("Error occurred: ${result.exception.toString()}");
+      // You can also display an error message to the user if needed
+    } else {
+      final dynamic resultData = result.data;
+
+      if (resultData != null && resultData['deleteContentComment'] != null) {
+        print('delete success');
+      } else {
+        // Handle the case where data is null
+        print("Data is null.");
+        // You can also display a message to the user if needed
+      }
+    }
+  } catch (e) {
+    // Handle exceptions
+    print("Error occurred: $e");
+    // You can also display an error message to the user if needed
+  }
+}
+
+Future<void> reportContentComment(BuildContext context, int commentId) async {
+  final GraphQLClient client = GraphQLProvider.of(context).value;
+
+  final MutationOptions options = MutationOptions(
+    document: gql('''
+        mutation ReportContentComment(\$reportContentCommentCommentId2: Int!) {
+          reportContentComment(commentId: \$reportContentCommentCommentId2) {
+            ok
+          }
+        }
+      '''),
+    variables: <String, dynamic>{
+      "reportContentCommentCommentId2": commentId,
+    },
+  );
+
+  try {
+    final QueryResult result = await client.mutate(options);
+
+    if (result.hasException) {
+      // Handle errors
+      print("Error occurred: ${result.exception.toString()}");
+      // You can also display an error message to the user if needed
+    } else {
+      final dynamic resultData = result.data;
+
+      if (resultData != null && resultData['reportContentComment'] != null) {
+        showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                  title: const Column(
+                    children: <Widget>[
+                      Text(
+                        '通報が寄せられました。',
+                      ),
+                    ],
+                  ),
+                  // content: Text('Of course not!'),
+                  content: FittedBox(
+                    child: Column(
+                      children: [
+                        const Text('申告した内容はこれ以上表示されません。'),
+                        Gaps.v24,
+                        Gaps.v2,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            GestureDetector(
+                              //reportPost
+                              onTap: () {
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: Theme.of(context).primaryColor),
+                                child: const Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: Sizes.size10,
+                                    vertical: Sizes.size5,
+                                  ),
+                                  child: Text(
+                                    'はい。',
+                                    style: TextStyle(
+                                        fontSize: Sizes.size16,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ));
+      } else {
+        // Handle the case where data is null
+        print("Data is null.");
+        // You can also display a message to the user if needed
+      }
+    }
+  } catch (e) {
+    // Handle exceptions
+    print("Error occurred: $e");
+    // You can also display an error message to the user if needed
+  }
+}
+
+Future<void> reportUser(
+    BuildContext context, int userId, String userName) async {
+  final GraphQLClient client = GraphQLProvider.of(context).value;
+
+  final MutationOptions options = MutationOptions(
+    document: gql('''
+        mutation ReportUser(\$reportUserUserId2: Int!) {
+          reportUser(userId: \$reportUserUserId2) {
+            ok
+          }
+        }
+      '''),
+    variables: <String, dynamic>{
+      "reportUserUserId2": userId,
+    },
+  );
+
+  try {
+    final QueryResult result = await client.mutate(options);
+
+    if (result.hasException) {
+      // Handle errors
+      print("Error occurred: ${result.exception.toString()}");
+      // You can also display an error message to the user if needed
+    } else {
+      final dynamic resultData = result.data;
+
+      if (resultData['reportUser'] != null) {
+        print(resultData['reportUser']);
+        print(resultData['reportUser']['userName']);
+        showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                  title: const Column(
+                    children: <Widget>[
+                      Text(
+                        '通報が寄せられました。',
+                      ),
+                    ],
+                  ),
+                  // content: Text('Of course not!'),
+                  content: FittedBox(
+                    child: Column(
+                      children: [
+                        Text('$userNameの投稿とチャットはブロックされます。'),
+                        Gaps.v24,
+                        Gaps.v2,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            GestureDetector(
+                              //reportPost
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: Theme.of(context).primaryColor),
+                                child: const Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: Sizes.size10,
+                                    vertical: Sizes.size5,
+                                  ),
+                                  child: Text(
+                                    'はい。',
+                                    style: TextStyle(
+                                        fontSize: Sizes.size16,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ));
       } else {
         // Handle the case where data is null
         print("Data is null.");

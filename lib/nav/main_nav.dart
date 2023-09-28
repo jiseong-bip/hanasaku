@@ -27,7 +27,6 @@ class MainNav extends StatefulWidget {
 
 class _MainNavState extends State<MainNav> {
   int _selectedIndex = 0;
-  final PageController controller = PageController(initialPage: 0);
 
   late Stream<dynamic> logLikeStream;
   late Stream<dynamic> logCommentStream;
@@ -55,7 +54,6 @@ class _MainNavState extends State<MainNav> {
 
   @override
   void dispose() {
-    controller.dispose();
     super.dispose();
   }
 

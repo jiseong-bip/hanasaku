@@ -264,15 +264,18 @@ class _DetailScreenState extends State<DetailScreen> {
         appBar: AppBar(actions: [
           IconButton(
               onPressed: () {
-                dotMethod(
-                  context,
-                  post,
-                  nickName,
-                  imagekey,
-                  widget.postId,
-                  title,
-                  content,
-                );
+                print(widget.postId);
+                isContent ?? false
+                    ? contentDotMethod(context, nickName, widget.postId)
+                    : postDotMethod(
+                        context,
+                        post,
+                        nickName,
+                        imagekey,
+                        widget.postId,
+                        title,
+                        content,
+                      );
               },
               icon: const FaIcon(FontAwesomeIcons.ellipsis))
         ]),

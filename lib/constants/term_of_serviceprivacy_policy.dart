@@ -28,10 +28,10 @@ String termOfService = """
 
 本契約の成立、解釈及び履行並びにこれに起因する紛争は、紛争又は法律の選択に関する規則及び適用範囲内で日本国法を考慮せず、日本国東京都の実質的かつ手続的な法律に従うものとする。 本件に係る訴訟の専属管轄権及び場所は、日本国東京に所在する裁判所とし、これをもって当該裁判所の個人的な管轄権とする。 お客様は、本契約に起因するまたは関連するすべての手続において、陪審裁判を受ける権利を放棄します。 国際物品売買契約に関する国連条約は、この協定には適用されません。
 
-Changes and amendments
+変更と修正
 
-We reserve the right to modify this Agreement or its terms related to the Mobile Application and Services at any time at our discretion. When we do, we will post a notification in the Mobile Application. We may also provide notice to you in other ways at our discretion, such as through the contact information you have provided.
-An updated version of this Agreement will be effective immediately upon the posting of the revised Agreement unless otherwise specified. Your continued use of the Mobile Application and Services after the effective date of the revised Agreement (or such other act specified at that time) will constitute your consent to those changes.
+当社は、モバイルアプリケーションおよびサービスに関連する本契約またはその条件を当社の裁量でいつでも変更する権利を留保します。 その際には、モバイルアプリケーションに通知を投稿します。 また、お客様が提供された連絡先情報を通じて通知を行うなど、当社の裁量により他の方法で通知することもあります。
+本契約の更新版は、特に明記されていない限り、改訂された契約書が掲載された時点で直ちに効力を発揮します。 改訂された契約の発効日（またはその時点で指定されたその他の行為）後も、お客様がモバイルアプリケーションおよびサービスを継続的に使用することは、これらの変更に対する同意となります。
 
 これらの条件について
 

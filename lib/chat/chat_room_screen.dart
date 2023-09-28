@@ -6,18 +6,20 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/chat/chat_bottom_textfield.dart';
 import 'package:hanasaku/constants/sizes.dart';
+import 'package:hanasaku/home/graphql/function_mutaion.dart';
 import 'package:hanasaku/home/widget/user_bottom_modal.dart';
 import 'package:hanasaku/query&mutation/querys.dart';
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
 import 'package:provider/provider.dart';
 
 class ChatRoom extends StatefulWidget {
-  final int? roomId, userId;
+  final int? roomId;
+  final int userId;
   final String userName;
   const ChatRoom({
     super.key,
     this.roomId,
-    this.userId,
+    required this.userId,
     required this.userName,
   });
 
@@ -30,7 +32,6 @@ class _ChatRoomState extends State<ChatRoom> {
   List _chatList = <dynamic>[];
   int userId = 0;
   bool _isDeleteSelectMode = false;
-  bool _isReportSelectMode = false;
   bool _setMode = false;
   List<bool> _isSelected = [];
   List<int> selectedMessageIds = [];
@@ -48,7 +49,6 @@ class _ChatRoomState extends State<ChatRoom> {
   void _onScaffoldTap() {
     FocusScope.of(context).unfocus();
     _isDeleteSelectMode = false;
-    _isReportSelectMode = false;
     _setMode = false;
     setState(() {});
   }
@@ -62,9 +62,8 @@ class _ChatRoomState extends State<ChatRoom> {
         _fetchChatList(FetchPolicy.networkOnly, widget.roomId!);
       });
     }
-    if (widget.userId != null) {
-      userId = widget.userId!;
-    }
+
+    userId = widget.userId;
   }
 
   Future<void> _fetchChatList(FetchPolicy fetchPolicy, int? roomId) async {
@@ -374,27 +373,32 @@ class _ChatRoomState extends State<ChatRoom> {
                                         )
                                       ],
                                     ),
-                                    if (_isReportSelectMode)
-                                      Checkbox(
-                                        value: _isSelected[index],
-                                        onChanged: _chatList[index]['user']
-                                                    ['userName'] !=
-                                                nickName
-                                            ? (bool? newValue) {
-                                                setState(() {
-                                                  _isSelected[index] =
-                                                      newValue!;
-                                                  if (_isSelected[index]) {
-                                                    selectedMessageIds.add(
-                                                        _chatList[index]['id']);
-                                                  } else {
-                                                    selectedMessageIds.remove(
-                                                        _chatList[index]['id']);
-                                                  }
-                                                });
-                                              }
-                                            : null,
-                                      ),
+                                    // if (_isReportSelectMode)
+                                    //   Checkbox(
+                                    //     activeColor:
+                                    //         Theme.of(context).primaryColor,
+                                    //     focusColor:
+                                    //         Theme.of(context).primaryColor,
+                                    //     shape: const CircleBorder(),
+                                    //     value: _isSelected[index],
+                                    //     onChanged: _chatList[index]['user']
+                                    //                 ['userName'] !=
+                                    //             nickName
+                                    //         ? (bool? newValue) {
+                                    //             setState(() {
+                                    //               _isSelected[index] =
+                                    //                   newValue!;
+                                    //               if (_isSelected[index]) {
+                                    //                 selectedMessageIds.add(
+                                    //                     _chatList[index]['id']);
+                                    //               } else {
+                                    //                 selectedMessageIds.remove(
+                                    //                     _chatList[index]['id']);
+                                    //               }
+                                    //             });
+                                    //           }
+                                    //         : null,
+                                    //   ),
                                   ],
                                 ),
                               ),
@@ -402,12 +406,12 @@ class _ChatRoomState extends State<ChatRoom> {
                     },
                   ),
                 ),
-                if (_isDeleteSelectMode || _isReportSelectMode)
+                if (_isDeleteSelectMode)
                   CupertinoButton(
                       color: Theme.of(context).primaryColor,
-                      child: Text(
-                        _isDeleteSelectMode ? 'Delete' : 'Report',
-                        style: const TextStyle(fontWeight: FontWeight.w400),
+                      child: const Text(
+                        'Delete',
+                        style: TextStyle(fontWeight: FontWeight.w400),
                       ),
                       onPressed: () {
                         for (int i = _chatList.length - 1; i >= 0; i--) {
@@ -417,10 +421,9 @@ class _ChatRoomState extends State<ChatRoom> {
                         }
                         _isSelected =
                             List<bool>.filled(_chatList.length, false);
-                        _isDeleteSelectMode ? _deleteSelectedMessages() : null;
+                        _deleteSelectedMessages();
                         setState(() {
                           _isDeleteSelectMode = false;
-                          _isReportSelectMode = false;
                           _isSelected =
                               List<bool>.filled(_chatList.length, false);
                           selectedMessageIds.clear();
@@ -466,14 +469,13 @@ class _ChatRoomState extends State<ChatRoom> {
                             CupertinoButton(
                                 minSize: 0.0,
                                 padding: const EdgeInsets.all(0),
-                                child: const Text('삭제하기'),
+                                child: const Text('削除する'), //삭제하기
                                 onPressed: () {
                                   setState(
                                     () {
                                       _setMode = !_setMode;
                                       _isDeleteSelectMode =
                                           !_isDeleteSelectMode;
-                                      _isReportSelectMode = false;
                                       _isSelected = List<bool>.filled(
                                           _chatList.length, false);
                                       selectedMessageIds.clear();
@@ -486,19 +488,22 @@ class _ChatRoomState extends State<ChatRoom> {
                             CupertinoButton(
                                 minSize: 0.0,
                                 padding: const EdgeInsets.all(0),
-                                child: const Text('신고하기'),
-                                onPressed: () {
-                                  setState(
-                                    () {
-                                      _setMode = !_setMode;
-                                      _isReportSelectMode =
-                                          !_isReportSelectMode;
-                                      _isDeleteSelectMode = false;
-                                      _isSelected = List<bool>.filled(
-                                          _chatList.length, false);
-                                      selectedMessageIds.clear();
-                                    },
-                                  );
+                                child: const Text('届け出る'), //신고하기
+                                onPressed: () async {
+                                  await reportUser(
+                                      context, widget.userId, widget.userName);
+                                  // setState(
+                                  //   () async {
+
+                                  //     // _setMode = !_setMode;
+                                  //     // _isReportSelectMode =
+                                  //     //     _isReportSelectMode;
+                                  //     // _isDeleteSelectMode = false;
+                                  //     // _isSelected = List<bool>.filled(
+                                  //     //     _chatList.length, false);
+                                  //     // selectedMessageIds.clear();
+                                  //   },
+                                  // );
                                 }),
                           ],
                         ),

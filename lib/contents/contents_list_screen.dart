@@ -47,9 +47,10 @@ class _ContentsScreenState extends State<ContentsScreen> {
       ),
       body: Query(
         options: QueryOptions(
-          document:
-              viewContantsQuery, // this is the query string you just created
-        ),
+            document: viewContantsQuery,
+            fetchPolicy: FetchPolicy
+                .networkOnly // this is the query string you just created
+            ),
         builder: (QueryResult result,
             {VoidCallback? refetch, FetchMore? fetchMore}) {
           if (result.hasException) {
@@ -71,10 +72,11 @@ class _ContentsScreenState extends State<ContentsScreen> {
             );
           }
 
-          return SingleChildScrollView(
+          return RefreshIndicator(
+            onRefresh: () async {
+              refetch!();
+            },
             child: ListView.builder(
-                shrinkWrap: true,
-                primary: false,
                 itemCount: contents.length,
                 itemBuilder: (context, index) {
                   final content = contents[index];
@@ -140,10 +142,8 @@ class _ContentsScreenState extends State<ContentsScreen> {
                                                   color: Colors.grey),
                                             );
                                           }
-
                                           if (snapshot.hasData) {
                                             final file = snapshot.data as File;
-
                                             // 파일을 이미지로 변환하여 CircleAvatar의 backgroundImage로 설정
                                             return Container(
                                               height: screenWidth / 8,

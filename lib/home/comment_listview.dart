@@ -206,11 +206,18 @@ class _CommentsQueryState extends State<CommentsQuery> {
                                           Gaps.h10,
                                           GestureDetector(
                                             onTap: () {
-                                              commentDotMethod(
-                                                context,
-                                                postInfo.getComments()![index1],
-                                                nickName,
-                                              );
+                                              isContent ?? false
+                                                  ? contentCommentDotMethod(
+                                                      context,
+                                                      postInfo.getComments()![
+                                                          index1],
+                                                      nickName)
+                                                  : commentDotMethod(
+                                                      context,
+                                                      postInfo.getComments()![
+                                                          index1],
+                                                      nickName,
+                                                    );
                                             },
                                             child: const FaIcon(
                                               FontAwesomeIcons.ellipsis,
