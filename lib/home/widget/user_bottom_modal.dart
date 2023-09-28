@@ -10,10 +10,11 @@ import 'package:hanasaku/chat/chat_room_screen.dart';
 import 'package:hanasaku/constants/font.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
+import 'package:hanasaku/home/graphql/function_mutaion.dart';
 import 'package:hanasaku/setup/aws_s3.dart';
 
-void showMyBottomSheet(
-    BuildContext context, int userId, String userName, String? avatarKey) {
+void showMyBottomSheet(BuildContext context, int userId, String userName) {
+  bool isBlocked;
   showModalBottomSheet(
     isScrollControlled: true,
     constraints: const BoxConstraints(maxHeight: 370, minHeight: 100),
@@ -22,10 +23,14 @@ void showMyBottomSheet(
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     builder: (context) {
       // GraphQL 쿼리 정의
+
       String readRepositories = """
         query ViewUser(\$userId: Int!) {
             viewUser(userId: \$userId) {
               id
+              isMe
+              isBlocked
+              avatar
               userName
               isChat
               medals {
@@ -38,7 +43,6 @@ void showMyBottomSheet(
             }
           }
       """;
-
       return Query(
         options: QueryOptions(
             document: gql(readRepositories),
@@ -92,6 +96,8 @@ void showMyBottomSheet(
             lengthOfKey3 = itemsWithKey3.first[3].length;
           }
 
+          isBlocked = user['isBlocked'];
+
           double screenHeight = MediaQuery.of(context).size.height;
           double screenWidth = MediaQuery.of(context).size.width;
           return Scaffold(
@@ -113,9 +119,9 @@ void showMyBottomSheet(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            avatarKey != null
+                            user['avatar'] != null
                                 ? FutureBuilder(
-                                    future: getImage(context, avatarKey),
+                                    future: getImage(context, user['avatar']),
                                     builder: (context, snapshot) {
                                       if (snapshot.connectionState ==
                                           ConnectionState.done) {
@@ -160,12 +166,49 @@ void showMyBottomSheet(
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  user['userName'],
-                                  style: const TextStyle(
-                                      fontSize: Sizes.size16,
-                                      fontWeight: FontWeight.w600,
-                                      fontFamily: MyFontFamily.lineSeedSans),
+                                Row(
+                                  children: [
+                                    Text(
+                                      user['userName'],
+                                      style: const TextStyle(
+                                          fontSize: Sizes.size16,
+                                          fontWeight: FontWeight.w600,
+                                          fontFamily:
+                                              MyFontFamily.lineSeedSans),
+                                    ),
+                                    Gaps.h10,
+                                    if (!user['isMe'])
+                                      GestureDetector(
+                                        onTap: () async {
+                                          if (isBlocked) {
+                                            await unBlockUser(context, userId,
+                                                user['userName']);
+                                          } else {
+                                            await blockUser(context, userId,
+                                                user['userName']);
+                                          }
+                                          print(
+                                              "isBlocked before setState: $isBlocked"); // Logging before setState
+
+                                          isBlocked = !isBlocked;
+
+                                          print(
+                                              "isBlocked after setState: $isBlocked"); // Logging after setState
+                                        },
+                                        child: isBlocked
+                                            ? FaIcon(
+                                                FontAwesomeIcons.userSlash,
+                                                color: Colors.red.shade300,
+                                                size: Sizes.size12,
+                                              )
+                                            : FaIcon(
+                                                FontAwesomeIcons.userSlash,
+                                                color: Theme.of(context)
+                                                    .primaryColor,
+                                                size: Sizes.size12,
+                                              ),
+                                      )
+                                  ],
                                 ),
                                 Gaps.v12,
                                 Row(
@@ -200,7 +243,7 @@ void showMyBottomSheet(
                                     Gaps.h5,
                                     Text('${lengthOfKey1 ?? 0}'),
                                   ],
-                                )
+                                ),
                               ],
                             ),
                           ],
@@ -217,7 +260,7 @@ void showMyBottomSheet(
                             FontAwesomeIcons.x,
                             size: Sizes.size14,
                           )),
-                    )
+                    ),
                   ],
                 ),
                 groupedMedals.isEmpty
@@ -457,6 +500,7 @@ void showMyBottomSheet(
                     ),
                     child: GestureDetector(
                       onTap: () {
+                        print(user['id']);
                         user['isChat'] == null
                             ? Navigator.push(
                                 context,

@@ -232,6 +232,7 @@ query ViewContent(\$contentId: Int!) {
       comment
       createDate
       user {
+        avatar
         userName
         id
       }
@@ -251,7 +252,7 @@ query ViewContent(\$contentId: Int!) {
   }
 }""");
 
-final viewContansQuery = gql("""query ViewContents {
+final viewContantsQuery = gql("""query ViewContents {
   viewContents {
     title
     key
@@ -301,3 +302,13 @@ final searchPost = gql("""
   }
 }
 """);
+
+final viewBlockedUserQuery = gql("""
+      query ViewBlockUsers {
+  viewBlockUsers {
+    avatar
+    userName
+    id
+  }
+}
+    """);

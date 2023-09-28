@@ -15,6 +15,7 @@ import 'package:hanasaku/home/widget/user_bottom_modal.dart';
 import 'package:hanasaku/profile/comment_post.dart';
 import 'package:hanasaku/profile/liked_post.dart';
 import 'package:hanasaku/profile/my_post.dart';
+import 'package:hanasaku/profile/screen/blockUser_screen.dart';
 import 'package:hanasaku/profile/screen/notice_screen.dart';
 import 'package:hanasaku/profile/screen/private_policiy_screen.dart';
 import 'package:hanasaku/profile/screen/service_screen.dart';
@@ -125,8 +126,6 @@ class _MyPageScreenState extends State<MyPageScreen> {
         contentType: MediaType("image", "jpg"),
       );
       listMultipartFile = multipartFile;
-      print(multipartFile);
-      print(listMultipartFile);
     }
 
     final MutationOptions editUser = MutationOptions(
@@ -149,8 +148,6 @@ class _MyPageScreenState extends State<MyPageScreen> {
 
       if (result.data != null) {
         if (result.data!['editProfile']['ok']) {
-          print(result.data!['editProfile']['ok']);
-
           setState(() {
             _editMode = false;
           });
@@ -205,6 +202,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
 
     final QueryOptions options = QueryOptions(
         document: getMyInfoQuery,
+        fetchPolicy: FetchPolicy.noCache,
         cacheRereadPolicy: CacheRereadPolicy.ignoreAll);
 
     final QueryResult result = await client.query(options);
@@ -232,20 +230,13 @@ class _MyPageScreenState extends State<MyPageScreen> {
 
         if (itemsWithKey1.isNotEmpty) {
           lengthOfKey1 = itemsWithKey1.first[1].length;
-        } else {
-          print('There is no item with key 1 in the _medal list.');
         }
-
         if (itemsWithKey2.isNotEmpty) {
           lengthOfKey2 = itemsWithKey2.first[2].length;
-        } else {
-          print('There is no item with key 2 in the _medal list.');
         }
 
         if (itemsWithKey3.isNotEmpty) {
           lengthOfKey3 = itemsWithKey3.first[3].length;
-        } else {
-          print('There is no item with key 3 in the _medal list.');
         }
       });
     } else {
@@ -314,7 +305,10 @@ class _MyPageScreenState extends State<MyPageScreen> {
                     child: GestureDetector(
                       onTap: () {
                         showMyBottomSheet(
-                            context, myInfo['id'], nickName!, myInfo['avatar']);
+                          context,
+                          myInfo['id'],
+                          nickName!,
+                        );
                       },
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -606,6 +600,30 @@ class _MyPageScreenState extends State<MyPageScreen> {
                             ),
                             child: const Text(
                               '公知事項', //공지사항
+                              style: TextStyle(
+                                fontSize: Sizes.size20,
+                              ),
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            navigatorKey.currentState!.push(MaterialPageRoute(
+                                builder: (context) => const BlockUserScreen()));
+                          },
+                          child: Container(
+                            width: screenWidth,
+                            decoration: BoxDecoration(
+                              border: Border(
+                                  bottom: BorderSide(
+                                      width: 0.6, color: Colors.grey.shade300)),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: Sizes.size12,
+                              horizontal: Sizes.size24,
+                            ),
+                            child: const Text(
+                              'ブロックされたユーザー', //차단된 유저
                               style: TextStyle(
                                 fontSize: Sizes.size20,
                               ),

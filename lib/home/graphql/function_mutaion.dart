@@ -83,7 +83,6 @@ Future<void> reportPost(BuildContext context, int postId) async {
       if (resultData != null && resultData['reportPost'] != null) {
         final bool isLikeSuccessful = resultData['reportPost']['ok'];
         if (isLikeSuccessful) {
-          // ignore: use_build_context_synchronously
           showDialog(
               context: context,
               builder: (context) => AlertDialog(
@@ -483,6 +482,198 @@ Future<void> reportReComment(BuildContext context, int reCommentId) async {
                     ],
                   ),
                 ));
+      } else {
+        // Handle the case where data is null
+        print("Data is null.");
+        // You can also display a message to the user if needed
+      }
+    }
+  } catch (e) {
+    // Handle exceptions
+    print("Error occurred: $e");
+    // You can also display an error message to the user if needed
+  }
+}
+
+Future<void> blockUser(
+    BuildContext context, int userId, String userName) async {
+  final GraphQLClient client = GraphQLProvider.of(context).value;
+
+  final MutationOptions options = MutationOptions(
+    document: gql('''
+        mutation BlockUser(\$blockUserUserId2: Int!) {
+  blockUser(userId: \$blockUserUserId2) {
+    ok
+  }
+}
+      '''),
+    variables: <String, dynamic>{
+      'blockUserUserId2': userId,
+    },
+    update: (cache, result) => result,
+  );
+
+  try {
+    final QueryResult result = await client.mutate(options);
+
+    if (result.hasException) {
+      // Handle errors
+      print("Error occurred: ${result.exception.toString()}");
+      // You can also display an error message to the user if needed
+    } else {
+      final dynamic resultData = result.data;
+
+      if (resultData != null && resultData['blockUser'] != null) {
+        final bool isLikeSuccessful = resultData['blockUser']['ok'];
+        if (isLikeSuccessful) {
+          showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                    title: Column(
+                      children: <Widget>[
+                        Text(
+                          userName,
+                          style: const TextStyle(),
+                        ),
+                        const Text(
+                          'ブロックされました。',
+                          style: TextStyle(),
+                        ),
+                      ],
+                    ),
+                    // content: Text('Of course not!'),
+                    content: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        GestureDetector(
+                          //reportPost
+                          onTap: () {
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: Theme.of(context).primaryColor),
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: Sizes.size10,
+                                vertical: Sizes.size5,
+                              ),
+                              child: Text(
+                                'はい。',
+                                style: TextStyle(
+                                    fontSize: Sizes.size16,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ));
+        } else {
+          // Handle the case where the like operation was not successful
+          print("Like operation was not successful.");
+          // You can also display a message to the user if needed
+        }
+      } else {
+        // Handle the case where data is null
+        print("Data is null.");
+        // You can also display a message to the user if needed
+      }
+    }
+  } catch (e) {
+    // Handle exceptions
+    print("Error occurred: $e");
+    // You can also display an error message to the user if needed
+  }
+}
+
+Future<void> unBlockUser(
+    BuildContext context, int userId, String userName) async {
+  final GraphQLClient client = GraphQLProvider.of(context).value;
+
+  final MutationOptions options = MutationOptions(
+    document: gql('''
+       mutation UnblockUser(\$unblockUserUserId2: Int!) {
+  unblockUser(userId: \$unblockUserUserId2) {
+    ok
+  }
+}
+      '''),
+    variables: <String, dynamic>{
+      'unblockUserUserId2': userId,
+    },
+    update: (cache, result) => result,
+  );
+
+  try {
+    final QueryResult result = await client.mutate(options);
+
+    if (result.hasException) {
+      // Handle errors
+      print("Error occurred: ${result.exception.toString()}");
+      // You can also display an error message to the user if needed
+    } else {
+      final dynamic resultData = result.data;
+
+      if (resultData != null && resultData['unblockUser'] != null) {
+        final bool isLikeSuccessful = resultData['unblockUser']['ok'];
+        if (isLikeSuccessful) {
+          showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                    title: Column(
+                      children: <Widget>[
+                        Text(
+                          userName,
+                          style: const TextStyle(),
+                        ),
+                        const Text(
+                          'ブロックが解除されました',
+                          style: TextStyle(),
+                        ),
+                      ],
+                    ),
+                    // content: Text('Of course not!'),
+                    content: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        GestureDetector(
+                          //reportPost
+                          onTap: () {
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: Theme.of(context).primaryColor),
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: Sizes.size10,
+                                vertical: Sizes.size5,
+                              ),
+                              child: Text(
+                                'はい。',
+                                style: TextStyle(
+                                    fontSize: Sizes.size16,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ));
+        } else {
+          // Handle the case where the like operation was not successful
+          print("Like operation was not successful.");
+          // You can also display a message to the user if needed
+        }
       } else {
         // Handle the case where data is null
         print("Data is null.");

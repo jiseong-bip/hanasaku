@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:hanasaku/auth/elua_screen.dart';
 import 'package:hanasaku/nav/main_nav.dart';
 import 'package:hanasaku/query&mutation/mutatuin.dart';
 import 'package:hanasaku/query&mutation/querys.dart';
@@ -10,7 +11,7 @@ import 'package:hanasaku/setup/navigator.dart';
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
 
 class GetUserInfo {
-  Future<void> checkingUser(GraphQLClient client,
+  Future<void> checkingUser(BuildContext context, GraphQLClient client,
       UserInfoProvider userInfoProvider, String uid) async {
     final MutationOptions options = MutationOptions(
       document: checkUser,
@@ -36,31 +37,41 @@ class GetUserInfo {
             // Print the token to the console
             print("Successfully received token: $token");
             // After receiving the token, navigate to MyHomePage
-            navigatorKey.currentState!.pushReplacement(
-              MaterialPageRoute(builder: (context) => const MainNav()),
-            );
+            navigatorKey.currentState!.pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => const MainNav()),
+                (route) => false);
           } else {
-            final MutationOptions options = MutationOptions(
-              document: signUp,
-              variables: <String, dynamic>{
-                "fbId": uid,
-              },
+            //await userInforAccept(context, client, userInfoProvider, uid);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => UserInfoAcceptanceWidget(
+                  client: client,
+                  userInfoProvider: userInfoProvider,
+                  uid: uid,
+                ),
+              ),
             );
-            final QueryResult signUpResult = await client.mutate(options);
+            // final MutationOptions options = MutationOptions(
+            //   document: signUp,
+            //   variables: <String, dynamic>{
+            //     "fbId": uid,
+            //   },
+            // );
+            // final QueryResult signUpResult = await client.mutate(options);
 
-            final dynamic signUpData = signUpResult.data;
-            print(signUpData);
+            // final dynamic signUpData = signUpResult.data;
 
-            final token = signUpData['signUp']['token'];
-            final name = signUpData['signUp']['userName'];
-            await userInfoProvider.setToken(token);
-            await userInfoProvider.setNickName(name);
+            // final token = signUpData['signUp']['token'];
+            // final name = signUpData['signUp']['userName'];
+            // await userInfoProvider.setToken(token);
+            // await userInfoProvider.setNickName(name);
 
-            if (token != null && name != null) {
-              navigatorKey.currentState!.pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => const MainNav()),
-                  (route) => false);
-            }
+            // if (token != null && name != null) {
+            //   navigatorKey.currentState!.pushAndRemoveUntil(
+            //       MaterialPageRoute(builder: (context) => const MainNav()),
+            //       (route) => false);
+            // }
           }
         } else {
           // Handle the case where data is null

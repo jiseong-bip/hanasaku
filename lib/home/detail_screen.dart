@@ -350,8 +350,11 @@ class _DetailScreenState extends State<DetailScreen> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      showMyBottomSheet(context, post?['user']['id'],
-                          post?['user']['userName'], widget.avatorKey);
+                      showMyBottomSheet(
+                        context,
+                        post?['user']['id'],
+                        nickName!,
+                      );
                     },
                     child: Row(
                       children: [

@@ -93,10 +93,18 @@ class _PostsScreenState extends State<PostsScreen> {
           ),
         ],
       ),
-      body: PostsQuery(
-        categoryId: widget.categoryId,
-        postsPerPage: postsPerPage,
-        scrollController: scrollController,
+      body: GestureDetector(
+        onHorizontalDragEnd: (details) {
+          if (details.primaryVelocity! > 0) {
+            // 왼쪽으로 스와이프 했을 때의 동작
+            userInfoModel.setCurrentCategory(0);
+          }
+        },
+        child: PostsQuery(
+          categoryId: widget.categoryId,
+          postsPerPage: postsPerPage,
+          scrollController: scrollController,
+        ),
       ),
     );
   }

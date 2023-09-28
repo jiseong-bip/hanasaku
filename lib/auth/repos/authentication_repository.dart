@@ -92,7 +92,7 @@ class AuthenticationRepository {
       final uid = await authRepo.getUserUid();
       print(uid);
 
-      await GetUserInfo().checkingUser(client, userInfoProvider, uid!);
+      await GetUserInfo().checkingUser(context, client, userInfoProvider, uid!);
     } on FirebaseAuthException catch (error) {
       showDialog(
         context: context,
@@ -188,7 +188,7 @@ class AuthenticationRepository {
       final uid = await getUserUid();
       print(uid);
 
-      await GetUserInfo().checkingUser(client, userInfoProvider, uid!);
+      await GetUserInfo().checkingUser(context, client, userInfoProvider, uid!);
     } catch (e) {
       print(e);
       return;
@@ -220,7 +220,7 @@ class AuthenticationRepository {
       final uid = await getUserUid();
       print(uid);
 
-      await GetUserInfo().checkingUser(client, userInfoProvider, uid!);
+      await GetUserInfo().checkingUser(context, client, userInfoProvider, uid!);
     } catch (e) {
       print("Error during Google sign-in: $e");
       rethrow;
@@ -255,7 +255,8 @@ class AuthenticationRepository {
         final uid = await getUserUid();
         print(uid);
 
-        await GetUserInfo().checkingUser(client, userInfoProvider, uid!);
+        await GetUserInfo()
+            .checkingUser(context, client, userInfoProvider, uid!);
 
         // success
         break;
@@ -303,7 +304,8 @@ class AuthenticationRepository {
         final uid = await getUserUid();
         print(uid);
 
-        await GetUserInfo().checkingUser(client, userInfoProvider, uid!);
+        await GetUserInfo()
+            .checkingUser(context, client, userInfoProvider, uid!);
       } else {
         // Firebase 커스텀 토큰 가져오기 실패
         print('fail');

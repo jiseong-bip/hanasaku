@@ -77,9 +77,9 @@ class _NotifyScreenState extends State<NotifyScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                      '${listResultModel.listResult[reverseIndex]!['postLikeAlarm']['user']['userName']}가'),
+                                      '${listResultModel.listResult[reverseIndex]!['postLikeAlarm']['user']['userName']}が'),
                                   Text(
-                                    '${listResultModel.listResult[reverseIndex]!['postLikeAlarm']['post']['title']}에 좋아요를 눌렀습니다',
+                                    '${listResultModel.listResult[reverseIndex]!['postLikeAlarm']['post']['title']}に「いいね」しました。',
                                     style: const TextStyle(
                                       fontSize: Sizes.size16,
                                       fontWeight: FontWeight.w600,
@@ -108,9 +108,9 @@ class _NotifyScreenState extends State<NotifyScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                      '${listResultModel.listResult[reverseIndex]!['postCommentAlarm']['user']['userName']}가'),
+                                      '${listResultModel.listResult[reverseIndex]!['postCommentAlarm']['user']['userName']}が'),
                                   Text(
-                                    '${listResultModel.listResult[reverseIndex]!['postCommentAlarm']['post']['title']}에 댓글을 달았습니다',
+                                    '${listResultModel.listResult[reverseIndex]!['postCommentAlarm']['post']['title']}にコメントしました。',
                                     style: const TextStyle(
                                       fontSize: Sizes.size16,
                                       fontWeight: FontWeight.w600,

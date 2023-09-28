@@ -25,7 +25,7 @@ class CreateScreen extends StatefulWidget {
 class _CreateScreenState extends State<CreateScreen> {
   int? categoryId;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String content = """Contents
+  String content = """内容を入力してください
 
 • 相手に不快感を与えるコンテンツは
   制裁を受ける可能性があります
@@ -231,7 +231,7 @@ class _CreateScreenState extends State<CreateScreen> {
                           minLines: null,
                           maxLines: null,
                           decoration: InputDecoration(
-                            hintText: 'Title',
+                            hintText: 'タイトル', //제목
                             hintStyle: const TextStyle(
                                 fontSize: Sizes.size20,
                                 fontWeight: FontWeight.w600),
@@ -248,7 +248,7 @@ class _CreateScreenState extends State<CreateScreen> {
                           ),
                           validator: (value) {
                             if (value != null && value.isEmpty) {
-                              return "Plase write your Title";
+                              return "タイトルを入力してください";
                             }
                             return null;
                           },
@@ -287,7 +287,7 @@ class _CreateScreenState extends State<CreateScreen> {
                         SizedBox(
                           height: deviceHeight / 3, // 디바이스 높이의 1/4
                           child: _images.isEmpty
-                              ? const Center(child: Text('No images selected'))
+                              ? const Center(child: Text('イメージが選択されていません。'))
                               : CarouselSlider.builder(
                                   itemCount: _images.length,
                                   itemBuilder: (BuildContext context, int index,
@@ -386,7 +386,7 @@ class _CreateScreenState extends State<CreateScreen> {
                               color: Theme.of(context).primaryColor),
                           child: const Center(
                             child: Text(
-                              'Submit',
+                              'シェア',
                               style: TextStyle(
                                   fontWeight: FontWeight.w600,
                                   color: Colors.white),

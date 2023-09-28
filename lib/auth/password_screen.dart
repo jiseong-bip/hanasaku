@@ -111,7 +111,8 @@ class _PasswordScreenState extends State<PasswordScreen> {
       if (await authRepo.isEmailVerified()) {
         final uid = await authRepo.getUserUid();
 
-        await GetUserInfo().checkingUser(client, userInfoProvider, uid!);
+        await GetUserInfo()
+            .checkingUser(context, client, userInfoProvider, uid!);
       } else {
         Navigator.of(context).pop(); // 로딩 대화상자 닫기
         showDialog(

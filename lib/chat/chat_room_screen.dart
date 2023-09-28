@@ -1,10 +1,12 @@
 // ignore_for_file: avoid_print
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/chat/chat_bottom_textfield.dart';
 import 'package:hanasaku/constants/sizes.dart';
+import 'package:hanasaku/home/widget/user_bottom_modal.dart';
 import 'package:hanasaku/query&mutation/querys.dart';
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +29,9 @@ class _ChatRoomState extends State<ChatRoom> {
   String? nickName;
   List _chatList = <dynamic>[];
   int userId = 0;
-  bool _isSelectMode = false;
+  bool _isDeleteSelectMode = false;
+  bool _isReportSelectMode = false;
+  bool _setMode = false;
   List<bool> _isSelected = [];
   List<int> selectedMessageIds = [];
   int? _roomId;
@@ -43,6 +47,10 @@ class _ChatRoomState extends State<ChatRoom> {
 
   void _onScaffoldTap() {
     FocusScope.of(context).unfocus();
+    _isDeleteSelectMode = false;
+    _isReportSelectMode = false;
+    _setMode = false;
+    setState(() {});
   }
 
   @override
@@ -206,171 +214,202 @@ class _ChatRoomState extends State<ChatRoom> {
       onTap: _onScaffoldTap,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(widget.userName),
+          title: GestureDetector(
+            onTap: () {
+              showMyBottomSheet(
+                context,
+                userId,
+                nickName!,
+              );
+            },
+            child: Center(
+              child: Text(widget.userName),
+            ),
+          ),
           actions: [
             IconButton(
-              icon: FaIcon(
-                FontAwesomeIcons.trash,
-                color: Colors.grey.shade500,
-                size: Sizes.size20,
-              ),
-              onPressed: () {
-                setState(() {
-                  _isSelectMode = !_isSelectMode;
-                  _isSelected = List<bool>.filled(_chatList.length, false);
-                  selectedMessageIds.clear();
-                });
-              },
-            )
+                onPressed: () {
+                  setState(() {
+                    _setMode = !_setMode;
+                  });
+                },
+                icon: const FaIcon(FontAwesomeIcons.ellipsis))
+            // IconButton(
+            //   icon: FaIcon(
+            //     FontAwesomeIcons.trash,
+            //     color: _isReportSelectMode
+            //         ? Colors.grey.shade300
+            //         : Colors.grey.shade500,
+            //     size: Sizes.size20,
+            //   ),
+            //   onPressed: () {
+            //     _isReportSelectMode
+            //         ? null
+            //         : setState(
+            //             () {
+            //               _isDeleteSelectMode = !_isDeleteSelectMode;
+            //               _isSelected =
+            //                   List<bool>.filled(_chatList.length, false);
+            //               selectedMessageIds.clear();
+            //             },
+            //           );
+            //   },
+            // )
           ],
         ),
-        body: Column(
+        body: Stack(
           children: [
-            Expanded(
-              child: ListView.builder(
-                itemCount: _chatList.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: _isSelectMode
-                        ? () {
-                            if (_chatList[index]['user']['userName'] ==
-                                nickName) {
-                              setState(() {
-                                _isSelected[index] = !_isSelected[index];
-                                if (_isSelected[index]) {
-                                  selectedMessageIds
-                                      .add(_chatList[index]['id']);
-                                } else {
-                                  selectedMessageIds
-                                      .remove(_chatList[index]['id']);
+            Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: _chatList.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: _isDeleteSelectMode
+                            ? () {
+                                if (_chatList[index]['user']['userName'] ==
+                                    nickName) {
+                                  setState(() {
+                                    _isSelected[index] = !_isSelected[index];
+                                    if (_isSelected[index]) {
+                                      selectedMessageIds
+                                          .add(_chatList[index]['id']);
+                                    } else {
+                                      selectedMessageIds
+                                          .remove(_chatList[index]['id']);
+                                    }
+                                  });
                                 }
-                              });
-                            }
-                          }
-                        : null,
-                    child: _chatList[index]['user']['userName'] == nickName
-                        ? Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: Sizes.size12,
-                                vertical: Sizes.size5),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
+                              }
+                            : null,
+                        child: _chatList[index]['user']['userName'] == nickName
+                            ? Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: Sizes.size12,
+                                    vertical: Sizes.size5),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: Sizes.size10),
-                                      constraints: const BoxConstraints(
-                                          minHeight: 35, maxHeight: 35),
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          color: const Color(0xFFEFAFC3)),
-                                      child: Center(
-                                        child: Text(
-                                          '${_chatList[index]['message']}',
-                                          style: const TextStyle(
-                                            fontSize: Sizes.size16,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                if (_isSelectMode)
-                                  Checkbox(
-                                    activeColor: Theme.of(context).primaryColor,
-                                    focusColor: Theme.of(context).primaryColor,
-                                    shape: const CircleBorder(),
-                                    value: _isSelected[index],
-                                    onChanged: (bool? newValue) {
-                                      setState(() {
-                                        _isSelected[index] = newValue!;
-                                        if (_isSelected[index]) {
-                                          selectedMessageIds
-                                              .add(_chatList[index]['id']);
-                                        } else {
-                                          selectedMessageIds
-                                              .remove(_chatList[index]['id']);
-                                        }
-                                      });
-                                    },
-                                  ),
-                              ],
-                            ),
-                          )
-                        : Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: Sizes.size12,
-                                vertical: Sizes.size5),
-                            child: Row(
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      constraints: const BoxConstraints(
-                                          minHeight: 35, maxHeight: 35),
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          color: const Color(0xFFE3E7EB)),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: Sizes.size10,
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            '${_chatList[index]['message']}',
-                                            style: const TextStyle(
-                                              fontSize: Sizes.size16,
-                                              fontWeight: FontWeight.w400,
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: Sizes.size10),
+                                          constraints: const BoxConstraints(
+                                              minHeight: 35, maxHeight: 35),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              color: const Color(0xFFEFAFC3)),
+                                          child: Center(
+                                            child: Text(
+                                              '${_chatList[index]['message']}',
+                                              style: const TextStyle(
+                                                fontSize: Sizes.size16,
+                                                fontWeight: FontWeight.w400,
+                                              ),
                                             ),
                                           ),
-                                        ),
+                                        )
+                                      ],
+                                    ),
+                                    if (_isDeleteSelectMode)
+                                      Checkbox(
+                                        activeColor:
+                                            Theme.of(context).primaryColor,
+                                        focusColor:
+                                            Theme.of(context).primaryColor,
+                                        shape: const CircleBorder(),
+                                        value: _isSelected[index],
+                                        onChanged: (bool? newValue) {
+                                          setState(() {
+                                            _isSelected[index] = newValue!;
+                                            if (_isSelected[index]) {
+                                              selectedMessageIds
+                                                  .add(_chatList[index]['id']);
+                                            } else {
+                                              selectedMessageIds.remove(
+                                                  _chatList[index]['id']);
+                                            }
+                                          });
+                                        },
                                       ),
-                                    )
                                   ],
                                 ),
-                                if (_isSelectMode &&
-                                    _chatList[index]['user']['userName'] ==
-                                        nickName)
-                                  Checkbox(
-                                    value: _isSelected[index],
-                                    onChanged: _chatList[index]['user']
-                                                ['userName'] ==
-                                            nickName
-                                        ? (bool? newValue) {
-                                            setState(() {
-                                              _isSelected[index] = newValue!;
-                                              if (_isSelected[index]) {
-                                                selectedMessageIds.add(
-                                                    _chatList[index]['id']);
-                                              } else {
-                                                selectedMessageIds.remove(
-                                                    _chatList[index]['id']);
+                              )
+                            : Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: Sizes.size12,
+                                    vertical: Sizes.size5),
+                                child: Row(
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          constraints: const BoxConstraints(
+                                              minHeight: 35, maxHeight: 35),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              color: const Color(0xFFE3E7EB)),
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: Sizes.size10,
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                '${_chatList[index]['message']}',
+                                                style: const TextStyle(
+                                                  fontSize: Sizes.size16,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                    if (_isReportSelectMode)
+                                      Checkbox(
+                                        value: _isSelected[index],
+                                        onChanged: _chatList[index]['user']
+                                                    ['userName'] !=
+                                                nickName
+                                            ? (bool? newValue) {
+                                                setState(() {
+                                                  _isSelected[index] =
+                                                      newValue!;
+                                                  if (_isSelected[index]) {
+                                                    selectedMessageIds.add(
+                                                        _chatList[index]['id']);
+                                                  } else {
+                                                    selectedMessageIds.remove(
+                                                        _chatList[index]['id']);
+                                                  }
+                                                });
                                               }
-                                            });
-                                          }
-                                        : null,
-                                  ),
-                              ],
-                            ),
-                          ),
-                  );
-                },
-              ),
-            ),
-            if (_isSelectMode)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
+                                            : null,
+                                      ),
+                                  ],
+                                ),
+                              ),
+                      );
+                    },
+                  ),
+                ),
+                if (_isDeleteSelectMode || _isReportSelectMode)
+                  CupertinoButton(
+                      color: Theme.of(context).primaryColor,
+                      child: Text(
+                        _isDeleteSelectMode ? 'Delete' : 'Report',
+                        style: const TextStyle(fontWeight: FontWeight.w400),
+                      ),
+                      onPressed: () {
                         for (int i = _chatList.length - 1; i >= 0; i--) {
                           if (_isSelected[i]) {
                             _chatList.removeAt(i);
@@ -378,55 +417,96 @@ class _ChatRoomState extends State<ChatRoom> {
                         }
                         _isSelected =
                             List<bool>.filled(_chatList.length, false);
-                        _deleteSelectedMessages();
+                        _isDeleteSelectMode ? _deleteSelectedMessages() : null;
                         setState(() {
-                          _isSelectMode = false;
+                          _isDeleteSelectMode = false;
+                          _isReportSelectMode = false;
                           _isSelected =
                               List<bool>.filled(_chatList.length, false);
                           selectedMessageIds.clear();
                         });
-                      },
+                      }),
+                ValueListenableBuilder<int?>(
+                    valueListenable: setRoomId,
+                    builder: (context, roomIdValue, child) {
+                      return BottomTextBar(
+                        commentController: commentController,
+                        roomId: widget.roomId == null
+                            ? roomIdValue
+                            : widget.roomId!,
+                        userId: userId,
+                        onMessageChanged: (isSendPost, roomId) {
+                          setState(() {
+                            _roomId = roomId;
+                            setRoomId.value = roomId;
+                            _fetchChatList(FetchPolicy.networkOnly, _roomId);
+                          });
+                        },
+                      );
+                    }),
+              ],
+            ),
+            if (_setMode)
+              Align(
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: FittedBox(
+                    child: Container(
+                      width: 100,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade200,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: Sizes.size20),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: Sizes.size12),
-                          alignment: Alignment.bottomCenter,
-                          decoration: BoxDecoration(
-                              color: Theme.of(context)
-                                  .primaryColor
-                                  .withOpacity(0.6),
-                              borderRadius: BorderRadius.circular(10)),
-                          child: const Text(
-                            'delete',
-                            style: TextStyle(
-                                fontSize: Sizes.size20,
-                                fontWeight: FontWeight.w500),
-                          ),
+                        padding:
+                            const EdgeInsets.symmetric(vertical: Sizes.size5),
+                        child: Column(
+                          children: [
+                            CupertinoButton(
+                                minSize: 0.0,
+                                padding: const EdgeInsets.all(0),
+                                child: const Text('삭제하기'),
+                                onPressed: () {
+                                  setState(
+                                    () {
+                                      _setMode = !_setMode;
+                                      _isDeleteSelectMode =
+                                          !_isDeleteSelectMode;
+                                      _isReportSelectMode = false;
+                                      _isSelected = List<bool>.filled(
+                                          _chatList.length, false);
+                                      selectedMessageIds.clear();
+                                    },
+                                  );
+                                }),
+                            const Divider(
+                              thickness: 1,
+                            ),
+                            CupertinoButton(
+                                minSize: 0.0,
+                                padding: const EdgeInsets.all(0),
+                                child: const Text('신고하기'),
+                                onPressed: () {
+                                  setState(
+                                    () {
+                                      _setMode = !_setMode;
+                                      _isReportSelectMode =
+                                          !_isReportSelectMode;
+                                      _isDeleteSelectMode = false;
+                                      _isSelected = List<bool>.filled(
+                                          _chatList.length, false);
+                                      selectedMessageIds.clear();
+                                    },
+                                  );
+                                }),
+                          ],
                         ),
                       ),
                     ),
                   ),
-                ],
-              ),
-            ValueListenableBuilder<int?>(
-                valueListenable: setRoomId,
-                builder: (context, roomIdValue, child) {
-                  return BottomTextBar(
-                    commentController: commentController,
-                    roomId:
-                        widget.roomId == null ? roomIdValue : widget.roomId!,
-                    userId: userId,
-                    onMessageChanged: (isSendPost, roomId) {
-                      setState(() {
-                        _roomId = roomId;
-                        setRoomId.value = roomId;
-                        _fetchChatList(FetchPolicy.networkOnly, _roomId);
-                      });
-                    },
-                  );
-                }),
+                ),
+              )
           ],
         ),
       ),

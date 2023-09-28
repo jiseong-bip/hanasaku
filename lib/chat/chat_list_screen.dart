@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -182,7 +183,11 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           padding: const EdgeInsets.symmetric(
               horizontal: Sizes.size12, vertical: Sizes.size10),
           child: _chatList.isEmpty
-              ? const Center(child: Text('会話をかけてみてください'))
+              ? const SingleChildScrollView(
+                  child: Center(
+                    child: Text('会話をかけてみてください'),
+                  ),
+                )
               : ListView.separated(
                   separatorBuilder: (context, index) => Gaps.v14,
                   itemCount: _chatList.length,
@@ -338,7 +343,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
               child: Row(
                 children: [
                   Expanded(
-                    child: TextButton(
+                    child: CupertinoButton(
+                      color: Theme.of(context).primaryColor,
                       onPressed: () {
                         for (var id in _selectedChatIds) {
                           print(id);

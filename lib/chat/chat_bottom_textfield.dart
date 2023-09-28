@@ -40,7 +40,7 @@ class _BottomTextBarState extends State<BottomTextBar> {
   Future<void> toggleChatSend(
       BuildContext context, String chat, int? roomId) async {
     final GraphQLClient client = GraphQLProvider.of(context).value;
-    print(roomId);
+
     final MutationOptions options = MutationOptions(
       document: gql('''
         mutation SendMessage(\$message: String!, \$userId: Int!, \$roomId: Int) {

@@ -222,7 +222,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
                           width:
                               310.0, // Adjusted for slightly larger container
                           child: _images.isEmpty
-                              ? const Center(child: Text('No images selected'))
+                              ? const Center(child: Text('イメージが選択されていません。'))
                               : ListView.builder(
                                   scrollDirection: Axis.horizontal,
                                   itemCount: _images.length,
@@ -238,11 +238,17 @@ class _EditPostScreenState extends State<EditPostScreen> {
                                               child: Image.file(
                                                   File(_images[index].path)),
                                             ),
-                                            const Positioned(
+                                            Positioned(
                                               top: 0,
                                               right: 0,
-                                              child: Icon(Icons.cancel_rounded,
-                                                  color: Color(0xFFF9C7C7)),
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  _images.removeAt(index);
+                                                },
+                                                child: const Icon(
+                                                    Icons.cancel_rounded,
+                                                    color: Color(0xFFF9C7C7)),
+                                              ),
                                             ),
                                           ],
                                         ),

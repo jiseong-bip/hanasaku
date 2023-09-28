@@ -14,6 +14,8 @@ import 'package:hanasaku/home/detail_screen.dart';
 import 'package:hanasaku/home/widget/user_bottom_modal.dart';
 import 'package:hanasaku/setup/aws_s3.dart';
 import 'package:hanasaku/setup/cached_image.dart';
+import 'package:hanasaku/setup/userinfo_provider_model.dart';
+import 'package:provider/provider.dart';
 
 class Post extends StatefulWidget {
   final Map<String, dynamic> post;
@@ -33,6 +35,7 @@ class _PostState extends State<Post> {
   List<Object?> avatarImagekey = [];
   List<Object?> imagekey = [];
   late Future<File> _cachedFile;
+  String? nickName;
 
   final PageController _pageController = PageController();
 
@@ -113,9 +116,16 @@ class _PostState extends State<Post> {
     ));
   }
 
+  Future initName() async {
+    nickName = await Provider.of<UserInfoProvider>(context, listen: false)
+        .getNickName();
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
+    initName();
     counts = widget.post['likeCount'];
     Future.delayed(Duration.zero, () async {
       postImagekey = widget.post['images'];
@@ -205,10 +215,10 @@ class _PostState extends State<Post> {
               GestureDetector(
                 onTap: () {
                   showMyBottomSheet(
-                      context,
-                      widget.post['user']['id'],
-                      widget.post['user']['userName'],
-                      widget.post['user']['avatar']);
+                    context,
+                    widget.post['user']['id'],
+                    nickName!,
+                  );
                 },
                 child: Row(
                   children: [

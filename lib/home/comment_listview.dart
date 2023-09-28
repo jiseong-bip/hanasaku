@@ -111,12 +111,10 @@ class _CommentsQueryState extends State<CommentsQuery> {
                         GestureDetector(
                           onTap: () {
                             showMyBottomSheet(
-                                context,
-                                postInfo.getComments()![index1]['user']['id'],
-                                postInfo.getComments()![index1]['user']
-                                    ['userName'],
-                                postInfo.getComments()![index1]['user']
-                                    ['avatar']);
+                              context,
+                              postInfo.getComments()![index1]['user']['id'],
+                              nickName!,
+                            );
                           },
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -266,7 +264,7 @@ class _CommentsQueryState extends State<CommentsQuery> {
                                                   ),
                                                   Gaps.h5,
                                                   Text(
-                                                    'reply',
+                                                    '返信する', //Reply
                                                     style: TextStyle(
                                                       fontSize: Sizes.size12,
                                                       color:
@@ -298,8 +296,8 @@ class _CommentsQueryState extends State<CommentsQuery> {
                                                   Gaps.h5,
                                                   Text(
                                                     isRecommentShowed[index1]
-                                                        ? '대댓글 닫기'
-                                                        : '대댓글 보기',
+                                                        ? 'じーっと閉じる' //답글 닫기
+                                                        : '返事を見る', //답글 보기
                                                     style: TextStyle(
                                                       fontSize: Sizes.size12,
                                                       color:

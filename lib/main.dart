@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_line_sdk/flutter_line_sdk.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -113,9 +114,11 @@ class MyApp extends StatelessWidget {
         cache: GraphQLCache(store: InMemoryStore()),
       ),
     );
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     return GraphQLProvider(
       client: client,
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         builder: (context, child) {
           return MediaQuery(
             data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),

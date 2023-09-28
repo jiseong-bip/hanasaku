@@ -48,7 +48,7 @@ class _ContentsScreenState extends State<ContentsScreen> {
       body: Query(
         options: QueryOptions(
           document:
-              viewContansQuery, // this is the query string you just created
+              viewContantsQuery, // this is the query string you just created
         ),
         builder: (QueryResult result,
             {VoidCallback? refetch, FetchMore? fetchMore}) {

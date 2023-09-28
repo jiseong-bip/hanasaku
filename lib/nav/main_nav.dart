@@ -27,6 +27,7 @@ class MainNav extends StatefulWidget {
 
 class _MainNavState extends State<MainNav> {
   int _selectedIndex = 0;
+  final PageController controller = PageController(initialPage: 0);
 
   late Stream<dynamic> logLikeStream;
   late Stream<dynamic> logCommentStream;
@@ -51,6 +52,12 @@ class _MainNavState extends State<MainNav> {
   //     categoryId = result;
   //   });
   // }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
 
   void onTapCreate() {
     showModalBottomSheet(
@@ -90,9 +97,19 @@ class _MainNavState extends State<MainNav> {
             builder: (context, userInfo, child) {
               return Offstage(
                 offstage: _selectedIndex != 0,
-                child: userInfo.getCurrentCategory() == 0
-                    ? const CategoryPage()
-                    : PostsScreen(categoryId: userInfo.getCurrentCategory()),
+                child:
+                    // PageView(
+                    //   controller: controller,
+                    //   scrollDirection: Axis.horizontal,
+                    //   children: [
+                    //     const CategoryPage(),
+                    //     PostsScreen(categoryId: userInfo.getCurrentCategory())
+                    //   ],
+                    // )
+                    userInfo.getCurrentCategory() == 0
+                        ? const CategoryPage()
+                        : PostsScreen(
+                            categoryId: userInfo.getCurrentCategory()),
               );
             },
           ),
