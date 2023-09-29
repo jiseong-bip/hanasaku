@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 
+import 'dart:async';
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -17,16 +18,18 @@ import 'package:hanasaku/firebase_options.dart';
 import 'package:hanasaku/home/provider/postinfo_provider.dart';
 
 import 'package:hanasaku/nav/main_nav.dart';
+import 'package:hanasaku/setup/local_notification.dart';
 import 'package:hanasaku/setup/navigator.dart';
 import 'package:hanasaku/setup/provider_model.dart';
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
 import 'package:provider/provider.dart';
 
-void main() async {
+StreamController<String> streamController = StreamController.broadcast();
+Future<void> main() async {
   final tokenManager = UserInfoProvider();
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-
+  LocalNotification.onBackgroundNotificationResponse();
   await initHiveForFlutter();
 
   await Firebase.initializeApp(

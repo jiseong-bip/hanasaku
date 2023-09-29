@@ -30,20 +30,18 @@ class DetailScreen extends StatefulWidget {
   final int postId;
   final String? videoKey;
   final bool isContent;
-  final String? avatorKey;
-
   final Function(bool isLiked)? onLikeChanged;
   final Function(int liksCount)? onLikeCountChanged;
   final Function(int updateCountComment)? onCommentsCountChanged;
-  const DetailScreen(
-      {super.key,
-      required this.postId,
-      this.videoKey,
-      required this.isContent,
-      this.onLikeChanged,
-      this.onLikeCountChanged,
-      this.onCommentsCountChanged,
-      this.avatorKey});
+  const DetailScreen({
+    super.key,
+    required this.postId,
+    this.videoKey,
+    required this.isContent,
+    this.onLikeChanged,
+    this.onLikeCountChanged,
+    this.onCommentsCountChanged,
+  });
 
   @override
   State<DetailScreen> createState() => _DetailScreenState();
@@ -69,17 +67,9 @@ class _DetailScreenState extends State<DetailScreen> {
   void initState() {
     super.initState();
     isContent = widget.isContent;
-
     Future.delayed(Duration.zero, () async {
-      if (widget.avatorKey != null) {
-        avatarImagekey
-            .add({'__typename': 'userAvator', 'avatar': widget.avatorKey});
-        await getListImage(avatarImagekey);
-      }
-
       await _fetchPost(FetchPolicy.networkOnly);
     });
-
     initName();
     if (widget.videoKey != null) {
       signedParams = awsS3Client.buildSignedGetParams(key: widget.videoKey!);
@@ -361,9 +351,10 @@ class _DetailScreenState extends State<DetailScreen> {
                     },
                     child: Row(
                       children: [
-                        widget.avatorKey != null
+                        post?['user']['avatar'] != null
                             ? FutureBuilder(
-                                future: getImage(context, widget.avatorKey),
+                                future:
+                                    getImage(context, post?['user']['avatar']),
                                 builder: (context, snapshot) {
                                   if (snapshot.connectionState ==
                                       ConnectionState.done) {

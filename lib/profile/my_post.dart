@@ -169,7 +169,6 @@ class _MyPostScreenState extends State<MyPostScreen> {
                                 builder: (context) => DetailScreen(
                                       postId: post?['id'],
                                       isContent: false,
-                                      avatorKey: post?['avatar'],
                                     )));
                       },
                       child: Card(

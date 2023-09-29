@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
+import 'package:hanasaku/home/detail_screen.dart';
+import 'package:hanasaku/main.dart';
+import 'package:hanasaku/setup/local_notification.dart';
+import 'package:hanasaku/setup/navigator.dart';
 import 'package:hanasaku/setup/provider_model.dart';
 import 'package:provider/provider.dart';
 
@@ -17,7 +21,14 @@ class NotifyScreen extends StatefulWidget {
 class _NotifyScreenState extends State<NotifyScreen> {
   @override
   void initState() {
+    LocalNotification.resetBadge();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    streamController.add("");
+    super.dispose();
   }
 
   void _onTapDelete() {
@@ -64,68 +75,88 @@ class _NotifyScreenState extends State<NotifyScreen> {
                       listResultModel.listResult.length - 1 - index;
                   return listResultModel.listResult[reverseIndex]!
                           .containsKey('postLikeAlarm')
-                      ? Card(
-                          child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: Sizes.size16 + Sizes.size2,
-                            vertical: Sizes.size16,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                      '${listResultModel.listResult[reverseIndex]!['postLikeAlarm']['user']['userName']}が'),
-                                  Text(
-                                    '${listResultModel.listResult[reverseIndex]!['postLikeAlarm']['post']['title']}に「いいね」しました。',
-                                    style: const TextStyle(
-                                      fontSize: Sizes.size16,
-                                      fontWeight: FontWeight.w600,
+                      ? GestureDetector(
+                          onTap: () {
+                            navigatorKey.currentState!.push(MaterialPageRoute(
+                                builder: (context) => DetailScreen(
+                                    postId: listResultModel.listResult[
+                                            reverseIndex]!['postLikeAlarm']
+                                        ['post']['id'],
+                                    isContent: false)));
+                          },
+                          child: Card(
+                              child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: Sizes.size16 + Sizes.size2,
+                              vertical: Sizes.size16,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                        '${listResultModel.listResult[reverseIndex]!['postLikeAlarm']['user']['userName']}が'),
+                                    Text(
+                                      '${listResultModel.listResult[reverseIndex]!['postLikeAlarm']['post']['title']}に「いいね」しました。',
+                                      style: const TextStyle(
+                                        fontSize: Sizes.size16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              FaIcon(
-                                FontAwesomeIcons.solidHeart,
-                                color: Theme.of(context).primaryColor,
-                                size: Sizes.size24,
-                              )
-                            ],
-                          ),
-                        ))
-                      : Card(
-                          child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: Sizes.size16 + Sizes.size2,
-                            vertical: Sizes.size16,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                      '${listResultModel.listResult[reverseIndex]!['postCommentAlarm']['user']['userName']}が'),
-                                  Text(
-                                    '${listResultModel.listResult[reverseIndex]!['postCommentAlarm']['post']['title']}にコメントしました。',
-                                    style: const TextStyle(
-                                      fontSize: Sizes.size16,
-                                      fontWeight: FontWeight.w600,
+                                  ],
+                                ),
+                                FaIcon(
+                                  FontAwesomeIcons.solidHeart,
+                                  color: Theme.of(context).primaryColor,
+                                  size: Sizes.size24,
+                                )
+                              ],
+                            ),
+                          )),
+                        )
+                      : GestureDetector(
+                          onTap: () {
+                            navigatorKey.currentState!.push(MaterialPageRoute(
+                                builder: (context) => DetailScreen(
+                                    postId: listResultModel.listResult[
+                                            reverseIndex]!['postCommentAlarm']
+                                        ['post']['id'],
+                                    isContent: false)));
+                          },
+                          child: Card(
+                              child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: Sizes.size16 + Sizes.size2,
+                              vertical: Sizes.size16,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                        '${listResultModel.listResult[reverseIndex]!['postCommentAlarm']['user']['userName']}が'),
+                                    Text(
+                                      '${listResultModel.listResult[reverseIndex]!['postCommentAlarm']['post']['title']}にコメントしました。',
+                                      style: const TextStyle(
+                                        fontSize: Sizes.size16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              const FaIcon(
-                                FontAwesomeIcons.solidComment,
-                                color: Color(0xFFC1DE92),
-                                size: Sizes.size24,
-                              )
-                            ],
-                          ),
-                        ));
+                                  ],
+                                ),
+                                const FaIcon(
+                                  FontAwesomeIcons.solidComment,
+                                  color: Color(0xFFC1DE92),
+                                  size: Sizes.size24,
+                                )
+                              ],
+                            ),
+                          )),
+                        );
                 },
               );
       }),

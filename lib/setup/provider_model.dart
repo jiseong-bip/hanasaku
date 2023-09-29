@@ -1,15 +1,14 @@
 // ignore_for_file: avoid_print
 
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:hanasaku/setup/local_notification.dart';
 
 class ListResultModel extends ChangeNotifier {
   List<Map<String, dynamic>?> listResult = [];
 
   void addResult(Map<String, dynamic> data) {
     listResult.add(data);
-    print(listResult);
     notifyListeners();
   }
 
@@ -25,11 +24,14 @@ class ListResultModel extends ChangeNotifier {
     if (likeData != null &&
         !listResult.any((item) => jsonEncode(item) == likeResultsJson)) {
       addResult(likeData);
-      print(listResult);
+      LocalNotification.postNotification(
+          "${listResult.last!['postLikeAlarm']['post']['title']}に「いいね」しました。");
     }
     if (commentData != null &&
         !listResult.any((item) => jsonEncode(item) == commentResultsJson)) {
       addResult(commentData);
+      LocalNotification.postNotification(
+          "${listResult.last!['postLikeAlarm']['post']['title']}にコメントしました。");
     }
   }
 }

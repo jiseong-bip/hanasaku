@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_print
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -8,11 +10,14 @@ import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/contents/contents_list_screen.dart';
 import 'package:hanasaku/create/create_post.dart';
 import 'package:hanasaku/home/category_screen.dart';
+import 'package:hanasaku/home/notify_screen.dart';
 
 import 'package:hanasaku/home/posts_screen.dart';
 import 'package:hanasaku/home/subscription.dart';
+import 'package:hanasaku/main.dart';
 import 'package:hanasaku/nav/nav_button.dart';
 import 'package:hanasaku/profile/my_page_screen.dart';
+import 'package:hanasaku/setup/local_notification.dart';
 
 import 'package:hanasaku/setup/provider_model.dart';
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
@@ -39,6 +44,7 @@ class _MainNavState extends State<MainNav> {
 
   @override
   void initState() {
+    LocalNotification.initialize();
     super.initState();
     _selectedIndex = 0;
     // Capture the context when initializing the state
@@ -68,65 +74,84 @@ class _MainNavState extends State<MainNav> {
 
   @override
   Widget build(BuildContext context) {
-    final GraphQLClient client = GraphQLProvider.of(context).value;
-    logLikeStream = client.subscribe(SubscriptionOptions(
-      document: likeSubscription,
-    ));
-    logCommentStream = client.subscribe(SubscriptionOptions(
-      document: commentSubscription,
-    ));
+    LocalNotification.requestPermission();
+    if (mounted) {
+      final GraphQLClient client = GraphQLProvider.of(context).value;
+      logLikeStream = client.subscribe(SubscriptionOptions(
+        document: likeSubscription,
+      ));
+      logCommentStream = client.subscribe(SubscriptionOptions(
+        document: commentSubscription,
+      ));
 
-    logLikeStream.listen((event) {
-      final listResultModel =
-          Provider.of<ListResultModel>(context, listen: false);
-      listResultModel.updateList(event.data, null);
-    });
+      logLikeStream.listen((event) async {
+        final listResultModel =
+            Provider.of<ListResultModel>(context, listen: false);
+        listResultModel.updateList(event.data, null);
+      });
 
-    logCommentStream.listen((event) {
-      final listResultModel =
-          Provider.of<ListResultModel>(context, listen: false);
-      listResultModel.updateList(null, event.data);
-    });
+      logCommentStream.listen((event) {
+        final listResultModel =
+            Provider.of<ListResultModel>(context, listen: false);
+        listResultModel.updateList(null, event.data);
+      });
+    } else {}
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Stack(
-        children: [
-          Consumer<UserInfoProvider>(
-            builder: (context, userInfo, child) {
-              return Offstage(
-                offstage: _selectedIndex != 0,
-                child:
-                    // PageView(
-                    //   controller: controller,
-                    //   scrollDirection: Axis.horizontal,
-                    //   children: [
-                    //     const CategoryPage(),
-                    //     PostsScreen(categoryId: userInfo.getCurrentCategory())
-                    //   ],
-                    // )
-                    userInfo.getCurrentCategory() == 0
-                        ? const CategoryPage()
-                        : PostsScreen(
-                            categoryId: userInfo.getCurrentCategory()),
-              );
-            },
-          ),
-          Offstage(
-            offstage: _selectedIndex != 1,
-            child: const ContentsScreen(),
-          ),
-          Offstage(
-            offstage: _selectedIndex != 3,
-            child: ChatRoomScreen(
-              key: GlobalKey(),
-            ),
-          ),
-          Offstage(
-            offstage: _selectedIndex != 4,
-            child: const MyPageScreen(),
-          )
-        ],
-      ),
+      body: StreamBuilder(
+          stream: streamController.stream,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              print(snapshot.data);
+              if (snapshot.data == 'post') {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
+                    return const NotifyScreen();
+                  }));
+                });
+              }
+            }
+            return Stack(
+              children: [
+                Consumer<UserInfoProvider>(
+                  builder: (context, userInfo, child) {
+                    return Offstage(
+                      offstage: _selectedIndex != 0,
+                      child:
+                          // PageView(
+                          //   controller: controller,
+                          //   scrollDirection: Axis.horizontal,
+                          //   children: [
+                          //     const CategoryPage(),
+                          //     PostsScreen(categoryId: userInfo.getCurrentCategory())
+                          //   ],
+                          // )
+                          userInfo.getCurrentCategory() == 0
+                              ? const CategoryPage()
+                              : PostsScreen(
+                                  categoryId: userInfo.getCurrentCategory()),
+                    );
+                  },
+                ),
+                Offstage(
+                  offstage: _selectedIndex != 1,
+                  child: const ContentsScreen(),
+                ),
+                Offstage(
+                  offstage: _selectedIndex != 3,
+                  child: ChatRoomScreen(
+                    key: GlobalKey(),
+                  ),
+                ),
+                Offstage(
+                  offstage: _selectedIndex != 4,
+                  child: const MyPageScreen(),
+                )
+              ],
+            );
+          }),
       bottomNavigationBar: BottomAppBar(
         elevation: 1,
         color: Colors.white,

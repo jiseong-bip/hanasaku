@@ -5,11 +5,12 @@ final likeSubscription = gql(
     subscription Subscription {
       postLikeAlarm {
         post {
-      title
-    }
-    user {
-      userName
-    }
+          id
+          title
+        }
+        user {
+          userName
+        }
       }
     }
   ''',
@@ -18,14 +19,15 @@ final likeSubscription = gql(
 final commentSubscription = gql(
   r'''
     subscription Subscription {
-        postCommentAlarm {
-    post {
-      title
-    }
-    user {
-      userName
-    }
-  }
+      postCommentAlarm {
+        post {
+          id
+          title
+        }
+        user {
+          userName
+        }
+      }
     }
   ''',
 );

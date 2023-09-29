@@ -158,8 +158,6 @@ class _LikedPostScreenState extends State<LikedPostScreen> {
                                 builder: (context) => DetailScreen(
                                       postId: post?['post']['id'],
                                       isContent: false,
-                                      avatorKey: post?['post']['user']
-                                          ['avator'],
                                     )));
                       },
                       child: Card(

@@ -88,7 +88,6 @@ class _ContentsScreenState extends State<ContentsScreen> {
                                 postId: content['id'],
                                 isContent: true,
                                 videoKey: content['key'],
-                                avatorKey: content['user']['avatar'],
                               )));
                     },
                     child: Padding(

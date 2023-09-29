@@ -111,7 +111,7 @@ class _PostState extends State<Post> {
             commentCount = updateCountComment;
           });
         },
-        isContent: false, avatorKey: widget.post['user']['avatar'],
+        isContent: false,
       ),
     ));
   }
