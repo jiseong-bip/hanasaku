@@ -250,7 +250,7 @@ class _DetailScreenState extends State<DetailScreen> {
         postInfo.setRecommentMode(false);
       },
       child: Scaffold(
-        resizeToAvoidBottomInset: true,
+        // resizeToAvoidBottomInset: true,
         appBar: AppBar(actions: [
           IconButton(
               onPressed: () {
@@ -276,37 +276,52 @@ class _DetailScreenState extends State<DetailScreen> {
           child: SingleChildScrollView(
             controller: scrollController,
             physics: const AlwaysScrollableScrollPhysics(),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                detailPost(screenWidth, videoHeight, userName, createDate,
-                    title, content, imagekey, context),
-                CommentsQuery(
-                  postId: widget.postId,
-                  onCommentsCountChanged: (commentCount) {
-                    setState(() {
-                      commentsCount = commentCount;
-                      if (widget.onCommentsCountChanged != null) {
-                        widget.onCommentsCountChanged!(commentCount);
-                      }
-                    });
-                  },
-                  isContents: widget.isContent,
-                ),
-              ],
-            ),
+            child: detailPost(screenWidth, videoHeight, userName, createDate,
+                title, content, imagekey, context),
           ),
         ),
-        bottomSheet: BottomTextBar(
-          isContent: widget.isContent,
-          postId: widget.postId,
-          onCommentChanged: (isSendPost) async {
-            if (isSendPost) {
-              _fetchPost(FetchPolicy.networkOnly);
-            }
-          },
-          recommentMode: postInfo.getRecommentMode(),
-          comment: postInfo.getComment(),
+        bottomNavigationBar: Padding(
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (postInfo.getRecommentMode())
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: Sizes.size14),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '"${postInfo.getComment()}"に返信中...',
+                        style: TextStyle(color: Colors.grey.shade600),
+                      ),
+                      IconButton(
+                          constraints: const BoxConstraints(minHeight: 10),
+                          iconSize: Sizes.size14,
+                          onPressed: () {
+                            postInfo.setRecommentMode(false);
+                          },
+                          icon: FaIcon(
+                            FontAwesomeIcons.xmark,
+                            color: Colors.grey.shade600,
+                          ))
+                    ],
+                  ),
+                ),
+              BottomTextBar(
+                isContent: widget.isContent,
+                postId: widget.postId,
+                onCommentChanged: (isSendPost) async {
+                  if (isSendPost) {
+                    _fetchPost(FetchPolicy.networkOnly);
+                  }
+                },
+                recommentMode: postInfo.getRecommentMode(),
+                comment: postInfo.getComment(),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -430,7 +445,7 @@ class _DetailScreenState extends State<DetailScreen> {
                           ),
                         ),
                         Gaps.v10,
-                        if (content != null)
+                        if (content != '')
                           Column(
                             children: [
                               Text(
@@ -451,7 +466,7 @@ class _DetailScreenState extends State<DetailScreen> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               SizedBox(
-                                height: 150,
+                                height: 250,
                                 child: PageView.builder(
                                   controller: _pageController,
                                   itemCount: imagekey.length,
@@ -623,6 +638,18 @@ class _DetailScreenState extends State<DetailScreen> {
               ),
             ),
           ),
+        ),
+        CommentsQuery(
+          postId: widget.postId,
+          onCommentsCountChanged: (commentCount) {
+            setState(() {
+              commentsCount = commentCount;
+              if (widget.onCommentsCountChanged != null) {
+                widget.onCommentsCountChanged!(commentCount);
+              }
+            });
+          },
+          isContents: widget.isContent,
         ),
       ],
     );

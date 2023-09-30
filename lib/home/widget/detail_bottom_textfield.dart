@@ -16,9 +16,7 @@ import 'package:provider/provider.dart';
 
 class BottomTextBar extends StatefulWidget {
   final String comment;
-
   final bool recommentMode;
-
   final bool isContent;
   final Function(bool isSendPost) onCommentChanged;
 
@@ -229,10 +227,11 @@ class _BottomTextBarState extends State<BottomTextBar> {
   Widget build(BuildContext context) {
     final postInfo = Provider.of<PostInfo>(context, listen: false);
     return BottomAppBar(
+      elevation: 0,
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: Sizes.size16,
-          vertical: Sizes.size10,
+          vertical: Sizes.size12,
         ),
         child: Row(
           children: [

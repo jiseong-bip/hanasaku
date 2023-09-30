@@ -295,34 +295,29 @@ class _PostState extends State<Post> {
                         ),
                       ),
                       Gaps.v8,
-                      Text(
-                        (content?.length ?? 0) > 50
-                            ? content!.substring(0, 50) + '...'
-                            : content ?? '',
-                        style: const TextStyle(
-                          fontSize: Sizes.size14,
+                      if (content != '')
+                        Text(
+                          (content?.length ?? 0) > 50
+                              ? content!.substring(0, 50) + '...'
+                              : content!,
+                          style: const TextStyle(
+                            fontSize: Sizes.size14,
+                          ),
                         ),
-                      ),
-                      Gaps.v10,
+                      if (content != '') Gaps.v10,
                       if (postImagekey.isNotEmpty)
                         Column(
                           children: [
                             SizedBox(
-                              height: 150,
+                              height: 200,
                               child: PageView.builder(
                                 controller: _pageController,
                                 itemCount: postImagekey.length,
                                 itemBuilder: (context, index) {
                                   return Center(
-                                    child: Container(
-                                      clipBehavior: Clip.hardEdge,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      child: CachedImage(
-                                          url: (postImagekey[index]
-                                              as Map<String, dynamic>)['url']),
-                                    ),
+                                    child: CachedImage(
+                                        url: (postImagekey[index]
+                                            as Map<String, dynamic>)['url']),
                                   );
                                 },
                                 onPageChanged: (int page) {

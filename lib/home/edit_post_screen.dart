@@ -239,8 +239,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
                                                   File(_images[index].path)),
                                             ),
                                             Positioned(
-                                              top: 0,
-                                              right: 0,
+                                              bottom: 0,
                                               child: GestureDetector(
                                                 onTap: () {
                                                   _images.removeAt(index);
