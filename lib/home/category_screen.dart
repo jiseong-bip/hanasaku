@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/home/graphql/function_mutaion.dart';
 import 'package:hanasaku/home/graphql/function_query.dart';
@@ -18,12 +19,21 @@ class _CategoryPageState extends State<CategoryPage> {
   bool gearIconClicked = false;
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  int categoryIndex = 0;
 
   @override
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () {
       getMyCategory(context);
+    });
+    _scrollController.addListener(() {
+      setState(() {
+        categoryIndex = _scrollController.position.pixels ~/
+            (MediaQuery.of(context).size.height * 0.2);
+      });
+
+      print(categoryIndex);
     });
   }
 
@@ -63,6 +73,7 @@ class _CategoryPageState extends State<CategoryPage> {
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
+
     return GestureDetector(
       onTap: () => _stopWriting(),
       child: Scaffold(
@@ -79,7 +90,6 @@ class _CategoryPageState extends State<CategoryPage> {
 
                 return ListWheelScrollView(
                   controller: _scrollController,
-                  diameterRatio: 2,
                   itemExtent: screenHeight * 0.2, // Adjust based on your needs
                   children: userInFoProvider.getCategoryName().map((data) {
                     return Padding(
@@ -171,21 +181,122 @@ class _CategoryPageState extends State<CategoryPage> {
                       ],
                     ),
                   ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: Sizes.size12),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: screenHeight * 0.2,
-                      decoration:
-                          BoxDecoration(color: Colors.grey.withOpacity(0.8)),
-                    ),
-                  )
+                  // if (categoryIndex < 1) RankWidget(screenHeight: screenHeight)
                 ],
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class RankWidget extends StatelessWidget {
+  const RankWidget({
+    super.key,
+    required this.screenHeight,
+  });
+
+  final double screenHeight;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: Sizes.size12),
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        height: screenHeight * 0.27,
+        decoration: const BoxDecoration(color: Colors.white),
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                children: [
+                  const Text(
+                    'Weekly Idol Rank',
+                    style: TextStyle(
+                        fontSize: Sizes.size16, fontWeight: FontWeight.w600),
+                  ),
+                  Text(
+                    '유저 수와 포스트 개수 합산 결과입니다',
+                    style: TextStyle(
+                        fontSize: Sizes.size8, color: Colors.grey.shade300),
+                  )
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Sizes.size14),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Twice'),
+                        Column(
+                          children: [
+                            Container(
+                              width: 70,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.circular(10),
+                                    topRight: Radius.circular(10)),
+                                color: Colors.grey.shade300,
+                              ),
+                            )
+                          ],
+                        )
+                      ],
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const FaIcon(FontAwesomeIcons.crown,
+                            color: Colors.amber),
+                        const Text('BTS'),
+                        Column(
+                          children: [
+                            Container(
+                              width: 70,
+                              height: 90,
+                              decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.circular(10),
+                                    topRight: Radius.circular(10)),
+                                color: Colors.yellow.shade800,
+                              ),
+                            )
+                          ],
+                        )
+                      ],
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('NMIX'),
+                        Column(
+                          children: [
+                            Container(
+                              width: 70,
+                              height: 40,
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(10),
+                                    topRight: Radius.circular(10)),
+                                color: Colors.brown,
+                              ),
+                            )
+                          ],
+                        )
+                      ],
+                    )
+                  ],
+                ),
+              )
+            ]),
       ),
     );
   }

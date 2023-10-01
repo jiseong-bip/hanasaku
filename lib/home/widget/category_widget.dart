@@ -31,6 +31,7 @@ class CategoryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
 
     String buttonText = isJoined ? 'Go' : 'Join';
     if (isJoined && gearIconClicked) {
@@ -40,6 +41,7 @@ class CategoryWidget extends StatelessWidget {
       children: [
         Container(
           width: screenWidth,
+          height: screenHeight * 0.2,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: idolColor,
@@ -119,61 +121,61 @@ class CategoryWidget extends StatelessWidget {
                   ),
                 ],
               ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(
-              top: Sizes.size5, bottom: Sizes.size10, right: Sizes.size5),
-          child: Align(
-            alignment: Alignment.bottomRight,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Container(
-                    height: 1.5,
-                    color: Colors.white,
-                    child: null,
-                  ),
-                ),
-                Gaps.h5,
-                GestureDetector(
-                  onTap: () {
-                    if (!disableJoin || isJoined) {
-                      onJoin(id);
-                    }
-                    if (isJoined && !gearIconClicked) {
-                      userInfo.setCurrentCategory(id);
-                    }
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: Sizes.size10, horizontal: Sizes.size14),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                            blurRadius: 3,
-                            color: Colors.black.withOpacity(0.3),
-                            offset: const Offset(0, 5)),
-                      ],
-                    ),
-                    child: Text(
-                      buttonText,
-                      style: TextStyle(
-                        fontSize: Sizes.size16,
-                        fontWeight: FontWeight.w600,
-                        color: disableJoin && !isJoined
-                            ? Colors.grey
-                            : Color(int.parse(data['topColor'])),
+              Padding(
+                padding: const EdgeInsets.only(
+                    top: Sizes.size5, bottom: Sizes.size10, right: Sizes.size5),
+                child: Align(
+                  alignment: Alignment.bottomRight,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Container(
+                          height: 1.5,
+                          color: Colors.white,
+                          child: null,
+                        ),
                       ),
-                    ),
+                      Gaps.h5,
+                      GestureDetector(
+                        onTap: () {
+                          if (!disableJoin || isJoined) {
+                            onJoin(id);
+                          }
+                          if (isJoined && !gearIconClicked) {
+                            userInfo.setCurrentCategory(id);
+                          }
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: Sizes.size10, horizontal: Sizes.size14),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                  blurRadius: 3,
+                                  color: Colors.black.withOpacity(0.3),
+                                  offset: const Offset(0, 5)),
+                            ],
+                          ),
+                          child: Text(
+                            buttonText,
+                            style: TextStyle(
+                              fontSize: Sizes.size16,
+                              fontWeight: FontWeight.w600,
+                              color: disableJoin && !isJoined
+                                  ? Colors.grey
+                                  : Color(int.parse(data['topColor'])),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ],
