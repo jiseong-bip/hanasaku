@@ -9,7 +9,7 @@ import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/home/provider/postinfo_provider.dart';
 import 'package:hanasaku/home/graphql/function_mutaion.dart';
-import 'package:hanasaku/home/recomment_widget.dart';
+import 'package:hanasaku/home/widget/recomment_widget.dart';
 import 'package:hanasaku/home/widget/detail_dotMethod.dart';
 import 'package:hanasaku/home/widget/user_bottom_modal.dart';
 import 'package:hanasaku/setup/aws_s3.dart';

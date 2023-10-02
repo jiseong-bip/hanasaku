@@ -6,7 +6,7 @@ import 'package:hanasaku/home/graphql/function_mutaion.dart';
 import 'package:hanasaku/home/graphql/function_query.dart';
 import 'package:hanasaku/home/widget/category_widget.dart';
 import 'package:provider/provider.dart';
-import '../setup/userinfo_provider_model.dart';
+import '../../setup/userinfo_provider_model.dart';
 
 class CategoryPage extends StatefulWidget {
   const CategoryPage({super.key});

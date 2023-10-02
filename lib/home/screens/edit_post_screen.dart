@@ -5,7 +5,6 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:http/http.dart';
 import 'package:http_parser/http_parser.dart';
@@ -274,6 +273,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
                     child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: Sizes.size14),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       GestureDetector(
                         onTap: () {
@@ -281,7 +281,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
                         },
                         child: const FaIcon(FontAwesomeIcons.photoFilm),
                       ),
-                      Gaps.h20,
+                      // Gaps.h20,
                       // GestureDetector(
                       //   onTap: () {
                       //     getImages(ImageSource.camera);
@@ -307,7 +307,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
                               color: Theme.of(context).primaryColor),
                           child: const Center(
                             child: Text(
-                              'Submit',
+                              'シェア',
                               style: TextStyle(
                                   fontWeight: FontWeight.w600,
                                   color: Colors.white),

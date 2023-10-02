@@ -3,8 +3,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hanasaku/constants/idol_data.dart';
 
 import 'package:hanasaku/constants/sizes.dart';
-import 'package:hanasaku/home/notify_screen.dart';
-import 'package:hanasaku/home/post_query_widget.dart';
+import 'package:hanasaku/home/screens/notify_screen.dart';
+import 'package:hanasaku/home/widget/post_query_widget.dart';
 import 'package:hanasaku/home/widget/search_widget.dart';
 
 import 'package:hanasaku/setup/navigator.dart';

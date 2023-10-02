@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
-import 'package:hanasaku/home/detail_screen.dart';
+import 'package:hanasaku/home/screens/detail_screen.dart';
 import 'package:hanasaku/main.dart';
 import 'package:hanasaku/setup/local_notification.dart';
 import 'package:hanasaku/setup/navigator.dart';

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
-import 'package:hanasaku/home/edit_post_screen.dart';
+import 'package:hanasaku/home/screens/edit_post_screen.dart';
 import 'package:hanasaku/home/graphql/function_mutaion.dart';
 import 'package:hanasaku/nav/main_nav.dart';
 import 'package:image_picker/image_picker.dart';

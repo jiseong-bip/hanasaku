@@ -11,7 +11,9 @@ import 'package:hanasaku/constants/font.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/home/graphql/function_mutaion.dart';
+import 'package:hanasaku/home/screens/view_medals_screen.dart';
 import 'package:hanasaku/setup/aws_s3.dart';
+import 'package:hanasaku/setup/navigator.dart';
 
 void showMyBottomSheet(BuildContext context, int userId, String userName) {
   bool isBlocked;
@@ -24,7 +26,7 @@ void showMyBottomSheet(BuildContext context, int userId, String userName) {
     builder: (context) {
       // GraphQL 쿼리 정의
 
-      String readRepositories = """
+      String viewUser = """
         query ViewUser(\$userId: Int!) {
             viewUser(userId: \$userId) {
               id
@@ -45,20 +47,20 @@ void showMyBottomSheet(BuildContext context, int userId, String userName) {
       """;
       return Query(
         options: QueryOptions(
-            document: gql(readRepositories),
+            document: gql(viewUser),
             variables: {"userId": userId},
-            fetchPolicy: FetchPolicy.networkOnly),
+            fetchPolicy: FetchPolicy.cacheAndNetwork),
         builder: (
           QueryResult result, {
           Refetch? refetch,
           FetchMore? fetchMore,
         }) {
           if (result.hasException) {
-            return Text(result.exception.toString());
+            return const Text("NetWorkを確認してください");
           }
 
           if (result.isLoading) {
-            return const CircularProgressIndicator();
+            return const Expanded(child: CircularProgressIndicator());
           }
 
           Map<String, dynamic> user = result.data?['viewUser'];
@@ -274,12 +276,21 @@ void showMyBottomSheet(BuildContext context, int userId, String userName) {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text(
-                              '+ View all',
-                              style: TextStyle(
-                                  fontSize: Sizes.size12,
-                                  color: Colors.grey.shade400,
-                                  fontWeight: FontWeight.w400),
+                            GestureDetector(
+                              onTap: () {
+                                navigatorKey.currentState!
+                                    .push(MaterialPageRoute(
+                                        builder: (context) => ViewMedalsScreen(
+                                              userId: userId,
+                                            )));
+                              },
+                              child: Text(
+                                '+ View all',
+                                style: TextStyle(
+                                    fontSize: Sizes.size12,
+                                    color: Colors.grey.shade400,
+                                    fontWeight: FontWeight.w400),
+                              ),
                             ),
                             Gaps.v10,
                             SizedBox(
@@ -291,61 +302,69 @@ void showMyBottomSheet(BuildContext context, int userId, String userName) {
                                   SizedBox(
                                     height: 150,
                                     width: 101,
-                                    child: ListView.builder(
-                                      primary: false,
-                                      itemCount:
-                                          math.min(groupedMedals[1]!.length, 3),
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            FittedBox(
-                                              child: Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: Sizes.size5,
-                                                        vertical: Sizes.size3),
-                                                decoration: BoxDecoration(
-                                                  color: Colors.grey.shade200,
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
-                                                child: Row(
-                                                  children: [
-                                                    Container(
-                                                      width: 10,
-                                                      height: 10,
-                                                      decoration:
-                                                          const BoxDecoration(
-                                                        shape: BoxShape.circle,
-                                                        color:
-                                                            Color(0xFF946125),
+                                    child: groupedMedals[3] != null
+                                        ? ListView.builder(
+                                            primary: false,
+                                            itemCount: math.min(
+                                                groupedMedals[3]!.length, 3),
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              return Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  FittedBox(
+                                                    child: Container(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          horizontal:
+                                                              Sizes.size5,
+                                                          vertical:
+                                                              Sizes.size3),
+                                                      decoration: BoxDecoration(
+                                                        color: Colors
+                                                            .grey.shade200,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                      ),
+                                                      child: Row(
+                                                        children: [
+                                                          Container(
+                                                            width: 10,
+                                                            height: 10,
+                                                            decoration:
+                                                                const BoxDecoration(
+                                                              shape: BoxShape
+                                                                  .circle,
+                                                              color: Color(
+                                                                  0xFFECC12A),
+                                                            ),
+                                                          ),
+                                                          Gaps.h5,
+                                                          Text(
+                                                            groupedMedals[3]![
+                                                                index],
+                                                            style: const TextStyle(
+                                                                fontSize: Sizes
+                                                                    .size12),
+                                                          ),
+                                                        ],
                                                       ),
                                                     ),
-                                                    Gaps.h5,
-                                                    Text(
-                                                      groupedMedals[1]![index],
-                                                      style: const TextStyle(
-                                                          fontSize:
-                                                              Sizes.size12),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                            if (index !=
-                                                math.min(
-                                                        groupedMedals[1]!
-                                                            .length,
-                                                        3) -
-                                                    1)
-                                              Gaps.v14, // Add gap only if it's not the last item
-                                          ],
-                                        );
-                                      },
-                                    ),
+                                                  ),
+                                                  if (index !=
+                                                      math.min(
+                                                              groupedMedals[3]!
+                                                                  .length,
+                                                              3) -
+                                                          1)
+                                                    Gaps.v14, // Add gap only if it's not the last item
+                                                ],
+                                              );
+                                            },
+                                          )
+                                        : Container(),
                                   ),
                                   SizedBox(
                                     height: 150,
@@ -417,70 +436,62 @@ void showMyBottomSheet(BuildContext context, int userId, String userName) {
                                   SizedBox(
                                     height: 150,
                                     width: 101,
-                                    child: groupedMedals[3] != null
-                                        ? ListView.builder(
-                                            primary: false,
-                                            itemCount: math.min(
-                                                groupedMedals[3]!.length, 3),
-                                            itemBuilder: (BuildContext context,
-                                                int index) {
-                                              return Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  FittedBox(
-                                                    child: Container(
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                          horizontal:
-                                                              Sizes.size5,
-                                                          vertical:
-                                                              Sizes.size3),
-                                                      decoration: BoxDecoration(
-                                                        color: Colors
-                                                            .grey.shade200,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10),
-                                                      ),
-                                                      child: Row(
-                                                        children: [
-                                                          Container(
-                                                            width: 10,
-                                                            height: 10,
-                                                            decoration:
-                                                                const BoxDecoration(
-                                                              shape: BoxShape
-                                                                  .circle,
-                                                              color: Color(
-                                                                  0xFFECC12A),
-                                                            ),
-                                                          ),
-                                                          Gaps.h5,
-                                                          Text(
-                                                            groupedMedals[3]![
-                                                                index],
-                                                            style: const TextStyle(
-                                                                fontSize: Sizes
-                                                                    .size12),
-                                                          ),
-                                                        ],
+                                    child: ListView.builder(
+                                      primary: false,
+                                      itemCount:
+                                          math.min(groupedMedals[1]!.length, 3),
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            FittedBox(
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: Sizes.size5,
+                                                        vertical: Sizes.size3),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.grey.shade200,
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                                child: Row(
+                                                  children: [
+                                                    Container(
+                                                      width: 10,
+                                                      height: 10,
+                                                      decoration:
+                                                          const BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        color:
+                                                            Color(0xFF946125),
                                                       ),
                                                     ),
-                                                  ),
-                                                  if (index !=
-                                                      math.min(
-                                                              groupedMedals[3]!
-                                                                  .length,
-                                                              3) -
-                                                          1)
-                                                    Gaps.v14, // Add gap only if it's not the last item
-                                                ],
-                                              );
-                                            },
-                                          )
-                                        : Container(),
-                                  )
+                                                    Gaps.h5,
+                                                    Text(
+                                                      groupedMedals[1]![index],
+                                                      style: const TextStyle(
+                                                          fontSize:
+                                                              Sizes.size12),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            if (index !=
+                                                math.min(
+                                                        groupedMedals[1]!
+                                                            .length,
+                                                        3) -
+                                                    1)
+                                              Gaps.v14, // Add gap only if it's not the last item
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),

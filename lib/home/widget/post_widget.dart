@@ -10,7 +10,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
-import 'package:hanasaku/home/detail_screen.dart';
+import 'package:hanasaku/home/screens/detail_screen.dart';
 import 'package:hanasaku/home/widget/user_bottom_modal.dart';
 import 'package:hanasaku/setup/aws_s3.dart';
 import 'package:hanasaku/setup/cached_image.dart';

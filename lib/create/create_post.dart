@@ -3,7 +3,6 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -64,10 +63,19 @@ class _CreateScreenState extends State<CreateScreen> {
 
   Future getImages(ImageSource imageSource) async {
     //pickedFile에 ImagePicker로 가져온 이미지가 담긴다.
+    if (_images.length >= 5) {
+      _showDialog(context, "画像は最大5つまで選択できます。");
+      return;
+    }
+
+    // pickedFile에 ImagePicker로 가져온 이미지가 담긴다.
     final List<XFile> pickedFile = await picker.pickMultiImage();
     setState(() {
       for (var image in pickedFile) {
-        _images.add(image);
+        // 이미지 개수가 5개 미만일 때만 추가합니다.
+        if (_images.length < 5) {
+          _images.add(image);
+        }
       }
     });
   }
@@ -287,13 +295,20 @@ class _CreateScreenState extends State<CreateScreen> {
                         SizedBox(
                           height: deviceHeight / 3, // 디바이스 높이의 1/4
                           child: _images.isEmpty
-                              ? const Center(child: Text('イメージが選択されていません。'))
+                              ? const Center(
+                                  child: Text(
+                                      'イメージが選択されていません。\n 画像は最大5つまで選択できます。'))
                               : CarouselSlider.builder(
                                   itemCount: _images.length,
                                   itemBuilder: (BuildContext context, int index,
                                       int pageViewIndex) {
                                     return Column(
                                       children: [
+                                        Text(
+                                          '${index + 1} / ${_images.length}',
+                                          style: const TextStyle(
+                                              fontSize: Sizes.size10),
+                                        ),
                                         Flexible(
                                             child: Image.file(
                                                 File(_images[index].path))),

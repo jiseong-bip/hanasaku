@@ -9,11 +9,11 @@ import 'package:hanasaku/chat/chat_list_screen.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/contents/contents_list_screen.dart';
 import 'package:hanasaku/create/create_post.dart';
-import 'package:hanasaku/home/category_screen.dart';
-import 'package:hanasaku/home/notify_screen.dart';
+import 'package:hanasaku/home/screens/category_screen.dart';
+import 'package:hanasaku/home/screens/notify_screen.dart';
 
-import 'package:hanasaku/home/posts_screen.dart';
-import 'package:hanasaku/home/subscription.dart';
+import 'package:hanasaku/home/screens/posts_screen.dart';
+import 'package:hanasaku/home/graphql/subscription.dart';
 import 'package:hanasaku/main.dart';
 import 'package:hanasaku/nav/nav_button.dart';
 import 'package:hanasaku/profile/my_page_screen.dart';
