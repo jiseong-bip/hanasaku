@@ -9,7 +9,6 @@ import 'package:hanasaku/home/screens/detail_screen.dart';
 import 'package:hanasaku/main.dart';
 import 'package:hanasaku/query&mutation/querys.dart';
 import 'package:hanasaku/setup/aws_s3.dart';
-import 'package:hanasaku/setup/navigator.dart';
 
 class ContentsScreen extends StatefulWidget {
   const ContentsScreen({super.key});
@@ -55,7 +54,12 @@ class _ContentsScreenState extends State<ContentsScreen> {
         builder: (QueryResult result,
             {VoidCallback? refetch, FetchMore? fetchMore}) {
           if (result.hasException) {
-            return Text(result.exception.toString());
+            return const Center(
+              child: Text(
+                'contentsを待っていてください！',
+                style: TextStyle(fontSize: Sizes.size20),
+              ),
+            );
           }
 
           if (result.isLoading) {
