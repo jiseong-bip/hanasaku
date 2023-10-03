@@ -2,7 +2,6 @@
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:hanasaku/setup/local_notification.dart';
 
 class ListResultModel extends ChangeNotifier {
   List<Map<String, dynamic>?> listResult = [];

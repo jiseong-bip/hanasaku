@@ -3,7 +3,6 @@ import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/main.dart';
 import 'package:hanasaku/profile/widget/notice_widget.dart';
-import 'package:hanasaku/setup/navigator.dart';
 
 class NoticeScreen extends StatelessWidget {
   const NoticeScreen({super.key});

@@ -7,8 +7,6 @@ import 'package:hanasaku/main.dart';
 import 'package:hanasaku/nav/main_nav.dart';
 import 'package:hanasaku/query&mutation/mutatuin.dart';
 import 'package:hanasaku/query&mutation/querys.dart';
-import 'package:hanasaku/setup/navigator.dart';
-
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
 
 class GetUserInfo {

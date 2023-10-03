@@ -7,7 +7,6 @@ import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/home/widget/post_widget.dart';
 import 'package:hanasaku/main.dart';
 import 'package:hanasaku/query&mutation/querys.dart';
-import 'package:hanasaku/setup/navigator.dart';
 
 class SearchWidget extends StatefulWidget {
   const SearchWidget({super.key});

@@ -5,7 +5,6 @@ import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/home/screens/detail_screen.dart';
 import 'package:hanasaku/main.dart';
 import 'package:hanasaku/setup/local_notification.dart';
-import 'package:hanasaku/setup/navigator.dart';
 import 'package:hanasaku/setup/provider_model.dart';
 import 'package:provider/provider.dart';
 

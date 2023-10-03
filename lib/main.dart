@@ -85,10 +85,13 @@ class MyApp extends StatelessWidget {
     FlutterNativeSplash.remove();
     final tokenManager = Provider.of<UserInfoProvider>(context, listen: false);
 
-    final HttpLink httpLink =
-        HttpLink('https://hanasaku.xyz/graphql', defaultHeaders: {
-      'apollo-require-preflight': 'true',
-    });
+    final HttpLink httpLink = HttpLink(
+      'https://hanasaku.xyz/graphql',
+      //'https://test.hanasaku.xyz/graphql',
+      defaultHeaders: {
+        'apollo-require-preflight': 'true',
+      },
+    );
 
     final AuthLink authLink = AuthLink(
       getToken: () async {
@@ -100,6 +103,7 @@ class MyApp extends StatelessWidget {
 
     final WebSocketLink webSocketLink = WebSocketLink(
       'wss://hanasaku.xyz/graphql',
+      //'wss://test.hanasaku.xyz/graphql',
       subProtocol: GraphQLProtocol.graphqlTransportWs,
       config: SocketClientConfig(
         autoReconnect: true,

@@ -22,7 +22,6 @@ import 'package:hanasaku/profile/screen/private_policiy_screen.dart';
 import 'package:hanasaku/profile/screen/service_screen.dart';
 import 'package:hanasaku/profile/screen/withdrawal_screen.dart';
 import 'package:hanasaku/query&mutation/querys.dart';
-import 'package:hanasaku/setup/navigator.dart';
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
 import 'package:http/http.dart';
 import 'package:http_parser/http_parser.dart';

@@ -14,7 +14,6 @@ import 'package:hanasaku/home/graphql/function_mutaion.dart';
 import 'package:hanasaku/home/screens/view_medals_screen.dart';
 import 'package:hanasaku/main.dart';
 import 'package:hanasaku/setup/aws_s3.dart';
-import 'package:hanasaku/setup/navigator.dart';
 
 void showMyBottomSheet(BuildContext context, int userId, String userName) {
   bool isBlocked;

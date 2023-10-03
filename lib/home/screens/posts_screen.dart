@@ -7,9 +7,6 @@ import 'package:hanasaku/home/screens/notify_screen.dart';
 import 'package:hanasaku/home/widget/post_query_widget.dart';
 import 'package:hanasaku/home/widget/search_widget.dart';
 import 'package:hanasaku/main.dart';
-
-import 'package:hanasaku/setup/navigator.dart';
-
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
 import 'package:provider/provider.dart';
 
