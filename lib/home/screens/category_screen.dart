@@ -49,7 +49,7 @@ class _CategoryPageState extends State<CategoryPage> {
     if (index != null) {
       double position = index *
           MediaQuery.of(context).size.height *
-          0.2; // Since itemExtent is screenHeight * 0.2
+          0.25; // Since itemExtent is screenHeight * 0.2
       _scrollController.animateTo(position,
           duration: const Duration(seconds: 1), curve: Curves.easeInOut);
     }
@@ -57,7 +57,6 @@ class _CategoryPageState extends State<CategoryPage> {
 
   @override
   void dispose() {
-    print('dispose');
     _scrollController.dispose();
     _searchController.dispose();
     super.dispose();
@@ -82,8 +81,9 @@ class _CategoryPageState extends State<CategoryPage> {
                     3;
 
                 return ListWheelScrollView(
+                  diameterRatio: 3,
                   controller: _scrollController,
-                  itemExtent: screenHeight * 0.2, // Adjust based on your needs
+                  itemExtent: screenHeight * 0.25, // Adjust based on your needs
                   children: userInFoProvider.getCategoryName().map((data) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(
