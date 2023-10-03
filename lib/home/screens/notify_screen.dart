@@ -77,12 +77,13 @@ class _NotifyScreenState extends State<NotifyScreen> {
                           .containsKey('postLikeAlarm')
                       ? GestureDetector(
                           onTap: () {
-                            navigatorKey.currentState!.push(MaterialPageRoute(
-                                builder: (context) => DetailScreen(
-                                    postId: listResultModel.listResult[
-                                            reverseIndex]!['postLikeAlarm']
-                                        ['post']['id'],
-                                    isContent: false)));
+                            MyApp.navigatorKey.currentState!.push(
+                                MaterialPageRoute(
+                                    builder: (context) => DetailScreen(
+                                        postId: listResultModel.listResult[
+                                                reverseIndex]!['postLikeAlarm']
+                                            ['post']['id'],
+                                        isContent: false)));
                           },
                           child: Card(
                               child: Padding(
@@ -118,12 +119,13 @@ class _NotifyScreenState extends State<NotifyScreen> {
                         )
                       : GestureDetector(
                           onTap: () {
-                            navigatorKey.currentState!.push(MaterialPageRoute(
-                                builder: (context) => DetailScreen(
-                                    postId: listResultModel.listResult[
-                                            reverseIndex]!['postCommentAlarm']
-                                        ['post']['id'],
-                                    isContent: false)));
+                            MyApp.navigatorKey.currentState!.push(
+                                MaterialPageRoute(
+                                    builder: (context) => DetailScreen(
+                                        postId: listResultModel
+                                                .listResult[reverseIndex]![
+                                            'postCommentAlarm']['post']['id'],
+                                        isContent: false)));
                           },
                           child: Card(
                               child: Padding(

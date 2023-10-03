@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/auth/repos/authentication_repository.dart';
 import 'package:hanasaku/auth/sign_up_screen.dart';
+import 'package:hanasaku/main.dart';
 import 'package:hanasaku/setup/navigator.dart';
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
 import 'package:path_provider/path_provider.dart';
@@ -94,7 +95,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
             await userInfoProvider.clearUserInfo();
             await auth.deleteAccount(context);
             _deleteImage();
-            navigatorKey.currentState!.pushAndRemoveUntil(
+            MyApp.navigatorKey.currentState!.pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) => const SignUpScreen()),
                 (route) => false);
 
@@ -113,7 +114,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
       }
     } catch (e) {
       // Handle exceptions
-      navigatorKey.currentState!.pop();
+      MyApp.navigatorKey.currentState!.pop();
       print("Error occurred: $e");
       // You can also display an error message to the user if needed
     }

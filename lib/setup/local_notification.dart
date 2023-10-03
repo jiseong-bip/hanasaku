@@ -1,17 +1,19 @@
 import 'package:flutter_app_badger/flutter_app_badger.dart';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hanasaku/main.dart';
+import 'dart:io' show Platform;
+
+final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
 class LocalNotification {
   LocalNotification._();
   static int badgeNumber = 0;
 
-  static final FlutterLocalNotificationsPlugin
-      _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
   static initialize() async {
     AndroidInitializationSettings initializationSettingsAndroid =
-        const AndroidInitializationSettings("mipmap/ic_launcher");
+        const AndroidInitializationSettings("app_icon");
 
     DarwinInitializationSettings initializationSettingsIOS =
         const DarwinInitializationSettings(
@@ -25,23 +27,31 @@ class LocalNotification {
       iOS: initializationSettingsIOS,
     );
 
-    await _flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
-      onDidReceiveNotificationResponse: onDidReceiveNotificationResponse,
-    );
+    await _flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onDidReceiveNotificationResponse: onDidReceiveNotificationResponse,
+        onDidReceiveBackgroundNotificationResponse:
+            onBackgroundNotificationResponse);
   }
 
   static void requestPermission() {
-    _flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            IOSFlutterLocalNotificationsPlugin>()
-        ?.requestPermissions(
-          alert: true,
-          badge: true,
-          sound: true,
-        );
+    if (Platform.isIOS) {
+      _flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+              IOSFlutterLocalNotificationsPlugin>()
+          ?.requestPermissions(
+            alert: true,
+            badge: true,
+            sound: true,
+          );
+    } else {
+      _flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>()
+          ?.requestPermission();
+    }
   }
 
+  @pragma('vm:entry-point')
   static Future<void> postNotification(String body) async {
     AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
@@ -52,6 +62,7 @@ class LocalNotification {
       priority: Priority.max,
       showWhen: false,
       channelShowBadge: true,
+      playSound: false,
       number: badgeNumber,
     );
 
@@ -77,12 +88,13 @@ class LocalNotification {
     final String payload = notificationResponse.payload ?? "";
     if (notificationResponse.payload != null ||
         notificationResponse.payload!.isNotEmpty) {
-      print('FOREGROUND PAYLOAD: $payload');
       streamController.add(payload);
     }
   }
 
-  static void onBackgroundNotificationResponse() async {
+  @pragma('vm:entry-point')
+  static void onBackgroundNotificationResponse(
+      NotificationResponse notificationResponse) async {
     final NotificationAppLaunchDetails? notificationAppLaunchDetails =
         await _flutterLocalNotificationsPlugin
             .getNotificationAppLaunchDetails();
@@ -90,7 +102,7 @@ class LocalNotification {
     if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
       String payload =
           notificationAppLaunchDetails!.notificationResponse?.payload ?? "";
-      print("BACKGROUND PAYLOAD: $payload");
+
       streamController.add(payload);
     }
   }

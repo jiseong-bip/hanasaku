@@ -27,14 +27,6 @@ class _CategoryPageState extends State<CategoryPage> {
     Future.delayed(Duration.zero, () {
       getMyCategory(context);
     });
-    _scrollController.addListener(() {
-      setState(() {
-        categoryIndex = _scrollController.position.pixels ~/
-            (MediaQuery.of(context).size.height * 0.2);
-      });
-
-      print(categoryIndex);
-    });
   }
 
   void _stopWriting() {
@@ -65,6 +57,7 @@ class _CategoryPageState extends State<CategoryPage> {
 
   @override
   void dispose() {
+    print('dispose');
     _scrollController.dispose();
     _searchController.dispose();
     super.dispose();
@@ -104,9 +97,12 @@ class _CategoryPageState extends State<CategoryPage> {
                           if (!userInFoProvider.getIsSelectedById(id)!) {
                             userInFoProvider.setSelectedCategory(id);
                             setCategoryId(context, id);
+                            getMyCategory(context);
+                            setState(() {});
                           } else if (gearIconClicked) {
                             userInFoProvider.setSelectedCategory(id);
                             deleteCategoryId(context, id);
+                            setState(() {});
                           }
                         },
                         idolName: data['name'],
@@ -170,6 +166,7 @@ class _CategoryPageState extends State<CategoryPage> {
                             onPressed: () {
                               setState(() {
                                 gearIconClicked = !gearIconClicked;
+                                getMyCategory(context);
                               });
                             },
                             icon: FaIcon(

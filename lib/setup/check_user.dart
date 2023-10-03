@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/auth/elua_screen.dart';
+import 'package:hanasaku/main.dart';
 import 'package:hanasaku/nav/main_nav.dart';
 import 'package:hanasaku/query&mutation/mutatuin.dart';
 import 'package:hanasaku/query&mutation/querys.dart';
@@ -37,7 +38,7 @@ class GetUserInfo {
             // Print the token to the console
             print("Successfully received token: $token");
             // After receiving the token, navigate to MyHomePage
-            navigatorKey.currentState!.pushAndRemoveUntil(
+            MyApp.navigatorKey.currentState!.pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) => const MainNav()),
                 (route) => false);
           } else {
@@ -52,26 +53,6 @@ class GetUserInfo {
                 ),
               ),
             );
-            // final MutationOptions options = MutationOptions(
-            //   document: signUp,
-            //   variables: <String, dynamic>{
-            //     "fbId": uid,
-            //   },
-            // );
-            // final QueryResult signUpResult = await client.mutate(options);
-
-            // final dynamic signUpData = signUpResult.data;
-
-            // final token = signUpData['signUp']['token'];
-            // final name = signUpData['signUp']['userName'];
-            // await userInfoProvider.setToken(token);
-            // await userInfoProvider.setNickName(name);
-
-            // if (token != null && name != null) {
-            //   navigatorKey.currentState!.pushAndRemoveUntil(
-            //       MaterialPageRoute(builder: (context) => const MainNav()),
-            //       (route) => false);
-            // }
           }
         } else {
           // Handle the case where data is null

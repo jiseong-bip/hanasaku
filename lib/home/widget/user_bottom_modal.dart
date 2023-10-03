@@ -12,6 +12,7 @@ import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/home/graphql/function_mutaion.dart';
 import 'package:hanasaku/home/screens/view_medals_screen.dart';
+import 'package:hanasaku/main.dart';
 import 'package:hanasaku/setup/aws_s3.dart';
 import 'package:hanasaku/setup/navigator.dart';
 
@@ -278,7 +279,7 @@ void showMyBottomSheet(BuildContext context, int userId, String userName) {
                           children: [
                             GestureDetector(
                               onTap: () {
-                                navigatorKey.currentState!
+                                MyApp.navigatorKey.currentState!
                                     .push(MaterialPageRoute(
                                         builder: (context) => ViewMedalsScreen(
                                               userId: userId,

@@ -6,6 +6,7 @@ import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/home/screens/notify_screen.dart';
 import 'package:hanasaku/home/widget/post_query_widget.dart';
 import 'package:hanasaku/home/widget/search_widget.dart';
+import 'package:hanasaku/main.dart';
 
 import 'package:hanasaku/setup/navigator.dart';
 
@@ -71,7 +72,7 @@ class _PostsScreenState extends State<PostsScreen> {
             children: [
               IconButton(
                 onPressed: () {
-                  navigatorKey.currentState!.push(MaterialPageRoute(
+                  MyApp.navigatorKey.currentState!.push(MaterialPageRoute(
                       builder: (context) => const SearchWidget()));
                 },
                 icon: const FaIcon(
@@ -81,7 +82,7 @@ class _PostsScreenState extends State<PostsScreen> {
               ),
               IconButton(
                 onPressed: () {
-                  navigatorKey.currentState!.push(MaterialPageRoute(
+                  MyApp.navigatorKey.currentState!.push(MaterialPageRoute(
                       builder: (context) => const NotifyScreen()));
                 },
                 icon: const FaIcon(

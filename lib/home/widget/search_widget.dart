@@ -5,6 +5,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/home/widget/post_widget.dart';
+import 'package:hanasaku/main.dart';
 import 'package:hanasaku/query&mutation/querys.dart';
 import 'package:hanasaku/setup/navigator.dart';
 
@@ -94,7 +95,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                     Gaps.h5,
                     GestureDetector(
                       onTap: () {
-                        navigatorKey.currentState!.pop(context);
+                        MyApp.navigatorKey.currentState!.pop(context);
                       },
                       child: const Text(
                         'Cancel',

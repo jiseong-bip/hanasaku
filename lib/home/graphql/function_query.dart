@@ -10,6 +10,7 @@ Future<void> getMyCategory(BuildContext context) async {
       Provider.of<UserInfoProvider>(context, listen: false);
   final QueryOptions options = QueryOptions(
     document: getCategoryQuery,
+    fetchPolicy: FetchPolicy.noCache,
   );
 
   try {

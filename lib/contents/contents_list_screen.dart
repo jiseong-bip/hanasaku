@@ -6,6 +6,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/home/screens/detail_screen.dart';
+import 'package:hanasaku/main.dart';
 import 'package:hanasaku/query&mutation/querys.dart';
 import 'package:hanasaku/setup/aws_s3.dart';
 import 'package:hanasaku/setup/navigator.dart';
@@ -83,7 +84,7 @@ class _ContentsScreenState extends State<ContentsScreen> {
 
                   return GestureDetector(
                     onTap: () {
-                      navigatorKey.currentState!.push(MaterialPageRoute(
+                      MyApp.navigatorKey.currentState!.push(MaterialPageRoute(
                           builder: (context) => DetailScreen(
                                 postId: content['id'],
                                 isContent: true,

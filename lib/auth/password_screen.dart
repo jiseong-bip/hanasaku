@@ -9,6 +9,7 @@ import 'package:hanasaku/auth/login_form_screen.dart';
 import 'package:hanasaku/auth/repos/authentication_repository.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
+import 'package:hanasaku/main.dart';
 import 'package:hanasaku/setup/check_user.dart';
 import 'package:hanasaku/setup/navigator.dart';
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
@@ -294,7 +295,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        navigatorKey.currentState!.pushReplacement(
+                        MyApp.navigatorKey.currentState!.pushReplacement(
                             MaterialPageRoute(
                                 builder: (context) => const LoginFormScreen()));
                       },

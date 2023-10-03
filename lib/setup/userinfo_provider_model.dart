@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:hive/hive.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserInfoProvider with ChangeNotifier {
   String? _token;
@@ -12,6 +13,8 @@ class UserInfoProvider with ChangeNotifier {
   static const String _categoryKey = 'category';
 
   Future<void> setToken(String token) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('user_token', token);
     final box = await Hive.openBox<String>(_tokenBoxName);
     await box.put(_tokenKey, token);
     _token = token;
@@ -122,6 +125,8 @@ class UserInfoProvider with ChangeNotifier {
   }
 
   Future<void> clearUserInfo() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
     final box = await Hive.openBox<String>(_tokenBoxName);
     await box.delete(_tokenKey);
     await box.delete(_nickNameKey);

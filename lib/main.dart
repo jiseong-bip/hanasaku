@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:io';
+import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -15,28 +16,32 @@ import 'package:hanasaku/constants/font.dart';
 import 'dart:io' show Platform;
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/firebase_options.dart';
+import 'package:hanasaku/home/graphql/subscription.dart';
 import 'package:hanasaku/home/provider/postinfo_provider.dart';
-
 import 'package:hanasaku/nav/main_nav.dart';
 import 'package:hanasaku/setup/local_notification.dart';
-import 'package:hanasaku/setup/navigator.dart';
 import 'package:hanasaku/setup/provider_model.dart';
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
+
 import 'package:provider/provider.dart';
 
 StreamController<String> streamController = StreamController.broadcast();
+
 Future<void> main() async {
   final tokenManager = UserInfoProvider();
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  LocalNotification.onBackgroundNotificationResponse();
+
+  //LocalNotification.onBackgroundNotificationResponse();
+  WidgetsFlutterBinding.ensureInitialized();
+  LocalNotification.initialize();
+
   await initHiveForFlutter();
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  WidgetsFlutterBinding.ensureInitialized();
   LineSDK.instance.setup("2000690971").then((_) {
     print("LineSDK Prepared");
   });
@@ -59,7 +64,6 @@ Future<void> main() async {
       ],
       child: MyApp(
         tokenManager: tokenManager,
-        navigatorKey: navigatorKey,
       ),
     ),
   );
@@ -67,12 +71,12 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   final UserInfoProvider tokenManager;
-  final GlobalKey<NavigatorState> navigatorKey;
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
 
   const MyApp({
     Key? key,
     required this.tokenManager,
-    required this.navigatorKey,
   }) : super(key: key);
 
   // This widget is the root of your application.
@@ -121,6 +125,7 @@ class MyApp extends StatelessWidget {
     return GraphQLProvider(
       client: client,
       child: MaterialApp(
+        navigatorKey: MyApp.navigatorKey,
         debugShowCheckedModeBanner: false,
         builder: (context, child) {
           return MediaQuery(
@@ -128,7 +133,6 @@ class MyApp extends StatelessWidget {
             child: child!,
           );
         },
-        navigatorKey: navigatorKey,
         title: 'social_community',
         theme: ThemeData(
           scaffoldBackgroundColor: Colors.white,
@@ -159,6 +163,34 @@ class MyApp extends StatelessWidget {
                   if (tokenSnapshot.connectionState == ConnectionState.done) {
                     final token = tokenSnapshot.data;
                     if (user != null && (token != null && token.isNotEmpty)) {
+                      final GraphQLClient client =
+                          GraphQLProvider.of(context).value;
+                      Stream<dynamic> logLikeStream =
+                          client.subscribe(SubscriptionOptions(
+                        document: likeSubscription,
+                      ));
+                      Stream<dynamic> logCommentStream =
+                          client.subscribe(SubscriptionOptions(
+                        document: commentSubscription,
+                      ));
+
+                      logLikeStream.listen((event) async {
+                        final listResultModel = Provider.of<ListResultModel>(
+                            context,
+                            listen: false);
+                        listResultModel.updateList(event.data, null);
+                        LocalNotification.postNotification(
+                            "${listResultModel.listResult.last!['postLikeAlarm']['post']['title']}に「いいね」しました。");
+                      });
+
+                      logCommentStream.listen((event) {
+                        final listResultModel = Provider.of<ListResultModel>(
+                            context,
+                            listen: false);
+                        listResultModel.updateList(null, event.data);
+                        LocalNotification.postNotification(
+                            "${listResultModel.listResult.last!['postCommentAlarm']['post']['title']}にコメントしました。");
+                      });
                       return const MainNav();
                     } else {
                       return const SignUpScreen();

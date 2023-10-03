@@ -24,14 +24,10 @@ class ListResultModel extends ChangeNotifier {
     if (likeData != null &&
         !listResult.any((item) => jsonEncode(item) == likeResultsJson)) {
       addResult(likeData);
-      LocalNotification.postNotification(
-          "${listResult.last!['postLikeAlarm']['post']['title']}に「いいね」しました。");
     }
     if (commentData != null &&
         !listResult.any((item) => jsonEncode(item) == commentResultsJson)) {
       addResult(commentData);
-      LocalNotification.postNotification(
-          "${listResult.last!['postLikeAlarm']['post']['title']}にコメントしました。");
     }
   }
 }

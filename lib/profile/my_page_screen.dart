@@ -12,6 +12,7 @@ import 'package:hanasaku/auth/sign_up_screen.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/home/widget/user_bottom_modal.dart';
+import 'package:hanasaku/main.dart';
 import 'package:hanasaku/profile/comment_post.dart';
 import 'package:hanasaku/profile/liked_post.dart';
 import 'package:hanasaku/profile/my_post.dart';
@@ -584,8 +585,10 @@ class _MyPageScreenState extends State<MyPageScreen> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            navigatorKey.currentState!.push(MaterialPageRoute(
-                                builder: (context) => const NoticeScreen()));
+                            MyApp.navigatorKey.currentState!.push(
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const NoticeScreen()));
                           },
                           child: Container(
                             width: screenWidth,
@@ -608,8 +611,10 @@ class _MyPageScreenState extends State<MyPageScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            navigatorKey.currentState!.push(MaterialPageRoute(
-                                builder: (context) => const BlockUserScreen()));
+                            MyApp.navigatorKey.currentState!.push(
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const BlockUserScreen()));
                           },
                           child: Container(
                             width: screenWidth,
@@ -650,8 +655,10 @@ class _MyPageScreenState extends State<MyPageScreen> {
                         // ),
                         GestureDetector(
                           onTap: () {
-                            navigatorKey.currentState!.push(MaterialPageRoute(
-                                builder: (context) => const PolicyScreen()));
+                            MyApp.navigatorKey.currentState!.push(
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const PolicyScreen()));
                           },
                           child: Container(
                             width: screenWidth,
@@ -674,8 +681,10 @@ class _MyPageScreenState extends State<MyPageScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            navigatorKey.currentState!.push(MaterialPageRoute(
-                                builder: (context) => const ServiceScreen()));
+                            MyApp.navigatorKey.currentState!.push(
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ServiceScreen()));
                           },
                           child: Container(
                             width: screenWidth,
@@ -768,7 +777,8 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                                   ),
                                                 ),
                                                 onPressed: () {
-                                                  navigatorKey.currentState!
+                                                  MyApp.navigatorKey
+                                                      .currentState!
                                                       .pop(context);
                                                 },
                                               ),
@@ -803,9 +813,10 @@ class _MyPageScreenState extends State<MyPageScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            navigatorKey.currentState!.push(MaterialPageRoute(
-                                builder: (context) =>
-                                    const DeleteAccountPage()));
+                            MyApp.navigatorKey.currentState!.push(
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const DeleteAccountPage()));
                           },
                           child: Container(
                             width: screenWidth,
