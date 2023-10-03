@@ -295,7 +295,7 @@ class _PostState extends State<Post> {
                         ),
                       ),
                       Gaps.v8,
-                      if (content != '')
+                      if (content != '' && content != null)
                         Text(
                           (content?.length ?? 0) > 50
                               ? content!.substring(0, 50) + '...'
