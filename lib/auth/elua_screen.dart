@@ -139,7 +139,7 @@ class _UserInfoAcceptanceWidgetState extends State<UserInfoAcceptanceWidget> {
                       await widget.client.mutate(options);
 
                   final dynamic signUpData = signUpResult.data;
-
+                  print(signUpData);
                   final token = signUpData['signUp']['token'];
                   final name = signUpData['signUp']['userName'];
                   await widget.userInfoProvider.setToken(token);

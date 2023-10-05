@@ -25,7 +25,6 @@ class _NotifyScreenState extends State<NotifyScreen> {
 
   @override
   void dispose() {
-    streamController.add("");
     super.dispose();
   }
 

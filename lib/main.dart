@@ -23,8 +23,6 @@ import 'package:hanasaku/setup/userinfo_provider_model.dart';
 
 import 'package:provider/provider.dart';
 
-StreamController<String> streamController = StreamController.broadcast();
-
 Future<void> main() async {
   final tokenManager = UserInfoProvider();
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -82,8 +80,8 @@ class MyApp extends StatelessWidget {
     final tokenManager = Provider.of<UserInfoProvider>(context, listen: false);
 
     final HttpLink httpLink = HttpLink(
-      //'https://hanasaku.xyz/graphql',
-      'https://test.hanasaku.xyz/graphql',
+      'https://hanasaku.xyz/graphql',
+      //'https://test.hanasaku.xyz/graphql',
       defaultHeaders: {
         'apollo-require-preflight': 'true',
       },
@@ -98,8 +96,8 @@ class MyApp extends StatelessWidget {
     Link link = authLink.concat(httpLink);
 
     final WebSocketLink webSocketLink = WebSocketLink(
-      //'wss://hanasaku.xyz/graphql',
-      'wss://test.hanasaku.xyz/graphql',
+      'wss://hanasaku.xyz/graphql',
+      //'wss://test.hanasaku.xyz/graphql',
       subProtocol: GraphQLProtocol.graphqlTransportWs,
       config: SocketClientConfig(
         autoReconnect: true,

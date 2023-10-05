@@ -65,6 +65,7 @@ class _BottomTextBarState extends State<BottomTextBar> {
       if (result.hasException) {
         // Handle errors
         print("Error occurred: ${result.exception.toString()}");
+        showErrorDialog("予期せぬエラーが発生しました。");
         // You can also display an error message to the user if needed
       } else {
         final dynamic resultData = result.data;
@@ -95,7 +96,7 @@ class _BottomTextBarState extends State<BottomTextBar> {
       }
     } catch (e) {
       // Handle exceptions
-      print("Error occurred: $e");
+      print("111Error occurred: $e");
       showErrorDialog("予期せぬエラーが発生しました。");
 
       // You can also display an error message to the user if needed

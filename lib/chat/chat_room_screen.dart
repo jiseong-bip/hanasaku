@@ -39,6 +39,7 @@ class _ChatRoomState extends State<ChatRoom> {
   ValueNotifier<int?> setRoomId = ValueNotifier<int?>(null);
 
   final TextEditingController commentController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
 
   Future initName() async {
     nickName = await Provider.of<UserInfoProvider>(context, listen: false)
@@ -62,8 +63,17 @@ class _ChatRoomState extends State<ChatRoom> {
         _fetchChatList(FetchPolicy.networkOnly, widget.roomId!);
       });
     }
-
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+    });
     userId = widget.userId;
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    commentController.dispose();
+    super.dispose();
   }
 
   Future<void> _fetchChatList(FetchPolicy fetchPolicy, int? roomId) async {
@@ -93,6 +103,9 @@ class _ChatRoomState extends State<ChatRoom> {
         if (_chatList.isEmpty) {
           _deleteRoom(roomId);
         }
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+        });
       });
       _readMessages();
     } else {
@@ -241,6 +254,7 @@ class _ChatRoomState extends State<ChatRoom> {
               children: [
                 Expanded(
                   child: ListView.builder(
+                    controller: _scrollController,
                     itemCount: _chatList.length,
                     itemBuilder: (context, index) {
                       return GestureDetector(

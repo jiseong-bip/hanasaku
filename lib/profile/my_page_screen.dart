@@ -17,7 +17,7 @@ import 'package:hanasaku/main.dart';
 import 'package:hanasaku/profile/comment_post.dart';
 import 'package:hanasaku/profile/liked_post.dart';
 import 'package:hanasaku/profile/my_post.dart';
-import 'package:hanasaku/profile/screen/blockUser_screen.dart';
+import 'package:hanasaku/profile/screen/blocked_user_screen.dart';
 import 'package:hanasaku/profile/screen/notice_screen.dart';
 import 'package:hanasaku/profile/screen/private_policiy_screen.dart';
 import 'package:hanasaku/profile/screen/service_screen.dart';

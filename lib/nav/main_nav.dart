@@ -7,15 +7,10 @@ import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/contents/contents_list_screen.dart';
 import 'package:hanasaku/create/create_post.dart';
 import 'package:hanasaku/home/screens/category_screen.dart';
-import 'package:hanasaku/home/screens/notify_screen.dart';
-
 import 'package:hanasaku/home/screens/posts_screen.dart';
-
-import 'package:hanasaku/main.dart';
 import 'package:hanasaku/nav/nav_button.dart';
 import 'package:hanasaku/profile/my_page_screen.dart';
 import 'package:hanasaku/setup/local_notification.dart';
-
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
 import 'package:provider/provider.dart';
 
@@ -65,50 +60,34 @@ class _MainNavState extends State<MainNav> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: StreamBuilder(
-          stream: streamController.stream,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              print(snapshot.data);
-              if (snapshot.data == 'post') {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) {
-                    return const NotifyScreen();
-                  }));
-                });
-              }
-            }
-            return Stack(
-              children: [
-                Consumer<UserInfoProvider>(
-                  builder: (context, userInfo, child) {
-                    return Offstage(
-                      offstage: _selectedIndex != 0,
-                      child: userInfo.getCurrentCategory() == 0
-                          ? const CategoryPage()
-                          : PostsScreen(
-                              categoryId: userInfo.getCurrentCategory()),
-                    );
-                  },
-                ),
-                Offstage(
-                  offstage: _selectedIndex != 1,
-                  child: const ContentsScreen(),
-                ),
-                Offstage(
-                  offstage: _selectedIndex != 3,
-                  child: ChatRoomScreen(
-                    key: GlobalKey(),
-                  ),
-                ),
-                Offstage(
-                  offstage: _selectedIndex != 4,
-                  child: const MyPageScreen(),
-                )
-              ],
-            );
-          }),
+      body: Stack(
+        children: [
+          Consumer<UserInfoProvider>(
+            builder: (context, userInfo, child) {
+              return Offstage(
+                offstage: _selectedIndex != 0,
+                child: userInfo.getCurrentCategory() == 0
+                    ? const CategoryPage()
+                    : PostsScreen(categoryId: userInfo.getCurrentCategory()),
+              );
+            },
+          ),
+          Offstage(
+            offstage: _selectedIndex != 1,
+            child: const ContentsScreen(),
+          ),
+          Offstage(
+            offstage: _selectedIndex != 3,
+            child: ChatRoomScreen(
+              key: GlobalKey(),
+            ),
+          ),
+          Offstage(
+            offstage: _selectedIndex != 4,
+            child: const MyPageScreen(),
+          )
+        ],
+      ),
       bottomNavigationBar: BottomAppBar(
         elevation: 1,
         color: Colors.white,
