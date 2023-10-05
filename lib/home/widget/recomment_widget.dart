@@ -63,7 +63,6 @@ class _RecommentWidgetState extends State<RecommentWidget> {
         shrinkWrap: true,
         itemCount: widget._posts.length,
         itemBuilder: (context, index) {
-          print('${widget._posts[index]['user']}');
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: Sizes.size16),
             child: Container(
@@ -153,7 +152,6 @@ class _RecommentWidgetState extends State<RecommentWidget> {
                             Gaps.h10,
                             GestureDetector(
                               onTap: () {
-                                print(widget._posts[index]['id']);
                                 reCommenDotMethod(
                                     context, widget._posts[index], nickName);
                               },

@@ -8,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
+import 'package:hanasaku/setup/error_dialog.dart';
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -95,6 +96,8 @@ class _BottomTextBarState extends State<BottomTextBar> {
     } catch (e) {
       // Handle exceptions
       print("Error occurred: $e");
+      showErrorDialog("予期せぬエラーが発生しました。");
+
       // You can also display an error message to the user if needed
     }
   }

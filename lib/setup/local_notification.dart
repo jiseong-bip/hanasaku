@@ -11,7 +11,6 @@ import 'package:hanasaku/setup/provider_model.dart';
 
 /// Firebase Background Messaging 핸들러
 Future<void> fbMsgBackgroundHandler(RemoteMessage message) async {
-  print("[FCM - Background] MESSAGE : $message");
   if (message.data['type'] != 'chat') {
     final listResultModel = ListResultService.instance.listResultModel;
 

@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -10,6 +8,7 @@ import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/query&mutation/querys.dart';
 import 'package:hanasaku/setup/aws_s3.dart';
+import 'package:hanasaku/setup/error_dialog.dart';
 
 class BlockUserScreen extends StatefulWidget {
   const BlockUserScreen({super.key});
@@ -39,7 +38,7 @@ class _BlockUserScreenState extends State<BlockUserScreen> {
         }
       });
     } else {
-      print(result.exception);
+      showErrorDialog("しばらくしてからもう一度お試しください。");
     }
   }
 
@@ -49,7 +48,7 @@ class _BlockUserScreenState extends State<BlockUserScreen> {
 
     final MutationOptions options = MutationOptions(
       document: gql('''
-       mutation UnblockUser(\$unblockUserUserId2: Int!) {
+      mutation UnblockUser(\$unblockUserUserId2: Int!) {
         unblockUser(userId: \$unblockUserUserId2) {
           ok
         }
@@ -66,7 +65,7 @@ class _BlockUserScreenState extends State<BlockUserScreen> {
 
       if (result.hasException) {
         // Handle errors
-        print("Error occurred: ${result.exception.toString()}");
+        showErrorDialog("しばらくしてからもう一度お試しください。");
         // You can also display an error message to the user if needed
       } else {
         final dynamic resultData = result.data;
@@ -133,7 +132,7 @@ class _BlockUserScreenState extends State<BlockUserScreen> {
       }
     } catch (e) {
       // Handle exceptions
-      print("Error occurred: $e");
+      showErrorDialog("予期せぬエラーが発生しました。");
       // You can also display an error message to the user if needed
     }
   }

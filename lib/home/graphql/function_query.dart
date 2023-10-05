@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/query&mutation/querys.dart';
+import 'package:hanasaku/setup/error_dialog.dart';
 import 'package:hanasaku/setup/userinfo_provider_model.dart';
 import 'package:provider/provider.dart';
 
@@ -21,6 +22,6 @@ Future<void> getMyCategory(BuildContext context) async {
         .toList();
     userInfoProvider.setCategory(idolData);
   } catch (e) {
-    print('setCategory Error: $e');
+    showErrorDialog("しばらくしてからもう一度お試しください。");
   }
 }

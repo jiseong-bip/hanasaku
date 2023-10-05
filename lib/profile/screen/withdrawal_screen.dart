@@ -15,7 +15,7 @@ class DeleteAccountPage extends StatefulWidget {
   const DeleteAccountPage({super.key});
 
   @override
-  _DeleteAccountPageState createState() => _DeleteAccountPageState();
+  State<DeleteAccountPage> createState() => _DeleteAccountPageState();
 }
 
 class _DeleteAccountPageState extends State<DeleteAccountPage> {
@@ -92,10 +92,11 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
         if (resultData != null && resultData['deleteAccount'] != null) {
           final bool isLikeSuccessful = resultData['deleteAccount']['ok'];
           if (isLikeSuccessful) {
-            await userInfoProvider.clearUserInfo();
-            await auth.deleteAccount(context);
-            await FirebaseMessaging.instance.deleteToken();
             _deleteImage();
+            await userInfoProvider.clearUserInfo();
+            await FirebaseMessaging.instance.deleteToken();
+            await auth.deleteAccount(context);
+
             MyApp.navigatorKey.currentState!.pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) => const SignUpScreen()),
                 (route) => false);
