@@ -11,10 +11,13 @@ import 'package:hanasaku/setup/userinfo_provider_model.dart';
 
 class GetUserInfo {
   Future<void> checkingUser(BuildContext context, GraphQLClient client,
-      UserInfoProvider userInfoProvider, String uid) async {
+      UserInfoProvider userInfoProvider, String uid, String deviceToken) async {
     final MutationOptions options = MutationOptions(
       document: checkUser,
-      variables: <String, dynamic>{"checkUserId": uid},
+      variables: <String, dynamic>{
+        "checkUserId": uid,
+        "deviceToken": deviceToken,
+      },
     );
 
     try {
@@ -48,6 +51,7 @@ class GetUserInfo {
                   client: client,
                   userInfoProvider: userInfoProvider,
                   uid: uid,
+                  deviceToken: deviceToken,
                 ),
               ),
             );

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/home/screens/detail_screen.dart';
 import 'package:hanasaku/main.dart';
@@ -37,6 +36,7 @@ class _NotifyScreenState extends State<NotifyScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final listResultModel = ListResultService.instance.listResultModel;
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -53,114 +53,111 @@ class _NotifyScreenState extends State<NotifyScreen> {
           )
         ],
       ),
-      body:
-          Consumer<ListResultModel>(builder: (context, listResultModel, child) {
-        return listResultModel.listResult.isEmpty
-            ? const Center(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      FaIcon(
-                        FontAwesomeIcons.bellSlash,
-                        size: Sizes.size40,
-                      ),
-                    ]),
-              )
-            : ListView.separated(
-                separatorBuilder: (context, index) => Gaps.v20,
-                itemCount: listResultModel.listResult.length,
-                itemBuilder: (context, index) {
-                  int reverseIndex =
-                      listResultModel.listResult.length - 1 - index;
-                  return listResultModel.listResult[reverseIndex]!
-                          .containsKey('postLikeAlarm')
-                      ? GestureDetector(
-                          onTap: () {
-                            MyApp.navigatorKey.currentState!.push(
-                                MaterialPageRoute(
-                                    builder: (context) => DetailScreen(
-                                        postId: listResultModel.listResult[
-                                                reverseIndex]!['postLikeAlarm']
-                                            ['post']['id'],
-                                        isContent: false)));
-                          },
-                          child: Card(
-                              child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: Sizes.size16 + Sizes.size2,
-                              vertical: Sizes.size16,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                        '${listResultModel.listResult[reverseIndex]!['postLikeAlarm']['user']['userName']}が'),
-                                    Text(
-                                      '${listResultModel.listResult[reverseIndex]!['postLikeAlarm']['post']['title']}に「いいね」しました。',
-                                      style: const TextStyle(
-                                        fontSize: Sizes.size16,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ],
+      body: listResultModel.pushNotiList.isEmpty
+          ? const Center(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    FaIcon(
+                      FontAwesomeIcons.bellSlash,
+                      size: Sizes.size40,
+                    ),
+                  ]),
+            )
+          : ListView.builder(
+              itemCount: listResultModel.pushNotiList.length,
+              itemBuilder: (context, index) {
+                int reverseIndex =
+                    listResultModel.pushNotiList.length - 1 - index;
+                return listResultModel.pushNotiList[reverseIndex]!['data']
+                            ['type'] ==
+                        'postLike'
+                    ? GestureDetector(
+                        onTap: () {
+                          MyApp.navigatorKey.currentState!.push(
+                              MaterialPageRoute(
+                                  builder: (context) => DetailScreen(
+                                      postId: int.parse(
+                                          listResultModel.pushNotiList[
+                                              reverseIndex]!['data']['postId']),
+                                      isContent: false)));
+                        },
+                        child: Card(
+                            child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: Sizes.size10,
+                            vertical: Sizes.size12,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                // Expanded 위젯 추가
+                                child: Text(
+                                  '${listResultModel.pushNotiList[reverseIndex]!['message']}',
+                                  style: const TextStyle(
+                                    fontSize: Sizes.size16,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  overflow:
+                                      TextOverflow.visible, // overflow 속성 변경
+                                  maxLines:
+                                      2, // maxLines 속성 설정 (원하는 줄 수로 변경 가능)
                                 ),
-                                FaIcon(
-                                  FontAwesomeIcons.solidHeart,
-                                  color: Theme.of(context).primaryColor,
-                                  size: Sizes.size24,
-                                )
-                              ],
-                            ),
-                          )),
-                        )
-                      : GestureDetector(
-                          onTap: () {
-                            MyApp.navigatorKey.currentState!.push(
-                                MaterialPageRoute(
-                                    builder: (context) => DetailScreen(
-                                        postId: listResultModel
-                                                .listResult[reverseIndex]![
-                                            'postCommentAlarm']['post']['id'],
-                                        isContent: false)));
-                          },
-                          child: Card(
-                              child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: Sizes.size16 + Sizes.size2,
-                              vertical: Sizes.size16,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                        '${listResultModel.listResult[reverseIndex]!['postCommentAlarm']['user']['userName']}が'),
-                                    Text(
-                                      '${listResultModel.listResult[reverseIndex]!['postCommentAlarm']['post']['title']}にコメントしました。',
-                                      style: const TextStyle(
-                                        fontSize: Sizes.size16,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ],
+                              ),
+                              FaIcon(
+                                FontAwesomeIcons.solidHeart,
+                                color: Theme.of(context).primaryColor,
+                                size: Sizes.size24,
+                              )
+                            ],
+                          ),
+                        )),
+                      )
+                    : GestureDetector(
+                        onTap: () {
+                          MyApp.navigatorKey.currentState!.push(
+                              MaterialPageRoute(
+                                  builder: (context) => DetailScreen(
+                                      postId: int.parse(listResultModel
+                                              .pushNotiList[reverseIndex]![
+                                          'data']['type']['postId']),
+                                      isContent: false)));
+                        },
+                        child: Card(
+                            child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: Sizes.size10,
+                            vertical: Sizes.size12,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                // Expanded 위젯 추가
+                                child: Text(
+                                  '${listResultModel.pushNotiList[reverseIndex]!['message']}',
+                                  style: const TextStyle(
+                                    fontSize: Sizes.size16,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  overflow:
+                                      TextOverflow.visible, // overflow 속성 변경
+                                  maxLines:
+                                      2, // maxLines 속성 설정 (원하는 줄 수로 변경 가능)
                                 ),
-                                const FaIcon(
-                                  FontAwesomeIcons.solidComment,
-                                  color: Color(0xFFC1DE92),
-                                  size: Sizes.size24,
-                                )
-                              ],
-                            ),
-                          )),
-                        );
-                },
-              );
-      }),
+                              ),
+                              const FaIcon(
+                                FontAwesomeIcons.solidComment,
+                                color: Color(0xFFC1DE92),
+                                size: Sizes.size24,
+                              )
+                            ],
+                          ),
+                        )),
+                      );
+              },
+            ),
     );
   }
 }

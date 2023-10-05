@@ -2,6 +2,7 @@
 
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -210,7 +211,6 @@ class _MyPageScreenState extends State<MyPageScreen> {
     if (!result.hasException) {
       setState(() {
         myInfo = result.data!['me'];
-        print(myInfo);
         if (result.data!['me']['medals'] != null) {
           var medals = result.data!['me']['medals'];
           Map<int, List<String>> groupedMedals = {};
@@ -260,6 +260,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
         Provider.of<UserInfoProvider>(context, listen: false);
     await userInfoProvider.clearUserInfo();
     await _clearImage();
+    await FirebaseMessaging.instance.deleteToken();
 
     // 로그인 화면 또는 홈 화면으로 이동 (또는 원하는 다른 화면으로)
     Navigator.of(context).pushAndRemoveUntil(
@@ -763,6 +764,9 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                                   ),
                                                 ),
                                                 onPressed: () {
+                                                  MyApp.navigatorKey
+                                                      .currentState!
+                                                      .pop(context);
                                                   _handleLogOut();
                                                 },
                                               ),

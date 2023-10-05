@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -93,6 +94,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
           if (isLikeSuccessful) {
             await userInfoProvider.clearUserInfo();
             await auth.deleteAccount(context);
+            FirebaseMessaging.instance.deleteToken();
             _deleteImage();
             MyApp.navigatorKey.currentState!.pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) => const SignUpScreen()),

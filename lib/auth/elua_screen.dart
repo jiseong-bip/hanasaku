@@ -13,12 +13,14 @@ class UserInfoAcceptanceWidget extends StatefulWidget {
   final GraphQLClient client;
   final UserInfoProvider userInfoProvider;
   final String uid;
+  final String deviceToken;
 
   const UserInfoAcceptanceWidget({
     super.key,
     required this.client,
     required this.userInfoProvider,
     required this.uid,
+    required this.deviceToken,
   });
 
   @override
@@ -130,6 +132,7 @@ class _UserInfoAcceptanceWidgetState extends State<UserInfoAcceptanceWidget> {
                     document: signUp,
                     variables: <String, dynamic>{
                       "fbId": widget.uid,
+                      "deviceToken": widget.deviceToken,
                     },
                   );
                   final QueryResult signUpResult =

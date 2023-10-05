@@ -233,27 +233,6 @@ class _ChatRoomState extends State<ChatRoom> {
                   });
                 },
                 icon: const FaIcon(FontAwesomeIcons.ellipsis))
-            // IconButton(
-            //   icon: FaIcon(
-            //     FontAwesomeIcons.trash,
-            //     color: _isReportSelectMode
-            //         ? Colors.grey.shade300
-            //         : Colors.grey.shade500,
-            //     size: Sizes.size20,
-            //   ),
-            //   onPressed: () {
-            //     _isReportSelectMode
-            //         ? null
-            //         : setState(
-            //             () {
-            //               _isDeleteSelectMode = !_isDeleteSelectMode;
-            //               _isSelected =
-            //                   List<bool>.filled(_chatList.length, false);
-            //               selectedMessageIds.clear();
-            //             },
-            //           );
-            //   },
-            // )
           ],
         ),
         body: Stack(
@@ -373,32 +352,6 @@ class _ChatRoomState extends State<ChatRoom> {
                                         )
                                       ],
                                     ),
-                                    // if (_isReportSelectMode)
-                                    //   Checkbox(
-                                    //     activeColor:
-                                    //         Theme.of(context).primaryColor,
-                                    //     focusColor:
-                                    //         Theme.of(context).primaryColor,
-                                    //     shape: const CircleBorder(),
-                                    //     value: _isSelected[index],
-                                    //     onChanged: _chatList[index]['user']
-                                    //                 ['userName'] !=
-                                    //             nickName
-                                    //         ? (bool? newValue) {
-                                    //             setState(() {
-                                    //               _isSelected[index] =
-                                    //                   newValue!;
-                                    //               if (_isSelected[index]) {
-                                    //                 selectedMessageIds.add(
-                                    //                     _chatList[index]['id']);
-                                    //               } else {
-                                    //                 selectedMessageIds.remove(
-                                    //                     _chatList[index]['id']);
-                                    //               }
-                                    //             });
-                                    //           }
-                                    //         : null,
-                                    //   ),
                                   ],
                                 ),
                               ),
@@ -492,18 +445,6 @@ class _ChatRoomState extends State<ChatRoom> {
                                 onPressed: () async {
                                   await reportUser(
                                       context, widget.userId, widget.userName);
-                                  // setState(
-                                  //   () async {
-
-                                  //     // _setMode = !_setMode;
-                                  //     // _isReportSelectMode =
-                                  //     //     _isReportSelectMode;
-                                  //     // _isDeleteSelectMode = false;
-                                  //     // _isSelected = List<bool>.filled(
-                                  //     //     _chatList.length, false);
-                                  //     // selectedMessageIds.clear();
-                                  //   },
-                                  // );
                                 }),
                           ],
                         ),

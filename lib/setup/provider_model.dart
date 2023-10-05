@@ -4,29 +4,25 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 class ListResultModel extends ChangeNotifier {
-  List<Map<String, dynamic>?> listResult = [];
+  List<Map<String, dynamic>?> pushNotiList = [];
 
   void addResult(Map<String, dynamic> data) {
-    listResult.add(data);
+    pushNotiList.add(data);
     notifyListeners();
   }
 
   void clear() {
-    listResult.clear();
+    pushNotiList.clear();
     notifyListeners();
   }
 
-  void updateList(dynamic likeData, dynamic commentData) {
-    String likeResultsJson = jsonEncode(likeData);
-    String commentResultsJson = jsonEncode(commentData);
+  void updateList(dynamic pushNotiData) {
+    String likeResultsJson = jsonEncode(pushNotiData);
 
-    if (likeData != null &&
-        !listResult.any((item) => jsonEncode(item) == likeResultsJson)) {
-      addResult(likeData);
-    }
-    if (commentData != null &&
-        !listResult.any((item) => jsonEncode(item) == commentResultsJson)) {
-      addResult(commentData);
+    if (pushNotiData != null &&
+        !pushNotiList.any((item) => jsonEncode(item) == likeResultsJson)) {
+      addResult(pushNotiData);
+      print(pushNotiData);
     }
   }
 }

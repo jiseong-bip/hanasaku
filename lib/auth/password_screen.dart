@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print, use_build_context_synchronously
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -110,9 +111,10 @@ class _PasswordScreenState extends State<PasswordScreen> {
     if (!isGetError) {
       if (await authRepo.isEmailVerified()) {
         final uid = await authRepo.getUserUid();
+        final devieToken = await FirebaseMessaging.instance.getToken();
 
         await GetUserInfo()
-            .checkingUser(context, client, userInfoProvider, uid!);
+            .checkingUser(context, client, userInfoProvider, uid!, devieToken!);
       } else {
         Navigator.of(context).pop(); // 로딩 대화상자 닫기
         showDialog(

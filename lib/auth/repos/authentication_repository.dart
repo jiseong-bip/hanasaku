@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print, use_build_context_synchronously
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_line_sdk/flutter_line_sdk.dart';
@@ -90,9 +91,10 @@ class AuthenticationRepository {
       );
 
       final uid = await authRepo.getUserUid();
-      print(uid);
+      final devieToken = await FirebaseMessaging.instance.getToken();
 
-      await GetUserInfo().checkingUser(context, client, userInfoProvider, uid!);
+      await GetUserInfo()
+          .checkingUser(context, client, userInfoProvider, uid!, devieToken!);
     } on FirebaseAuthException catch (error) {
       showDialog(
         context: context,
@@ -186,9 +188,10 @@ class AuthenticationRepository {
       );
 
       final uid = await getUserUid();
-      print(uid);
+      final devieToken = await FirebaseMessaging.instance.getToken();
 
-      await GetUserInfo().checkingUser(context, client, userInfoProvider, uid!);
+      await GetUserInfo()
+          .checkingUser(context, client, userInfoProvider, uid!, devieToken!);
     } catch (e) {
       print(e);
       return;
@@ -218,9 +221,10 @@ class AuthenticationRepository {
 
       await _firebaseAuth.signInWithCredential(credential);
       final uid = await getUserUid();
-      print(uid);
+      final devieToken = await FirebaseMessaging.instance.getToken();
 
-      await GetUserInfo().checkingUser(context, client, userInfoProvider, uid!);
+      await GetUserInfo()
+          .checkingUser(context, client, userInfoProvider, uid!, devieToken!);
     } catch (e) {
       print("Error during Google sign-in: $e");
       rethrow;
@@ -253,10 +257,10 @@ class AuthenticationRepository {
         print(userCredential);
 
         final uid = await getUserUid();
-        print(uid);
+        final devieToken = await FirebaseMessaging.instance.getToken();
 
         await GetUserInfo()
-            .checkingUser(context, client, userInfoProvider, uid!);
+            .checkingUser(context, client, userInfoProvider, uid!, devieToken!);
 
         // success
         break;
@@ -302,10 +306,10 @@ class AuthenticationRepository {
         await FirebaseAuth.instance.signInWithCustomToken(firebaseToken);
         // 로그인 성공, 원하는 화면으로 이동
         final uid = await getUserUid();
-        print(uid);
+        final devieToken = await FirebaseMessaging.instance.getToken();
 
         await GetUserInfo()
-            .checkingUser(context, client, userInfoProvider, uid!);
+            .checkingUser(context, client, userInfoProvider, uid!, devieToken!);
       } else {
         // Firebase 커스텀 토큰 가져오기 실패
         print('fail');

@@ -1,8 +1,8 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 var signUp = gql('''
-        mutation SignUp(\$fbId: String!) {
-          signUp(fbId: \$fbId) {
+        mutation SignUp(\$fbId: String!, \$deviceToken: String!) {
+          signUp(fbId: \$fbId, deviceToken: \$deviceToken) {
             ok
             token
             userName
@@ -12,8 +12,8 @@ var signUp = gql('''
       ''');
 
 var checkUser = gql('''
-        mutation CheckUser(\$checkUserId: String!) {
-  checkUser(id: \$checkUserId) {
+        mutation CheckUser(\$checkUserId: String!, \$deviceToken: String!) {
+  checkUser(id: \$checkUserId, deviceToken: \$deviceToken) {
     ok
     token
     userName

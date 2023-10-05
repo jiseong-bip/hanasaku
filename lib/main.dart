@@ -16,7 +16,6 @@ import 'package:hanasaku/constants/font.dart';
 import 'dart:io' show Platform;
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/firebase_options.dart';
-import 'package:hanasaku/home/graphql/subscription.dart';
 import 'package:hanasaku/home/provider/postinfo_provider.dart';
 import 'package:hanasaku/nav/main_nav.dart';
 import 'package:hanasaku/setup/local_notification.dart';
@@ -34,7 +33,6 @@ Future<void> main() async {
 
   //LocalNotification.onBackgroundNotificationResponse();
   WidgetsFlutterBinding.ensureInitialized();
-  LocalNotification.initialize();
 
   await initHiveForFlutter();
 
@@ -42,9 +40,9 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  LineSDK.instance.setup("2000690971").then((_) {
-    print("LineSDK Prepared");
-  });
+  LocalNotification.initialize();
+
+  LineSDK.instance.setup("2000690971").then((_) {});
 
   runApp(
     MultiProvider(
@@ -86,8 +84,8 @@ class MyApp extends StatelessWidget {
     final tokenManager = Provider.of<UserInfoProvider>(context, listen: false);
 
     final HttpLink httpLink = HttpLink(
-      'https://hanasaku.xyz/graphql',
-      //'https://test.hanasaku.xyz/graphql',
+      //'https://hanasaku.xyz/graphql',
+      'https://test.hanasaku.xyz/graphql',
       defaultHeaders: {
         'apollo-require-preflight': 'true',
       },
@@ -102,8 +100,8 @@ class MyApp extends StatelessWidget {
     Link link = authLink.concat(httpLink);
 
     final WebSocketLink webSocketLink = WebSocketLink(
-      'wss://hanasaku.xyz/graphql',
-      //'wss://test.hanasaku.xyz/graphql',
+      //'wss://hanasaku.xyz/graphql',
+      'wss://test.hanasaku.xyz/graphql',
       subProtocol: GraphQLProtocol.graphqlTransportWs,
       config: SocketClientConfig(
         autoReconnect: true,
@@ -167,34 +165,6 @@ class MyApp extends StatelessWidget {
                   if (tokenSnapshot.connectionState == ConnectionState.done) {
                     final token = tokenSnapshot.data;
                     if (user != null && (token != null && token.isNotEmpty)) {
-                      final GraphQLClient client =
-                          GraphQLProvider.of(context).value;
-                      Stream<dynamic> logLikeStream =
-                          client.subscribe(SubscriptionOptions(
-                        document: likeSubscription,
-                      ));
-                      Stream<dynamic> logCommentStream =
-                          client.subscribe(SubscriptionOptions(
-                        document: commentSubscription,
-                      ));
-
-                      logLikeStream.listen((event) async {
-                        final listResultModel = Provider.of<ListResultModel>(
-                            context,
-                            listen: false);
-                        listResultModel.updateList(event.data, null);
-                        LocalNotification.postNotification(
-                            "${listResultModel.listResult.last!['postLikeAlarm']['post']['title']}に「いいね」しました。");
-                      });
-
-                      logCommentStream.listen((event) {
-                        final listResultModel = Provider.of<ListResultModel>(
-                            context,
-                            listen: false);
-                        listResultModel.updateList(null, event.data);
-                        LocalNotification.postNotification(
-                            "${listResultModel.listResult.last!['postCommentAlarm']['post']['title']}にコメントしました。");
-                      });
                       return const MainNav();
                     } else {
                       return const SignUpScreen();

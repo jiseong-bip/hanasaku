@@ -38,20 +38,12 @@ class _MainNavState extends State<MainNav> {
     });
   }
 
+  var messageString = "";
   @override
   void initState() {
     super.initState();
     _selectedIndex = 0;
-    // Capture the context when initializing the state
   }
-  // Future<void> _onCategoryTab(BuildContext context) async {
-  //   final result = await Navigator.push(context,
-  //           MaterialPageRoute(builder: (context) => const CategoryPage())) ??
-  //       categoryId;
-  //   setState(() {
-  //     categoryId = result;
-  //   });
-  // }
 
   @override
   void dispose() {
@@ -93,19 +85,10 @@ class _MainNavState extends State<MainNav> {
                   builder: (context, userInfo, child) {
                     return Offstage(
                       offstage: _selectedIndex != 0,
-                      child:
-                          // PageView(
-                          //   controller: controller,
-                          //   scrollDirection: Axis.horizontal,
-                          //   children: [
-                          //     const CategoryPage(),
-                          //     PostsScreen(categoryId: userInfo.getCurrentCategory())
-                          //   ],
-                          // )
-                          userInfo.getCurrentCategory() == 0
-                              ? const CategoryPage()
-                              : PostsScreen(
-                                  categoryId: userInfo.getCurrentCategory()),
+                      child: userInfo.getCurrentCategory() == 0
+                          ? const CategoryPage()
+                          : PostsScreen(
+                              categoryId: userInfo.getCurrentCategory()),
                     );
                   },
                 ),
