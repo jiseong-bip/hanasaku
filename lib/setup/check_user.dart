@@ -44,8 +44,7 @@ class GetUserInfo {
                 (route) => false);
           } else {
             //await userInforAccept(context, client, userInfoProvider, uid);
-            Navigator.push(
-              context,
+            MyApp.navigatorKey.currentState!.pushReplacement(
               MaterialPageRoute(
                 builder: (context) => UserInfoAcceptanceWidget(
                   client: client,

@@ -94,7 +94,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
           if (isLikeSuccessful) {
             await userInfoProvider.clearUserInfo();
             await auth.deleteAccount(context);
-            FirebaseMessaging.instance.deleteToken();
+            await FirebaseMessaging.instance.deleteToken();
             _deleteImage();
             MyApp.navigatorKey.currentState!.pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) => const SignUpScreen()),

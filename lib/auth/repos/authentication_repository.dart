@@ -180,7 +180,7 @@ class AuthenticationRepository {
               children: [
                 CircularProgressIndicator(),
                 SizedBox(width: 10),
-                Text("로딩 중..."),
+                Text("Loading..."),
               ],
             ),
           );
@@ -219,6 +219,23 @@ class AuthenticationRepository {
         idToken: googleSignInAuthentication.idToken,
       );
 
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return const AlertDialog(
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(width: 10),
+                Text("Loading..."),
+              ],
+            ),
+          );
+        },
+      );
+
       await _firebaseAuth.signInWithCredential(credential);
       final uid = await getUserUid();
       final devieToken = await FirebaseMessaging.instance.getToken();
@@ -252,9 +269,24 @@ class AuthenticationRepository {
                 accessToken: authResult.authToken!,
                 secret: authResult.authTokenSecret!);
 
-        final userCredential =
-            await _firebaseAuth.signInWithCredential(twitterAuthCredential);
-        print(userCredential);
+        await _firebaseAuth.signInWithCredential(twitterAuthCredential);
+
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return const AlertDialog(
+              content: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(width: 10),
+                  Text("Loading..."),
+                ],
+              ),
+            );
+          },
+        );
 
         final uid = await getUserUid();
         final devieToken = await FirebaseMessaging.instance.getToken();
@@ -300,10 +332,28 @@ class AuthenticationRepository {
 
       final lineAccessToken = result.userProfile?.userId;
 
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return const AlertDialog(
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(width: 10),
+                Text("Loading..."),
+              ],
+            ),
+          );
+        },
+      );
+
       final firebaseToken = await getFirebaseToken(lineAccessToken!);
 
       if (firebaseToken != null) {
         await FirebaseAuth.instance.signInWithCustomToken(firebaseToken);
+
         // 로그인 성공, 원하는 화면으로 이동
         final uid = await getUserUid();
         final devieToken = await FirebaseMessaging.instance.getToken();
