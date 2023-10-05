@@ -52,6 +52,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
   Map<String, dynamic> myInfo = {};
   TextEditingController textController = TextEditingController();
   ScrollController scrollController = ScrollController();
+  String? errorMessage;
 
   Future<void> _loadSavedImage() async {
     final directory = await getApplicationDocumentsDirectory();
@@ -263,7 +264,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
     await FirebaseMessaging.instance.deleteToken();
 
     // 로그인 화면 또는 홈 화면으로 이동 (또는 원하는 다른 화면으로)
-    Navigator.of(context).pushAndRemoveUntil(
+    MyApp.navigatorKey.currentState!.pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => const SignUpScreen()),
         (route) => false);
   }
@@ -314,26 +315,14 @@ class _MyPageScreenState extends State<MyPageScreen> {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Column(
-                            children: [
-                              GestureDetector(
-                                onTap: _editMode ? getImage : null,
-                                child: _editMode
-                                    ? CircleAvatar(
+                          GestureDetector(
+                            onTap: _editMode ? getImage : null,
+                            child: _editMode
+                                ? Stack(
+                                    children: [
+                                      CircleAvatar(
                                         radius: 35,
                                         backgroundColor: Colors.grey,
-                                        backgroundImage: _profileImage != null
-                                            ? FileImage(_profileImage!)
-                                            : null,
-                                        child: const Text(
-                                          '写真編集',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                      )
-                                    : CircleAvatar(
-                                        radius: 35,
                                         backgroundImage: _profileImage != null
                                             ? FileImage(_profileImage!)
                                             : null,
@@ -345,9 +334,38 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                                 height: 70,
                                               ),
                                       ),
-                              ),
-                              Gaps.v14,
-                            ],
+                                      Positioned(
+                                        bottom: 0,
+                                        right: 0,
+                                        child: Container(
+                                          padding: const EdgeInsets.all(0.5),
+                                          decoration: const BoxDecoration(
+                                            border: Border(),
+                                            color: Colors.white,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: FaIcon(
+                                            FontAwesomeIcons.camera,
+                                            size: Sizes.size16,
+                                            color: Colors.grey.shade600,
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  )
+                                : CircleAvatar(
+                                    radius: 35,
+                                    backgroundImage: _profileImage != null
+                                        ? FileImage(_profileImage!)
+                                        : null,
+                                    child: _profileImage != null
+                                        ? null
+                                        : SvgPicture.asset(
+                                            'assets/user.svg',
+                                            width: 70,
+                                            height: 70,
+                                          ),
+                                  ),
                           ),
                           Gaps.h20,
                           Padding(
@@ -361,10 +379,11 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                     _editMode
                                         ? SizedBox(
                                             width: 150,
-                                            child: TextField(
+                                            child: TextFormField(
                                               controller: textController,
                                               autocorrect: false,
                                               decoration: InputDecoration(
+                                                errorText: errorMessage,
                                                 hintText: "$nickName",
                                                 enabledBorder:
                                                     UnderlineInputBorder(
@@ -381,6 +400,17 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                               ),
                                               cursorColor: Theme.of(context)
                                                   .primaryColor,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  if (value.length > 10) {
+                                                    errorMessage =
+                                                        '10文字までしか入力できません'; // Set the error message
+                                                  } else {
+                                                    errorMessage =
+                                                        null; // Clear the error message
+                                                  }
+                                                });
+                                              },
                                             ),
                                           )
                                         : Text(
@@ -394,10 +424,12 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                     GestureDetector(
                                       onTap: () {
                                         if (_editMode) {
-                                          _saveImage();
-                                          setProfile(textController.text,
-                                              _profileImage);
-                                          setState(() {});
+                                          if (textController.text.length < 11) {
+                                            _saveImage();
+                                            setProfile(textController.text,
+                                                _profileImage);
+                                            setState(() {});
+                                          }
                                         } else {
                                           setState(() {
                                             _editMode = true;
@@ -727,7 +759,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                               ),
                               Gaps.h3,
                               Text(
-                                'さいしんバージョン: 23.32.1', //업데이트 날짜
+                                'さいしんバージョン: 23.10.06', //업데이트 날짜
                                 style: TextStyle(
                                   fontSize: Sizes.size12,
                                 ),
