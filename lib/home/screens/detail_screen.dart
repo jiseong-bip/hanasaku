@@ -337,6 +337,7 @@ class _DetailScreenState extends State<DetailScreen> {
             height: videoHeight,
             child: CustomVideoPlayer(
               videoKey: widget.videoKey!,
+              contentId: widget.postId,
             ),
           ),
         Center(
@@ -630,6 +631,24 @@ class _DetailScreenState extends State<DetailScreen> {
                               ),
                             ],
                           ),
+                          Gaps.h10,
+                          if (isContent!)
+                            Row(
+                              children: [
+                                FaIcon(
+                                  FontAwesomeIcons.circlePlay,
+                                  size: Sizes.size14,
+                                  color: Colors.grey.shade600,
+                                ),
+                                Gaps.h5,
+                                Text(
+                                  '${post?['viewCount']} 回視聴',
+                                  style: const TextStyle(
+                                    fontSize: Sizes.size12,
+                                  ),
+                                ),
+                              ],
+                            ),
                         ],
                       ),
                     ],

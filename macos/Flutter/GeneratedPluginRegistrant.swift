@@ -19,6 +19,7 @@ import shared_preferences_foundation
 import sign_in_with_apple
 import sqflite
 import twitter_login
+import video_player_avfoundation
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   FLTFirebaseFunctionsPlugin.register(with: registry.registrar(forPlugin: "FLTFirebaseFunctionsPlugin"))
@@ -35,4 +36,5 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   SignInWithApplePlugin.register(with: registry.registrar(forPlugin: "SignInWithApplePlugin"))
   SqflitePlugin.register(with: registry.registrar(forPlugin: "SqflitePlugin"))
   TwitterLoginPlugin.register(with: registry.registrar(forPlugin: "TwitterLoginPlugin"))
+  FVPVideoPlayerPlugin.register(with: registry.registrar(forPlugin: "FVPVideoPlayerPlugin"))
 }

@@ -1,12 +1,16 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hanasaku/home/graphql/function_mutaion.dart';
 import 'package:hanasaku/setup/aws_s3.dart';
 import 'package:video_player/video_player.dart';
 
 class CustomVideoPlayer extends StatefulWidget {
   final String videoKey;
-  const CustomVideoPlayer({Key? key, required this.videoKey}) : super(key: key);
+  final int contentId;
+  const CustomVideoPlayer(
+      {Key? key, required this.videoKey, required this.contentId})
+      : super(key: key);
 
   @override
   State<CustomVideoPlayer> createState() => _CustomVideoPlayerState();
@@ -18,6 +22,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
   ValueNotifier<bool> showControls = ValueNotifier<bool>(true);
 
   bool showIndicator = true;
+  bool hasUpdatedViewCount = false;
   Timer? hideIndicatorTimer;
 
   @override
@@ -165,6 +170,11 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
 
   _handleTap() {
     _togglePlayback();
+
+    if (!hasUpdatedViewCount) {
+      updateViewCount(context, widget.contentId); // contentId 값을 알맞게 설정해야 합니다.
+      hasUpdatedViewCount = true; // 조회수를 업데이트했음을 표시합니다.
+    }
 
     showControls.value = true;
 

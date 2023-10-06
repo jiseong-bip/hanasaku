@@ -1002,3 +1002,51 @@ Future<void> reportUser(
     // You can also display an error message to the user if needed
   }
 }
+
+Future<void> updateViewCount(BuildContext context, int contentId) async {
+  final GraphQLClient client = GraphQLProvider.of(context).value;
+
+  final MutationOptions options = MutationOptions(
+    document: gql('''
+        mutation ViewCount(\$contentId: Int!) {
+          viewCount(contentId: \$contentId) {
+            ok
+          }
+        }
+      '''),
+    variables: <String, dynamic>{
+      'contentId': contentId,
+    },
+    update: (cache, result) => result,
+  );
+
+  try {
+    final QueryResult result = await client.mutate(options);
+
+    if (result.hasException) {
+      // Handle errors
+      print("Error occurred: ${result.exception.toString()}");
+      // You can also display an error message to the user if needed
+    } else {
+      final dynamic resultData = result.data;
+
+      if (resultData != null && resultData['viewCount'] != null) {
+        final bool isLikeSuccessful = resultData['viewCount']['ok'];
+        if (isLikeSuccessful) {
+        } else {
+          // Handle the case where the like operation was not successful
+          print("viewCount update operation was not successful.");
+          // You can also display a message to the user if needed
+        }
+      } else {
+        // Handle the case where data is null
+        print("Data is null.");
+        // You can also display a message to the user if needed
+      }
+    }
+  } catch (e) {
+    // Handle exceptions
+    print("Error occurred: $e");
+    // You can also display an error message to the user if needed
+  }
+}
