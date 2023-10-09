@@ -9,8 +9,6 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:hanasaku/home/provider/postinfo_provider.dart';
-
-import 'package:hanasaku/setup/userinfo_provider_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -35,7 +33,6 @@ class BottomTextBar extends StatefulWidget {
 }
 
 class _BottomTextBarState extends State<BottomTextBar> {
-  String? nickName;
   bool _isWriting = false;
   bool _isSend = false;
   bool? _isContent;
@@ -207,7 +204,7 @@ class _BottomTextBarState extends State<BottomTextBar> {
   void initState() {
     super.initState();
     _isContent = widget.isContent;
-    initName();
+
     _loadSavedImage();
   }
 
@@ -217,12 +214,6 @@ class _BottomTextBarState extends State<BottomTextBar> {
     super.dispose();
   }
 
-  Future initName() async {
-    nickName = await Provider.of<UserInfoProvider>(context, listen: false)
-        .getNickName();
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     final postInfo = Provider.of<PostInfo>(context, listen: false);
@@ -230,7 +221,7 @@ class _BottomTextBarState extends State<BottomTextBar> {
       elevation: 0,
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: Sizes.size16,
+          horizontal: Sizes.size10,
           vertical: Sizes.size12,
         ),
         child: Row(
@@ -251,10 +242,11 @@ class _BottomTextBarState extends State<BottomTextBar> {
             Gaps.h10,
             Expanded(
               child: TextField(
+                style: const TextStyle(fontSize: Sizes.size14),
                 onTap: _onStartWriting,
                 controller: commentController,
-                minLines: null,
-                maxLines: null,
+                minLines: 1,
+                maxLines: 3,
                 textInputAction: TextInputAction.newline,
                 cursorColor: Theme.of(context).primaryColor,
                 decoration: InputDecoration(
@@ -270,33 +262,30 @@ class _BottomTextBarState extends State<BottomTextBar> {
                     filled: true,
                     fillColor: Colors.grey.shade200,
                     contentPadding: const EdgeInsets.symmetric(
-                      vertical: Sizes.size10,
-                      horizontal: Sizes.size12,
+                      vertical: 0,
+                      horizontal: Sizes.size5,
                     ),
-                    suffixIcon: Padding(
-                      padding: const EdgeInsets.only(right: Sizes.size14),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          if (_isWriting)
-                            GestureDetector(
-                              onTap: () {
-                                _stopWriting();
-                                widget.recommentMode
-                                    ? toggleRecommentSend(
-                                        context,
-                                        postInfo.getCommentId(),
-                                        commentController.text)
-                                    : toggleCommentSend(context, widget.postId,
-                                        commentController.text);
-                              },
-                              child: FaIcon(
-                                FontAwesomeIcons.circleArrowUp,
-                                color: Theme.of(context).primaryColor,
-                              ),
+                    suffixIcon: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (_isWriting)
+                          GestureDetector(
+                            onTap: () {
+                              _stopWriting();
+                              widget.recommentMode
+                                  ? toggleRecommentSend(
+                                      context,
+                                      postInfo.getCommentId(),
+                                      commentController.text)
+                                  : toggleCommentSend(context, widget.postId,
+                                      commentController.text);
+                            },
+                            child: FaIcon(
+                              FontAwesomeIcons.circleArrowUp,
+                              color: Theme.of(context).primaryColor,
                             ),
-                        ],
-                      ),
+                          ),
+                      ],
                     )),
               ),
             ),

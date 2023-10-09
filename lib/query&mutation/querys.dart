@@ -27,14 +27,6 @@ final viewPostsQuery = gql("""
       }
     """);
 
-final commentPostQuery = gql("""
-      query ViewPost(\$viewPostPostId2: Int!) {
-  viewPost(postId: \$viewPostPostId2) {
-
-  }
-}
-    """);
-
 final commentContentQuery = gql("""
       query Query(\$contentId: Int!) {
   viewContent(contentId: \$contentId) {
@@ -84,6 +76,7 @@ final postQuery = gql("""
       }
     }
     images {
+      id
       url
     }
     createDate

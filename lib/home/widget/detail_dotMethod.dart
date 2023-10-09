@@ -11,7 +11,7 @@ import 'package:hanasaku/nav/main_nav.dart';
 import 'package:image_picker/image_picker.dart';
 
 void _showEditPostScreen(BuildContext context, List<XFile>? xImages, int postId,
-    String title, String? content) {
+    String title, String? content, List<int> imageIdList) {
   showModalBottomSheet(
     isScrollControlled: true,
     useSafeArea: true,
@@ -21,18 +21,20 @@ void _showEditPostScreen(BuildContext context, List<XFile>? xImages, int postId,
       title: title,
       contents: content,
       xImages: xImages,
+      imageIdList: imageIdList,
     ),
   );
 }
 
 Future<dynamic> postDotMethod(
-    BuildContext context,
-    Map<String, dynamic>? post,
-    String? userName,
-    List? imageKey,
-    int postId,
-    String title,
-    String? content) {
+  BuildContext context,
+  Map<String, dynamic>? post,
+  String? userName,
+  List? imageKey,
+  int postId,
+  String title,
+  String? content,
+) {
   return showModalBottomSheet(
       constraints:
           const BoxConstraints(minWidth: double.infinity, maxHeight: 121),
@@ -59,20 +61,17 @@ Future<dynamic> postDotMethod(
                       ),
                       onPressed: () async {
                         List<XFile> xImages = [];
+                        List<int> imagesId = [];
                         if (imageKey != null) {
                           for (var key in imageKey) {
                             var image = await DefaultCacheManager()
                                 .getSingleFile((key['url']));
                             xImages.add(XFile(image.path));
+                            imagesId.add(key['id']);
                           }
                         }
                         _showEditPostScreen(
-                          context,
-                          xImages,
-                          postId,
-                          title,
-                          content,
-                        );
+                            context, xImages, postId, title, content, imagesId);
                       },
                     ),
                   ),

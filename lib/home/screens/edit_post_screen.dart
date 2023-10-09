@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:hanasaku/constants/gaps.dart';
 import 'package:hanasaku/constants/sizes.dart';
 import 'package:http/http.dart';
 import 'package:http_parser/http_parser.dart';
@@ -14,6 +15,7 @@ class EditPostScreen extends StatefulWidget {
   final int postId;
   final String title;
   final String? contents;
+  final List<int>? imageIdList;
   final List<XFile>? xImages;
 
   const EditPostScreen(
@@ -21,33 +23,76 @@ class EditPostScreen extends StatefulWidget {
       required this.postId,
       required this.title,
       required this.contents,
-      required this.xImages});
+      required this.xImages,
+      required this.imageIdList});
 
   @override
   State<EditPostScreen> createState() => _EditPostScreenState();
 }
 
 class _EditPostScreenState extends State<EditPostScreen> {
+  void _showDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: FittedBox(
+              child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(message),
+              Gaps.v10,
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text(
+                  'OK',
+                  style: TextStyle(color: Colors.blue),
+                ),
+              ),
+            ],
+          )),
+        );
+      },
+    );
+  }
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   Map<String, dynamic> formData = {};
   final ImagePicker picker = ImagePicker();
-  List<XFile> _images = [];
+  final List<XFile> _images = [];
+  List<XFile> displayimages = [];
+  final List<XFile> _editImages = [];
+  final List<int> _deletedImageId = [];
+  List<int> _imageId = [];
 
   @override
   void initState() {
     if (widget.xImages != null) {
-      _images = widget.xImages!;
+      displayimages = widget.xImages!;
+      _images.addAll(displayimages);
+      _imageId = widget.imageIdList!;
     }
+
     super.initState();
   }
 
   Future getImages(ImageSource imageSource) async {
+    if (displayimages.length >= 5) {
+      _showDialog(context, "画像は最大5つまで選択できます。");
+      return;
+    }
     //pickedFile에 ImagePicker로 가져온 이미지가 담긴다.
     final List<XFile> pickedFile = await picker.pickMultiImage();
     setState(() {
       for (var image in pickedFile) {
-        _images.add(image);
+        if (displayimages.length < 5) {
+          print(image);
+          _editImages.add(image);
+          displayimages.add(image);
+        }
       }
     });
   }
@@ -65,7 +110,8 @@ class _EditPostScreenState extends State<EditPostScreen> {
     List<Uint8List> listByteData = [];
     List<MultipartFile> listMultipartFile = [];
 
-    for (var element in _images) {
+    for (var element in _editImages) {
+      print(element);
       Uint8List byteData = await element.readAsBytes();
       listByteData.add(byteData);
     }
@@ -84,13 +130,70 @@ class _EditPostScreenState extends State<EditPostScreen> {
 
     final MutationOptions options = MutationOptions(
       document: gql('''
-        mutation Mutation(\$postId: Int!, \$title: String, \$content: String, \$image: [Upload]) {
-  editPost(postId: \$postId, title: \$title, content: \$content, image: \$image) {
-    ok
-  }
-}
+        mutation Mutation(\$postId: Int!, \$title: String, \$content: String, \$images: [Upload]) {
+          editPost(postId: \$postId, title: \$title, content: \$content, images: \$images) {
+            ok
+            error
+          }
+        }
       '''),
       variables: variables,
+      onError: (error) {
+        print(error);
+      },
+    );
+
+    try {
+      if (_deletedImageId.isNotEmpty) {
+        for (var id in _deletedImageId) {
+          _deleteImage(context, id);
+        }
+      }
+      print('sending..');
+      final QueryResult result = await client.mutate(options);
+      print('done Sending..');
+      if (result.hasException) {
+        // Handle errors
+        print("Error occurred: ${result.exception.toString()}");
+        // You can also display an error message to the user if needed
+      } else {
+        final dynamic resultData = result.data;
+
+        if (resultData != null && resultData['editPost'] != null) {
+          final bool isLikeSuccessful = resultData['editPost']['ok'];
+
+          if (isLikeSuccessful) {
+          } else {
+            // Handle the case where the like operation was not successful
+            print("not successful.");
+            print(resultData['editPost']['error']);
+            // You can also display a message to the user if needed
+          }
+        } else {
+          // Handle the case where data is null
+          print("Data is null.");
+          // You can also display a message to the user if needed
+        }
+      }
+    } catch (e) {
+      // Handle exceptions
+      print("Error occurred: $e");
+      // You can also display an error message to the user if needed
+    }
+  }
+
+  Future<void> _deleteImage(BuildContext context, int imageId) async {
+    final GraphQLClient client = GraphQLProvider.of(context).value;
+
+    final MutationOptions options = MutationOptions(
+      document: gql('''
+        mutation DeletePostImage(\$postId: Int!, \$imageId: Int!) {
+          deletePostImage(postId: \$postId, imageId: \$imageId) {
+            ok
+          }
+        }
+      '''),
+      variables: {"postId": widget.postId, "imageId": imageId},
       onError: (error) {
         print(error);
       },
@@ -107,8 +210,8 @@ class _EditPostScreenState extends State<EditPostScreen> {
       } else {
         final dynamic resultData = result.data;
 
-        if (resultData != null && resultData['editPost'] != null) {
-          final bool isLikeSuccessful = resultData['editPost']['ok'];
+        if (resultData != null && resultData['deletePostImage'] != null) {
+          final bool isLikeSuccessful = resultData['deletePostImage']['ok'];
 
           if (isLikeSuccessful) {
           } else {
@@ -218,38 +321,59 @@ class _EditPostScreenState extends State<EditPostScreen> {
                         SizedBox(
                           height: deviceHeight /
                               3, // Adjusted for slightly larger container
-                          width:
-                              310.0, // Adjusted for slightly larger container
-                          child: _images.isEmpty
+                          // Adjusted for slightly larger container
+                          child: displayimages.isEmpty
                               ? const Center(child: Text('イメージが選択されていません。'))
                               : ListView.builder(
+                                  shrinkWrap: true,
                                   scrollDirection: Axis.horizontal,
-                                  itemCount: _images.length,
+                                  itemCount: displayimages.length,
                                   itemBuilder:
                                       (BuildContext context, int index) {
-                                    return SizedBox(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Stack(
-                                          children: [
-                                            Align(
-                                              alignment: Alignment.center,
-                                              child: Image.file(
-                                                  File(_images[index].path)),
+                                    return Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            '${index + 1} / ${displayimages.length}',
+                                            style: const TextStyle(
+                                                fontSize: Sizes.size10),
+                                          ),
+                                          Flexible(
+                                            child: Container(
+                                              clipBehavior: Clip.hardEdge,
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10)),
+                                              child: Image.file(File(
+                                                  displayimages[index].path)),
                                             ),
-                                            Positioned(
-                                              bottom: 0,
-                                              child: GestureDetector(
-                                                onTap: () {
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              displayimages.removeAt(index);
+                                              if (_editImages.isNotEmpty) {
+                                                _editImages.removeAt(
+                                                    index - _images.length);
+                                              }
+
+                                              if (_images.isNotEmpty) {
+                                                if (_images.length > index) {
+                                                  _deletedImageId
+                                                      .add(_imageId[index]);
+                                                  _imageId.removeAt(index);
                                                   _images.removeAt(index);
-                                                },
-                                                child: const Icon(
-                                                    Icons.cancel_rounded,
-                                                    color: Color(0xFFF9C7C7)),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                                                }
+                                              }
+
+                                              setState(() {});
+                                            },
+                                            child: const Icon(
+                                                Icons.cancel_rounded,
+                                                color: Color(0xFFF9C7C7)),
+                                          ),
+                                        ],
                                       ),
                                     );
                                   },
@@ -276,8 +400,9 @@ class _EditPostScreenState extends State<EditPostScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       GestureDetector(
-                        onTap: () {
-                          getImages(ImageSource.gallery);
+                        onTap: () async {
+                          await getImages(ImageSource.gallery);
+                          setState(() {});
                         },
                         child: const FaIcon(FontAwesomeIcons.photoFilm),
                       ),

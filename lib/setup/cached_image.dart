@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:hanasaku/setup/aws_s3.dart';
 
 class CachedImage extends StatefulWidget {
   final String url;
@@ -12,18 +12,15 @@ class CachedImage extends StatefulWidget {
 }
 
 class _CachedImageState extends State<CachedImage> {
-  late Future<File> _cachedFile;
-
   @override
   void initState() {
     super.initState();
-    _cachedFile = DefaultCacheManager().getSingleFile(widget.url);
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _cachedFile,
+      future: getImage(context, widget.url),
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
@@ -35,7 +32,11 @@ class _CachedImageState extends State<CachedImage> {
               return const Icon(Icons.error);
             } else {
               final file = snapshot.data as File;
-              return Image.file(file);
+              return Container(
+                  clipBehavior: Clip.hardEdge,
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(10)),
+                  child: Image.file(file));
             }
         }
       },
