@@ -182,160 +182,157 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         child: Padding(
           padding: const EdgeInsets.symmetric(
               horizontal: Sizes.size12, vertical: Sizes.size10),
-          child: _chatList.isEmpty
-              ? const SingleChildScrollView(
-                  child: Center(
-                    child: Text('会話をかけてみてください'),
-                  ),
-                )
-              : ListView.separated(
-                  separatorBuilder: (context, index) => Gaps.v14,
-                  itemCount: _chatList.length,
-                  itemBuilder: (context, index) {
-                    if (_chatList[index]['user']['avatar'] != null) {
-                      _cachedFile = DefaultCacheManager()
-                          .getSingleFile(_chatList[index]['user']['avatar']);
-                    }
+          child: Stack(
+            children: [
+              if (_chatList.isEmpty) const Center(child: Text('会話をかけてみてください.')),
+              ListView.separated(
+                separatorBuilder: (context, index) => Gaps.v14,
+                itemCount: _chatList.length,
+                itemBuilder: (context, index) {
+                  if (_chatList[index]['user']['avatar'] != null) {
+                    _cachedFile = DefaultCacheManager()
+                        .getSingleFile(_chatList[index]['user']['avatar']);
+                  }
 
-                    return InkWell(
-                      onTap: _isSelectMode
-                          ? () {
-                              setState(() {
-                                _isSelected[index] = !_isSelected[index];
-                                if (_isSelected[index]) {
-                                  _selectedChatIds.add(_chatList[index]['id']);
-                                } else {
-                                  _selectedChatIds
-                                      .remove(_chatList[index]['id']);
-                                }
-                              });
-                            }
-                          : () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => ChatRoom(
-                                        userId: _chatList[index]['user']['id'],
-                                        userName: _chatList[index]['user']
-                                            ['userName'],
-                                        roomId: _chatList[index]['id'],
-                                      )));
-                            },
-                      child: Container(
-                        constraints:
-                            const BoxConstraints(minHeight: 55, maxHeight: 55),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            _chatList[index]['user']['avatar'] != null
-                                ? FutureBuilder(
-                                    future: _cachedFile,
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.done) {
-                                        if (snapshot.hasError) {
-                                          // 에러 처리
-                                          return Text(
-                                              'Error: ${snapshot.error}');
-                                        }
-
-                                        if (snapshot.hasData) {
-                                          final file = snapshot.data as File;
-
-                                          // 파일을 이미지로 변환하여 CircleAvatar의 backgroundImage로 설정
-                                          return CircleAvatar(
-                                            radius: 20,
-                                            backgroundImage:
-                                                Image.file(file).image,
-                                          );
-                                        } else {
-                                          return const Text(
-                                              'No data'); // 데이터 없음 처리
-                                        }
-                                      } else {
-                                        return const CircularProgressIndicator(); // 로딩 중 처리
+                  return InkWell(
+                    onTap: _isSelectMode
+                        ? () {
+                            setState(() {
+                              _isSelected[index] = !_isSelected[index];
+                              if (_isSelected[index]) {
+                                _selectedChatIds.add(_chatList[index]['id']);
+                              } else {
+                                _selectedChatIds.remove(_chatList[index]['id']);
+                              }
+                            });
+                          }
+                        : () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => ChatRoom(
+                                      userId: _chatList[index]['user']['id'],
+                                      userName: _chatList[index]['user']
+                                          ['userName'],
+                                      roomId: _chatList[index]['id'],
+                                    )));
+                          },
+                    child: Container(
+                      constraints:
+                          const BoxConstraints(minHeight: 55, maxHeight: 55),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          _chatList[index]['user']['avatar'] != null
+                              ? FutureBuilder(
+                                  future: _cachedFile,
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.done) {
+                                      if (snapshot.hasError) {
+                                        // 에러 처리
+                                        return Text('Error: ${snapshot.error}');
                                       }
-                                    })
-                                : CircleAvatar(
-                                    radius: 20,
-                                    child: SvgPicture.asset(
-                                      'assets/user.svg',
-                                      width: 40,
-                                      height: 40,
+
+                                      if (snapshot.hasData) {
+                                        final file = snapshot.data as File;
+
+                                        // 파일을 이미지로 변환하여 CircleAvatar의 backgroundImage로 설정
+                                        return CircleAvatar(
+                                          radius: 20,
+                                          backgroundImage:
+                                              Image.file(file).image,
+                                        );
+                                      } else {
+                                        return const Text(
+                                            'No data'); // 데이터 없음 처리
+                                      }
+                                    } else {
+                                      return const CircularProgressIndicator(); // 로딩 중 처리
+                                    }
+                                  })
+                              : CircleAvatar(
+                                  radius: 20,
+                                  child: SvgPicture.asset(
+                                    'assets/user.svg',
+                                    width: 40,
+                                    height: 40,
+                                  ),
+                                ),
+                          Gaps.h14,
+                          Expanded(
+                            child: Stack(
+                              children: [
+                                Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Text(
+                                    '${_chatList[index]['user']['userName']}',
+                                    style: const TextStyle(
+                                      fontSize: Sizes.size16,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
-                            Gaps.h14,
-                            Expanded(
-                              child: Stack(
-                                children: [
-                                  Align(
-                                    alignment: Alignment.topLeft,
-                                    child: Text(
-                                      '${_chatList[index]['user']['userName']}',
-                                      style: const TextStyle(
-                                        fontSize: Sizes.size16,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ),
-                                  (_chatList[index]['lastMessage']['isRead'] ||
-                                          _chatList[index]['lastMessage']
-                                                  ['user']['userName'] ==
-                                              nickName)
-                                      ? Align(
-                                          alignment: Alignment.bottomLeft,
-                                          child: Text(
-                                            '${_chatList[index]['lastMessage']['message']}',
-                                            style: TextStyle(
-                                                fontSize: Sizes.size16,
-                                                fontWeight: FontWeight.w400,
-                                                color: Colors.grey.shade600),
-                                          ),
-                                        )
-                                      : Align(
-                                          alignment: Alignment.bottomLeft,
-                                          child: Text(
-                                            '${_chatList[index]['lastMessage']['message']}',
-                                            style: const TextStyle(
+                                ),
+                                (_chatList[index]['lastMessage']['isRead'] ||
+                                        _chatList[index]['lastMessage']['user']
+                                                ['userName'] ==
+                                            nickName)
+                                    ? Align(
+                                        alignment: Alignment.bottomLeft,
+                                        child: Text(
+                                          '${_chatList[index]['lastMessage']['message']}',
+                                          style: TextStyle(
                                               fontSize: Sizes.size16,
-                                              fontWeight: FontWeight.w600,
-                                            ),
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.grey.shade600),
+                                        ),
+                                      )
+                                    : Align(
+                                        alignment: Alignment.bottomLeft,
+                                        child: Text(
+                                          '${_chatList[index]['lastMessage']['message']}',
+                                          style: const TextStyle(
+                                            fontSize: Sizes.size16,
+                                            fontWeight: FontWeight.w600,
                                           ),
                                         ),
-                                ],
-                              ),
+                                      ),
+                              ],
                             ),
-                            Align(
-                              alignment: Alignment.bottomRight,
-                              child: Text(
-                                getTime(
-                                  _chatList[index]['lastMessage']['createDate'],
-                                ),
-                                style: TextStyle(
-                                    color: Colors.grey.shade400,
-                                    fontSize: Sizes.size12),
+                          ),
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: Text(
+                              getTime(
+                                _chatList[index]['lastMessage']['createDate'],
                               ),
+                              style: TextStyle(
+                                  color: Colors.grey.shade400,
+                                  fontSize: Sizes.size12),
                             ),
-                            if (_isSelectMode)
-                              Checkbox(
-                                value: _isSelected[index],
-                                onChanged: (bool? newValue) {
-                                  setState(() {
-                                    _isSelected[index] = newValue!;
-                                    if (_isSelected[index]) {
-                                      _selectedChatIds
-                                          .add(_chatList[index]['id']);
-                                    } else {
-                                      _selectedChatIds
-                                          .remove(_chatList[index]['id']);
-                                    }
-                                  });
-                                },
-                              ),
-                          ],
-                        ),
+                          ),
+                          if (_isSelectMode)
+                            Checkbox(
+                              value: _isSelected[index],
+                              onChanged: (bool? newValue) {
+                                setState(() {
+                                  _isSelected[index] = newValue!;
+                                  if (_isSelected[index]) {
+                                    _selectedChatIds
+                                        .add(_chatList[index]['id']);
+                                  } else {
+                                    _selectedChatIds
+                                        .remove(_chatList[index]['id']);
+                                  }
+                                });
+                              },
+                            ),
+                        ],
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: _isSelectMode
