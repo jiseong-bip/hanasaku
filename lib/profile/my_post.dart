@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_print
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -21,6 +23,8 @@ class _MyPostScreenState extends State<MyPostScreen> {
   final List _posts = [];
   bool isExpanded = false;
   int? _expandedCategoryId;
+  double _height = 0.0;
+  late Timer _timer;
 
   @override
   void initState() {
@@ -28,6 +32,28 @@ class _MyPostScreenState extends State<MyPostScreen> {
     Future.delayed(Duration.zero, () {
       _fetchMyPosts();
     });
+
+    Future.delayed(const Duration(seconds: 1), () {
+      setState(() {
+        _height = 96.0;
+      });
+      // Start the timer after the initial animation
+      _startTimer();
+    });
+  }
+
+  void _startTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      setState(() {
+        _height = _height == 0.0 ? 96.0 : 0.0;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
   }
 
   Future<void> _fetchMyPosts() async {
@@ -53,7 +79,6 @@ class _MyPostScreenState extends State<MyPostScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(idolData.singleWhere((idol) => idol["id"] == 1)["color"]);
     if (_posts.isEmpty) {
       return Scaffold(
         appBar: AppBar(
@@ -62,14 +87,49 @@ class _MyPostScreenState extends State<MyPostScreen> {
             style: TextStyle(),
           ),
         ),
-        body: const Center(
-          child: Center(
-            child: Text(
-              '掲示物を作成してみてください',
-              style: TextStyle(),
-            ),
-          ), // or Text("Loading...")
-        ),
+        body: Center(
+            child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.grey.shade200,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Stack(
+                alignment: Alignment.bottomCenter,
+                children: [
+                  AnimatedContainer(
+                    duration: const Duration(seconds: 5),
+                    height: _height,
+                    width: 96, // Adjust the width as needed
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  Container(
+                    width: 96, // Adjust the width as needed
+                    height: 96, // Adjust the height as needed
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Image.asset(
+                        "assets/appicon.png",
+                        width: 80, // Adjust the width as needed
+                        height: 80, // Adjust the height as needed
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Gaps.v16,
+              const Text('皆さんのお話をお待ちしております。'),
+            ],
+          ),
+        )),
       );
     }
     Map<int, List> groupedPosts = {};
