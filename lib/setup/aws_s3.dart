@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_aws_s3_client/flutter_aws_s3_client.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hanasaku/constants/sizes.dart';
 
 const region = "ap-northeast-2";
@@ -15,8 +16,8 @@ final AwsS3Client awsS3Client = AwsS3Client(
     region: region,
     host: "s3.$region.amazonaws.com",
     bucketId: bucketId,
-    accessKey: "AKIAXRQ2ICJ2X3COJJ6N",
-    secretKey: "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");
+    accessKey: dotenv.get("ACCESS_KEY"),
+    secretKey: dotenv.get("SECRET_KEY"));
 
 Future getListImage(List<Object?> images) async {
   final cacheManager = DefaultCacheManager();
