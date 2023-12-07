@@ -63,8 +63,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1056608488794',
     projectId: 'hanasaku-abc',
     storageBucket: 'hanasaku-abc.appspot.com',
-    androidClientId: '1056608488794-9lu7pgj6apjbfikdb16q31lpecaighfn.apps.googleusercontent.com',
-    iosClientId: '1056608488794-jmllqnss0p7fvtqcc97r7ccchqo6nd9d.apps.googleusercontent.com',
+    androidClientId:
+        '1056608488794-9lu7pgj6apjbfikdb16q31lpecaighfn.apps.googleusercontent.com',
+    iosClientId:
+        '1056608488794-jmllqnss0p7fvtqcc97r7ccchqo6nd9d.apps.googleusercontent.com',
     iosBundleId: 'com.hana.hanasaku',
   );
 }
